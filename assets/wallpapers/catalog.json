@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "name": "Ajanlaskut ja Sää · Taustakuvat",
+  "wallpapers": [
+    {
+      "id": "ubuntu-kuparinen-tahtikello",
+      "title": "Kuparinen tähtikello",
+      "theme": "copper",
+      "file": "kupari/ubuntu-kuparinen-tahtikello.png",
+      "description": "Kuparinen Ubuntu-tähtikello. Tumma oikea reuna jättää tilaa sää- ja kalenteriwidgeteille.",
+      "width": 1672,
+      "height": 941,
+      "created": "2026-10-07",
+      "generation": "built-in image generation",
+      "prompt": "kupari/LUONTIKUVAUS.md"
+    },
+    {
+      "id": "ubuntu-halla-yon-tahtikello",
+      "title": "Halla-yön tähtikello",
+      "theme": "frost",
+      "file": "halla/ubuntu-halla-yon-tahtikello.png",
+      "description": "Jäinen hopeansininen Ubuntu-tähtikello. Tumma oikea reuna jättää tilaa sää- ja kalenteriwidgeteille.",
+      "width": 1672,
+      "height": 941,
+      "created": "2026-10-08",
+      "generation": "built-in image generation",
+      "prompt": "halla/LUONTIKUVAUS.md"
+    }
+  ]
+}
