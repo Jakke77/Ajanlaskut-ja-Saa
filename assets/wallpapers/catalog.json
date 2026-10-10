@@ -25,6 +25,18 @@
       "created": "2026-10-08",
       "generation": "built-in image generation",
       "prompt": "halla/LUONTIKUVAUS.md"
+    },
+    {
+      "id": "ubuntu-oranssi-tahtikello",
+      "title": "Ubuntu · oranssi tähtikello",
+      "theme": "ubuntu",
+      "file": "ubuntu/ubuntu-oranssi-tahtikello.png",
+      "description": "Munakoison sävyinen Ubuntu-henkinen vektoritausta, oranssi kiertokello ja rauhallinen oikea reuna.",
+      "width": 1920,
+      "height": 1080,
+      "created": "2026-10-10",
+      "generation": "original SVG vector artwork",
+      "prompt": "ubuntu/LUONTIKUVAUS.md"
     }
   ]
 }

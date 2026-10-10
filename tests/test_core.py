@@ -57,11 +57,46 @@ class StateTests(unittest.TestCase):
     def tearDown(self): self.directory.cleanup()
 
     def test_defaults(self):
+        self.assertEqual(self.state.settings['theme'], 'copper')
+        self.assertEqual(self.state.settings['time_theme'], 'calendar')
         self.assertEqual([k for k, v in self.state.settings['widgets'].items() if v], ['combined', 'weather'])
         self.assertEqual(self.state.settings['refresh_minutes'], 77)
         self.assertEqual(self.state.settings['place']['name'], 'Pöllönkangas, Oulu')
         self.assertEqual(self.state.settings['widget_text_scale'],130)
         self.assertEqual(self.state.settings['widget_clock_scale'],100)
+
+    def test_ubuntu_clock_and_shared_theme_are_independent_and_durable(self):
+        self.state.configure({'time_theme': 'ubuntu'})
+        loaded = State(self.path)
+        self.assertEqual(loaded.settings['time_theme'], 'ubuntu')
+        self.assertEqual(loaded.settings['theme'], 'copper')
+        loaded.configure({'theme': 'ubuntu', 'time_theme': 'calendar'})
+        reloaded = State(self.path)
+        self.assertEqual(reloaded.settings['theme'], 'ubuntu')
+        self.assertEqual(reloaded.settings['time_theme'], 'calendar')
+        reloaded.configure({'time_theme': 'shared'})
+        self.assertEqual(State(self.path).settings['time_theme'], 'shared')
+
+    def test_theme_change_preserves_saved_content_and_widget_settings(self):
+        day = date(2026, 10, 7)
+        self.state.save_note(day, 'Oma merkintä')
+        self.state.geometry('combined', (500, 60))
+        previous = copy.deepcopy(self.state.data)
+        self.state.configure({'theme': 'ubuntu', 'time_theme': 'ubuntu'})
+        expected = copy.deepcopy(previous)
+        expected['settings'].update({'theme': 'ubuntu', 'time_theme': 'ubuntu'})
+        self.assertEqual(State(self.path).data, expected)
+
+    def test_invalid_theme_change_is_atomic(self):
+        self.state.configure({'theme': 'ubuntu', 'time_theme': 'ubuntu'})
+        previous = copy.deepcopy(self.state.data)
+        content = self.path.read_bytes()
+        for changes in ({'theme': 'ubuntuu'}, {'time_theme': 'ubuntuu'},
+                        {'time_theme': 'frost'}, {'theme': 'copper', 'time_theme': 'unknown'}):
+            with self.subTest(changes=changes):
+                with self.assertRaises(ValueError): self.state.configure(changes)
+                self.assertEqual(self.state.data, previous)
+                self.assertEqual(self.path.read_bytes(), content)
 
     def test_old_state_gains_font_controls_without_losing_preferences(self):
         old=copy.deepcopy(self.state.data)

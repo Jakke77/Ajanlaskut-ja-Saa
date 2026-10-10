@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QComboBox, QSpinBox, QCheckBox, QMessageBox, QSizePolicy)
 from .ui import label, button, card
 from .wallpapers import image_size
+from .theme import THEME_NAMES
 
 
 class WallpapersPage(QWidget):
@@ -19,7 +20,7 @@ class WallpapersPage(QWidget):
         layout.setContentsMargins(0, 0, 0, 0); layout.setSpacing(14)
         layout.addWidget(label('TYÖPÖYTÄ JA LUKITUSNÄYTTÖ', 'eyebrow'))
         layout.addWidget(label('Oma taivas, oma taustakuva', 'heading'))
-        layout.addWidget(label('Kuparin ja Hallan taustakuvat sekä oma teema-repo samassa galleriassa. '
+        layout.addWidget(label('Kuparin, Hallan ja Ubuntun taustakuvat sekä oma teema-repo samassa galleriassa. '
             'Työpöydälle ja lukitusnäytölle voi valita eri kuvat.', 'muted', True))
         tools = QHBoxLayout()
         tools.addWidget(button('Lisää omia kuvia…', self.import_images))
@@ -108,7 +109,7 @@ class WallpapersPage(QWidget):
         previous = {str(item.path) for item in self.selected()}
         self.loaded_folder = self.controller.options['wallpaper_directory']
         self.folder.setText('Teema-repo: ' + self.loaded_folder if self.loaded_folder
-                            else 'Sovelluksen Kupari- ja Halla-galleria · voit liittää myös erillisen teema-repon.')
+                            else 'Sovelluksen Kupari-, Halla- ja Ubuntu-galleria · voit liittää myös erillisen teema-repon.')
         self.gallery.blockSignals(True)
         try:
             self.items = self.manager.library.list(self.loaded_folder)
@@ -148,7 +149,7 @@ class WallpapersPage(QWidget):
             size = QSize(width, height); size.scale(760, 250, Qt.AspectRatioMode.KeepAspectRatio)
             reader.setScaledSize(size)
             self.preview.setPixmap(QPixmap.fromImage(reader.read()))
-            theme = {'copper': 'Kupari', 'frost': 'Halla'}.get(item.theme, 'Oma tausta')
+            theme = THEME_NAMES.get(item.theme, 'Oma tausta')
             self.description.setText(f'{item.title} · {theme} · {width} × {height} · {item.source}\n{item.description}')
         except (OSError, ValueError) as error:
             self.preview.clear(); self.description.setText(str(error))

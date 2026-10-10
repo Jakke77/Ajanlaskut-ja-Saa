@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QFrame, QLabel, QPushButton, 
     QTimeEdit, QMessageBox, QLineEdit, QSizePolicy, QButtonGroup, QSplitter)
 from .calendar import NAMES, MONTHS, WEEKDAYS
 from .models import shadow, star
-from .theme import THEMES, paint_panel
+from .theme import THEMES, THEME_LABELS, paint_panel
 from .state import DEFAULTS
 from . import almanac
 from .widgets import WIDGET_LABELS
@@ -344,7 +344,8 @@ class SettingsPage(QWidget):
         heading=QHBoxLayout();heading.addWidget(label('Yksi ilme, kaikki näkymät','heading'));heading.addStretch(1)
         heading.addWidget(button('Tallenna',self.save,True));layout.addLayout(heading)
         appearance,form_box=card();form_box.addWidget(label('Ulkoasu ja työpöytä','eyebrow'));form=QFormLayout();form.setSpacing(12)
-        self.theme=QComboBox();self.theme.addItem('Kupari · Pöllönkankaan sää','copper');self.theme.addItem('Halla · yön sininen','frost')
+        self.theme=QComboBox()
+        for key,title in THEME_LABELS.items():self.theme.addItem(title,key)
         from .wallpaper_options import ThemeWallpaperOptions
         self.wallpaper_options=ThemeWallpaperOptions(controller)
         self.font=QFontComboBox();self.scale=QSpinBox();self.scale.setRange(60,150);self.scale.setSuffix(' %')
@@ -444,7 +445,7 @@ class MainWindow(QMainWindow):
     def tick(self):
         self.footer.setText(f'Ajanlaskut ja Sää · {self.controller.calendars.now():%d.%m.%Y %H:%M} · hakuväli {self.controller.options["refresh_minutes"]} min')
     def sync_theme(self):
-        self.theme_title.setText('KUPARI · PÖLLÖNKANKAAN SÄÄ' if self.controller.options['theme']=='copper' else 'HALLA · YÖN SININEN')
+        self.theme_title.setText(THEME_LABELS[self.controller.options['theme']].upper())
     def closeEvent(self,event):
         if self.controller.stopping:event.accept();return
         try:self.controller.state.geometry('main',(self.x(),self.y(),self.width(),self.height()))

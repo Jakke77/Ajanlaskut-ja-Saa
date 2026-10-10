@@ -37,6 +37,13 @@ Sulje ja avaa koko sovellus uudelleen myös palautuksen jälkeen. Palautus vaiht
 vain ohjelmaversion: **uusia kalenterimerkintöjä ei palauteta taaksepäin**.
 Ensimmäisessä täysin uudessa asennuksessa ei vielä ole edellistä versiota.
 
+**Ubuntu-teemasta vanhaan versioon:** ennen palautusta versioon 1.4.0 tai
+aiempaan valitse ja tallenna **Asetukset → Teema → Kupari tai Halla** sekä
+**Ajanlaskuwidgetit → Kellon teema → Ajanlaskun oma tai Sovelluksen yhteinen**.
+Vanhat versiot eivät tunnista Ubuntu-teeman tallennettuja valintoja.
+Palautus säilyttää nykyiset merkinnät; älä korvaa `state.json`-tiedostoa vanhalla
+varmuuskopiolla tätä varten.
+
 ## Paikallinen päivityskansio
 
 ### Komennon käyttöönotto deb-asennuksesta

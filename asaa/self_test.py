@@ -98,6 +98,8 @@ def run_tests(app, preview_dir=None):
                 assert not startup.called
             demo_weather(controller)
             clock_acceptance(controller,app,preview_dir)
+            from .ubuntu_test import acceptance as ubuntu_acceptance
+            ubuntu_acceptance(controller,app,preview_dir)
             dimensions={key:widget.size() for key,widget in controller.widgets.items()}
             positions={key:widget.pos() for key,widget in controller.widgets.items()}
             settings=controller.window.page_widgets['settings']

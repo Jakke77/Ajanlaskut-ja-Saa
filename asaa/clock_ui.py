@@ -3,7 +3,7 @@ import copy
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QComboBox, QSpinBox, QCheckBox, QLabel
 from .clock_config import SYSTEMS, PROFILE_KEYS, CLOCK_TITLES, FIELD_LABELS
-from .theme import CALENDAR_THEME_NAMES
+from .theme import CALENDAR_THEME_NAMES, THEME_NAMES
 from .widgets import DesktopSurface, WIDGET_LABELS
 from .ui import label, button, card
 
@@ -29,7 +29,7 @@ class ClocksPage(QWidget):
         self.system = QComboBox()
         for key in SYSTEMS: self.system.addItem(CLOCK_TITLES[key], key)
         self.interval = QSpinBox();self.interval.setRange(1,3600);self.interval.setSuffix(' sekuntia')
-        self.theme = QComboBox();self.theme.addItem('Ajanlaskun oma teema', 'calendar');self.theme.addItem('Yhteinen Kupari / Halla', 'shared')
+        self.theme = QComboBox();self.theme.addItem('Ajanlaskun oma teema', 'calendar');self.theme.addItem('Sovelluksen yhteinen teema', 'shared');self.theme.addItem('Ubuntu · analoginen kello', 'ubuntu')
         for title, control in [('Vaihtotapa',self.mode),('Valittu ajanlasku',self.system),('Vaihtoväli',self.interval),('Kellon teema',self.theme)]:form.addRow(title,control)
         content.addLayout(form)
         self.pool = {};pool_row = QHBoxLayout()
@@ -38,6 +38,7 @@ class ClocksPage(QWidget):
             check.toggled.connect(self.changed)
         content.addWidget(label('Vaihtoon osallistuvat ajanlaskut', 'muted'));content.addLayout(pool_row)
         content.addWidget(label('Kupari · Varjoaika / Astraali · Tähtiaika / Aamunkajo · Gregoriaaninen. Kellon paikka ja koko eivät muutu ajanlaskun vaihtuessa.', 'muted', True))
+        content.addWidget(label('Ubuntu näyttää analogisen kellotaulun. Voit valita sen erikseen kellolle tai yhteiseksi teemaksi asetuksissa.', 'muted', True))
         left.addWidget(frame)
         frame, content = card();content.addWidget(label('NÄKYVÄ SISÄLTÖ', 'eyebrow'))
         self.target = QComboBox()
@@ -120,7 +121,10 @@ class ClocksPage(QWidget):
         pixmap = self.preview_widget.grab()
         if pixmap.width() > 324:pixmap = pixmap.scaledToWidth(324, Qt.TransformationMode.SmoothTransformation)
         self.preview_label.setPixmap(pixmap)
-        name = CALENDAR_THEME_NAMES[system] if self.theme.currentData()=='calendar' else 'Yhteinen teema'
+        choice = self.theme.currentData()
+        name = (CALENDAR_THEME_NAMES[system] if choice=='calendar' else
+                'Ubuntu · analoginen kello' if choice=='ubuntu' else
+                'Yhteinen ' + THEME_NAMES[self.controller.options['theme']])
         self.preview_caption.setText(f'{CLOCK_TITLES[system]} · {name}\nEsikatselu ei muuta työpöydän widgettiä. Sää käyttää yhteistä ennustetta, jos se on saatavilla.')
 
     def save(self):

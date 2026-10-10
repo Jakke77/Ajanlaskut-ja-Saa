@@ -77,10 +77,10 @@ class State:
         if data.get('version') != 1: raise ValueError('Tuntematon asetustiedosto')
         settings = data['settings']
         ZoneInfo(settings['zone'])
-        if settings['theme'] not in ('copper', 'frost'): raise ValueError('Tuntematon teema')
+        if settings['theme'] not in ('copper', 'frost', 'ubuntu'): raise ValueError('Tuntematon teema')
         if settings['time_mode'] not in ('fixed', 'cycle', 'random'): raise ValueError('Tuntematon ajanlaskun vaihtotapa')
         if settings['time_system'] not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')
-        if settings['time_theme'] not in ('calendar', 'shared'): raise ValueError('Tuntematon kelloteema')
+        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu'): raise ValueError('Tuntematon kelloteema')
         systems = settings['time_systems']
         if (not isinstance(systems, list) or not systems or any(s not in SYSTEMS for s in systems)
             or len(set(systems)) != len(systems)): raise ValueError('Valitse vähintään yksi eri ajanlasku.')

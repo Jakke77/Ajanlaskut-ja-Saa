@@ -5,7 +5,36 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
-## Näkymät
+## Ubuntu-teema ja analoginen kello · versio 1.5.0
+
+![Ubuntu-kellon esikatselu, esimerkkiaika 10.10.2026 klo 10.10.30](previews/ubuntu-desktop.png)
+
+**Ajanlaskuwidgetit → Kellon teema → Ubuntu · analoginen kello** ottaa käyttöön
+oranssin kellotaulun, analogiset viisarit ja digitaalisen ajan. Valinta näkyy ensin
+esikatselussa; **Tallenna kelloasetukset** ottaa sen käyttöön työpöydällä.
+Sama paikallinen aika ja valittu ajanlasku säilyvät. Sekuntivalinta ohjaa sekä
+digitaalisen ajan sekunteja että sekuntiviisaria; **Kellon numeroiden koko**
+vaikuttaa digitaaliseen aikaan ja kellotaulun numerointiin.
+
+**Asetukset → Teema → Ubuntu · oranssi ja munakoiso** antaa koko sovellukselle
+saman väripaletin. Kellon **Sovelluksen yhteinen teema** seuraa tätä valintaa;
+Ubuntu-kellon voi myös valita erikseen Kuparin tai Hallan rinnalle.
+Analoginen kellotaulu tarvitsee enemmän korkeutta kuin digitaalinen kello:
+lyhyt widget voi kasvaa vähimmäiskokoon ja siirtyä näytön sisään. Ajanlaskun
+vaihtuminen ei muuta kellon kokoa. Sisältövalinnat, fontti, vetäminen ja
+koonmuutos toimivat myös tässä teemassa.
+
+Mukana on **Ubuntu · oranssi tähtikello** -taustakuva (1920 × 1080),
+alkuperäinen paikallisesti piirretty SVG-teos. Teeman mukana vaihtuva tausta
+noudattaa aiempaa työpöytä-/lukituskuvan valintaa. Kellon oma teemavalinta
+ei vaihda taustakuvaa tai sääwidgetin värejä. Nollan prosentin tausta poistaa
+kellon pohjan, kehykset ja koristeet; viisarit, numerot ja tekstit jäävät näkyviin.
+
+Itsenäinen Ubuntu-henkinen faniteema. Ubuntu-nimi ja Circle of Friends
+-tavaramerkki kuuluvat Canonicalille. Vanhaan ohjelmaversioon palaaminen:
+valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDATES.md).
+
+## Sovelluksen näkymät
 
 - **Yleiskatsaus:** sama hetki kolmessa ajanlaskussa, tuntiennuste ja kolmen päivän sää.
 - **Kalenterit:** Varjoajan 13 kuukautta, Tähtiajan 17 kuukautta ja gregoriaaninen kalenteri.
@@ -15,7 +44,7 @@ asetuksia.
 - **Sää:** Yr/MET Norway, Foreca, Ilmatieteen laitos ja Windyn kartta;
   12 tai 24 tuntia. Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
 - **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää.
-- **Taustakuvat:** Kupari- ja Halla-galleria, oma teema-repo ja omat kuvat; eri taustat
+- **Taustakuvat:** Kupari-, Halla- ja Ubuntu-galleria, oma teema-repo ja omat kuvat; eri taustat
   työpöydälle ja lukitusnäytölle sekä 1–77 minuutin diaesitys.
 - **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,
   sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
@@ -35,7 +64,7 @@ ja gregoriaanisen kellon, Varjosään sekä kuukausiwidgetit. Päivitys säilytt
 widgetvalinnat, kunnes erilliset kellot korvataan yhteisellä kellolla.
 
 Oletusteema **Kupari** pohjautuu Pöllönkankaan sääwidgetin tummaan, kupariseen
-ja läpikuultavaan ilmeeseen. Toinen teema on sininen **Halla**. Teeman ja fontin
+ja läpikuultavaan ilmeeseen. Muut teemat ovat sininen **Halla** ja oranssi **Ubuntu**. Teeman ja fontin
 muutos koskee sovellusta ja sääwidgettejä. Kelloilla voi olla omat ajanlaskuteemat
 tai sama yhteinen teema. Koko ja taustan
 peittävyys koskevat widgettejä. Sääpalvelujen semanttiset käyrävärit säilyvät.
