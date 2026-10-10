@@ -39,7 +39,43 @@ Ensimmäisessä täysin uudessa asennuksessa ei vielä ole edellistä versiota.
 
 ## Paikallinen päivityskansio
 
-Tämän koneen julkaisukansio on:
+### Komennon käyttöönotto deb-asennuksesta
+
+Deb-asennus tarjoaa `ajanlaskut-ja-saa`-komennon. `codex-ajanlasku` otetaan
+käyttöön erikseen, kun paikallinen päivityskansio ja tarkistettu paketti on luotu.
+Kun sovellus on asennettu `/usr/share/ajanlaskut-ja-saa`-kansioon, suorita ilman
+sudoa:
+
+```bash
+ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
+
+/usr/bin/python3 /usr/share/ajanlaskut-ja-saa/packaging/build.py \
+  --publish-channel "$ajanlasku_kanava" &&
+/usr/bin/python3 "$ajanlasku_kanava/update-upgrade.py" setup &&
+export PATH="$HOME/.local/bin:$PATH" &&
+codex-ajanlasku update &&
+codex-ajanlasku upgrade &&
+codex-ajanlasku status
+```
+
+Rakentaminen tarvitsee `dpkg-deb`-työkalun ja ohjelman riippuvuudet järjestelmän
+`/usr/bin/python3`:lle. Paketti testataan ennen päivityskansion julkaisua.
+Testivirhe pysäyttää komentoketjun; tarkka syy jää kansion `qa-failures`-lokiin.
+
+Tämä luo käyttäjäasennuksen **nykyisestä järjestelmään asennetusta versiosta**.
+Uudemmat ohjelmaversiot pitää julkaista valittuun päivityskansioon erikseen.
+`export` lisää komentopolun nykyiseen päätteeseen. Jatkossa `~/.local/bin` pitää
+olla myös uuden pääteistunnon PATHissa; komennon voi aina ajaa täydellä polulla
+`"$HOME/.local/bin/codex-ajanlasku"`.
+
+Versiossa 1.4.0 GI-taustakuvatestin erillinen prosessi etsii ohjelmaa
+työhakemistosta. Tämän version käyttöönotossa aja ensin
+`cd /usr/share/ajanlaskut-ja-saa`, ja suorita yllä oleva ketju samassa päätteessä.
+Korjattu testi löytää puretun paketin ohjelmakansion myös muualta käynnistettäessä.
+
+### Aiempi konekohtainen julkaisukansio
+
+Aiemmassa paikallisessa toimituksessa käytetty julkaisukansio oli:
 
 ```text
 /home/jakke77/Documents/Codex/2026-10-05/t/outputs/Ajanlaskut-ja-Saa
@@ -54,7 +90,8 @@ versioita GitHubista eikä tee uutta ohjelmaversiota lähdekoodin muutoksista.
 Siksi `ajan tasalla` tarkoittaa ajan tasalla tämän paikallisen kanavan kanssa.
 Säätiedot päivittyvät erikseen sovelluksen omilla asetuksilla.
 
-Kertaluonteinen komennon rekisteröinti, jos se puuttuu:
+Jos **tämä kansio ja sen `update-upgrade.py` sekä `latest.json` ovat olemassa**,
+komennon voi rekisteröidä siitä:
 
 ```bash
 python3 /home/jakke77/Documents/Codex/2026-10-05/t/outputs/Ajanlaskut-ja-Saa/update-upgrade.py setup

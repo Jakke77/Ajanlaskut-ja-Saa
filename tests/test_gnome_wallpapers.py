@@ -1,8 +1,10 @@
 """Real GI/schema APIs, but GSETTINGS_BACKEND=memory in a separate process."""
 import importlib.util
 import os
+from pathlib import Path
 import subprocess
 import sys
+from tempfile import TemporaryDirectory
 import unittest
 
 
@@ -10,6 +12,8 @@ import unittest
 class GioWallpaperTests(unittest.TestCase):
     def test_real_gio_write_and_readback_never_uses_user_dconf(self):
         source = '''
+import sys
+sys.path.insert(0, sys.argv[1])
 from asaa.wallpapers import GioBackend, DESKTOP, DIA
 backend = GioBackend()
 if not backend.desktop_available():
@@ -35,8 +39,12 @@ assert isinstance(backend.dia_active(), bool)
 print('PASS: real Gio type conversion, delay/apply and readback using memory only')
 '''
         environment = {**os.environ, 'GSETTINGS_BACKEND': 'memory'}
-        result = subprocess.run([sys.executable, '-c', source], env=environment,
-                                capture_output=True, text=True, timeout=15)
+        app_root = str(Path(__file__).resolve().parents[1])
+        # Publication may be launched outside the extracted application's root.
+        with TemporaryDirectory(prefix='ajanlaskut-gio-test-') as folder:
+            result = subprocess.run([sys.executable, '-c', source, app_root],
+                                    env=environment, cwd=folder,
+                                    capture_output=True, text=True, timeout=15)
         if result.returncode == 77: self.skipTest('GNOME schemas are not installed')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('PASS:', result.stdout)
