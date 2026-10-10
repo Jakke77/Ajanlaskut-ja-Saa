@@ -27,11 +27,11 @@ DEFAULT_PROFILES = {
 }
 
 
-def clock_layout(profile):
+def clock_layout(profile, *, analog=False):
     """Stable slots; hidden fields collapse, changing calendars never changes size."""
     y = 56
     blocks = []
-    for field, height in [('clock', 90), ('date', 46), ('weekday', 34), ('phase', 34),
+    for field, height in [('clock', 346 if analog else 90), ('date', 46), ('weekday', 34), ('phase', 34),
                           ('reference', 36), ('weather', 206), ('note', 66), ('reminder', 64)]:
         enabled = (profile['civil_date'] or profile['zone']) if field == 'reference' else profile[field]
         if enabled:

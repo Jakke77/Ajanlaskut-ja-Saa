@@ -1,4 +1,31 @@
-# Tarkistus 8.10.2026
+# Tarkistus 10.10.2026
+
+## Ubuntu-teema ja analoginen kello 1.5.0
+
+- 121 yksikkötestiä läpäistiin. Uudet testit kattavat Ubuntu-valintojen
+  tallennuksen, vanhojen tietojen säilymisen, viisareiden kulmat,
+  kellotaulun tilavarauksen, sekuntivalinnan ja läpinäkyvän taustan.
+- Eristetty Qt-toimintatesti käyttää oikeita kellon ja yhteisen teeman
+  asetussivuja. Tallentamaton valinta näkyy esikatselussa; kellon oma
+  tallennus ei vaihda sääwidgetin palettia, kokoa, paikkaa, taustakuvaa tai
+  ajanlaskukierron määräaikaa. Yhteinen Ubuntu-teema käyttää nykyistä
+  taustakuvan vaihtopolitiikkaa ja jättää lukituskanavan ennalleen.
+- Kaikki kellosisällöt sovittuvat kolmella fonttiperheellä, tekstikoon
+  80–160 % rajoilla ja kellon numeroiden 140 % koolla. Kolmen ajanlaskun
+  vaihto säilyttää widgetin mitat ja paikan. Kellotaulu kasvattaa aiemman
+  digitaalisen kellon vaatimaa vähimmäiskorkeutta.
+- Alkuperäinen Ubuntu-taustakuva on 1920 × 1080 pikseliä. PNG ja SVG ovat
+  samat sovelluksessa ja teema-repossa. `previews/ubuntu-desktop.png` on
+  Qt:llä renderöity yhdistelmäkuva, jonka analoginen ja digitaalinen
+  esimerkkiaika on 10.10.2026 klo 10.10.30.
+- Toimintatesti ajetaan offscreen-alustalla ja taustakuvien muistialustalla;
+  oikeaa GNOME-istuntoa tai käyttäjän dconf-asetuksia ei muuteta.
+  Aiemmat kalenteri-, sää-, fontti-, ikkunajärjestys-, koonmuutos- ja
+  päivitystestit läpäistiin myös. Julkaisutoiminto toistaa testit puretusta
+  lähdearkistosta ennen kanavan päivitystä ja tallentaa tulokset QA.logiin.
+- Version 1.4.0 asetusten tarkistus ei hyväksy uusia Ubuntu-teematunnisteita.
+  `UPDATES.md` neuvoo tallentamaan aiemmat teemavalinnat ennen palautusta;
+  merkintöjä sisältävää asetustiedostoa ei korvata vanhalla varmuuskopiolla.
 
 ## Halla-yön tausta ja teemanvaihto 1.4.0
 

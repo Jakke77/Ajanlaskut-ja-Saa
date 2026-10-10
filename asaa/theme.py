@@ -1,5 +1,6 @@
 """Shared palette and artwork, based on the Pöllönkangas copper widget."""
 from dataclasses import dataclass
+from math import cos, radians, sin
 from PyQt6.QtCore import Qt, QRectF, QPointF
 from PyQt6.QtGui import QColor, QFont, QPalette, QLinearGradient, QPen
 
@@ -16,7 +17,11 @@ class Theme:
 THEMES = {
     'copper': Theme('#100e15', '#1e1822', '#68483e', '#ef986e', '#f6e5db', '#c2aeb8'),
     'frost': Theme('#10151e', '#192330', '#405b72', '#a3cfe9', '#e9f4fb', '#a3bacb'),
+    'ubuntu': Theme('#17121f', '#2b1b33', '#6e3c36', '#e95420', '#fff4ed', '#c6aebd', 'ubuntu'),
 }
+THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu'}
+THEME_LABELS = {'copper': 'Kupari · Pöllönkankaan sää', 'frost': 'Halla · yön sininen',
+                'ubuntu': 'Ubuntu · oranssi ja munakoiso'}
 
 # Clock-only tokens: never replace the shared palette of the standalone weather graph.
 CALENDAR_THEMES = {
@@ -78,7 +83,20 @@ def paint_panel(p, rect, theme, opacity=1):
     orbit = QColor(theme.accent); orbit.setAlphaF(opacity * .12)
     p.setPen(QPen(orbit, 1)); p.setBrush(Qt.BrushStyle.NoBrush)
     size = rect.width() * .75
-    if theme.motif == 'ledger':
+    if theme.motif == 'ubuntu':
+        center = QPointF(rect.right()-52, rect.top()+52)
+        radius = 28
+        ring = QRectF(center.x()-radius, center.y()-radius, radius*2, radius*2)
+        p.setPen(QPen(orbit, 4))
+        for angle in (30, 150, 270):
+            p.drawArc(ring, (angle+18)*16, 84*16)
+            direction = radians(angle)
+            point = center + QPointF(cos(direction)*radius, -sin(direction)*radius)
+            p.setBrush(orbit); p.setPen(Qt.PenStyle.NoPen)
+            p.drawEllipse(point, 5, 5)
+            p.setBrush(Qt.BrushStyle.NoBrush); p.setPen(QPen(orbit, 4))
+        p.setPen(QPen(orbit, 1))
+    elif theme.motif == 'ledger':
         for offset in range(5):
             x = rect.right()-122+offset*28
             p.drawLine(QPointF(x, rect.top()+16), QPointF(x, rect.top()+110))

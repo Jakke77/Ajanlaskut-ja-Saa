@@ -69,9 +69,15 @@ class DesktopSurface(QWidget):
 
     @property
     def theme(self):
-        if self.key in PROFILE_KEYS and (self.theme_override or self.options['time_theme']) == 'calendar':
-            return CALENDAR_THEMES[self.system]
+        if self.key in PROFILE_KEYS:
+            selection = self.theme_override or self.options['time_theme']
+            if selection == 'ubuntu': return THEMES['ubuntu']
+            if selection == 'calendar': return CALENDAR_THEMES[self.system]
         return THEMES[self.options['theme']]
+
+    @property
+    def analog_clock(self):
+        return self.key in PROFILE_KEYS and self.theme.motif == 'ubuntu'
 
     def clock_tick(self):
         self.style_buttons()
@@ -88,7 +94,7 @@ class DesktopSurface(QWidget):
     def apply_options(self):
         options = self.options
         self.base_height = 414 if self.key.endswith('_calendar') else 330
-        if self.key in PROFILE_KEYS: _, self.base_height = clock_layout(self.profile)
+        if self.key in PROFILE_KEYS: _, self.base_height = clock_layout(self.profile, analog=self.analog_clock)
         visible, position = self.isVisible(), self.pos()
         if not self.preview:
             apply_layer(self,self.controller.layers.on_top())
@@ -187,10 +193,18 @@ class DesktopSurface(QWidget):
         except ValueError:
             date_label, weekday, phase = 'Ajanlasku ei ole vielä alkanut', '', ''
         tip = []
-        for field, y, height in clock_layout(self.profile)[0]:
+        for field, y, height in clock_layout(self.profile, analog=self.analog_clock)[0]:
             if field == 'clock':
                 value = now.strftime('%H:%M:%S' if self.options['seconds'] else '%H:%M')
-                self.text(p, value, y+5, 53, bold=True, center=True, height=76, clock=True)
+                if self.analog_clock:
+                    from .ubuntu_clock import paint_clock
+                    rect = paint_clock(p, QRectF(22, y+8, self.logical_width-44, height-16), now,
+                                       theme, self.options['font'], self.options['opacity']/100,
+                                       self.options['seconds'], self.options['widget_clock_scale']/100)
+                    self.text(p, value, rect.y(), 24, bold=True, x=rect.x(), width=rect.width(),
+                              center=True, height=rect.height(), clock=True)
+                else:
+                    self.text(p, value, y+5, 53, bold=True, center=True, height=76, clock=True)
             elif field in ('date', 'weekday', 'phase'):
                 value = {'date':date_label, 'weekday':weekday, 'phase':phase}[field]
                 self.text(p, value, y+3, 19 if field=='date' else 14, theme.accent if field=='date' else theme.muted, center=True, height=height-8)
