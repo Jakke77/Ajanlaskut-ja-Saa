@@ -1,6 +1,8 @@
 """Resolve shared appearance and sparse per-widget theme selections."""
+from dataclasses import replace
 from .clock_config import PROFILE_KEYS
 from .theme import CALENDAR_THEMES, THEME_NAMES, THEMES
+from .widget_colors import widget_text_color_selection
 
 
 def widget_theme_selection(options, key):
@@ -14,10 +16,13 @@ def widget_theme(options, key, system=None, selection=None):
     if selection is None:
         selection = widget_theme_selection(options, key)
     if selection == 'shared':
-        return THEMES[options['theme']]
-    if selection == 'calendar':
-        return CALENDAR_THEMES[system]
-    return THEMES[selection]
+        theme = THEMES[options['theme']]
+    elif selection == 'calendar':
+        theme = CALENDAR_THEMES[system]
+    else:
+        theme = THEMES[selection]
+    color = widget_text_color_selection(options, key)
+    return replace(theme, text=color, muted=color) if color is not None else theme
 
 
 def widget_theme_choices(key):
@@ -26,8 +31,7 @@ def widget_theme_choices(key):
     if key in PROFILE_KEYS:
         choices.append(('Ajanlaskun oma teema', 'calendar'))
     for selection in ('copper', 'frost', 'ubuntu'):
-        label = (('Ubuntu · analoginen kello' if key in PROFILE_KEYS
-                  else 'Ubuntu · oranssi ja munakoiso') if selection == 'ubuntu'
+        label = ('Ubuntu · oranssi ja munakoiso' if selection == 'ubuntu'
                  else THEME_NAMES[selection])
         choices.append((label, selection))
     return choices

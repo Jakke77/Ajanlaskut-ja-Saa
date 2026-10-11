@@ -21,7 +21,7 @@ class WallpapersPage(QWidget):
         layout.addWidget(label('TYÖPÖYTÄ JA LUKITUSNÄYTTÖ', 'eyebrow'))
         layout.addWidget(label('Oma taivas, oma taustakuva', 'heading'))
         layout.addWidget(label('Kuparin, Hallan ja Ubuntun taustakuvat sekä oma teema-repo samassa galleriassa. '
-            'Työpöydälle ja lukitusnäytölle voi valita eri kuvat.', 'muted', True))
+            'Erillinen lukituskuva on käytettävissä Dia Wall 77 -lisäosan kanssa.', 'muted', True))
         tools = QHBoxLayout()
         tools.addWidget(button('Lisää omia kuvia…', self.import_images))
         tools.addWidget(button('Valitse teema-repon kansio…', self.choose_folder))
@@ -138,7 +138,7 @@ class WallpapersPage(QWidget):
             else: self.gallery.setCurrentItem(self.gallery.item(0))
             self.preview_selected(self.gallery.currentItem())
         else: self.preview.clear(); self.description.setText('Lisää ensimmäinen taustakuva.')
-        self.refresh_current(); self.selection_changed()
+        self.refresh_current()
 
     def preview_selected(self, current, previous=None):
         if not current: return
@@ -155,25 +155,38 @@ class WallpapersPage(QWidget):
             self.preview.clear(); self.description.setText(str(error))
 
     def selection_changed(self):
+        self.update_selection(*self.manager.capabilities())
+
+    def update_selection(self, desktop, dia):
         rotating = self.mode.currentData() == 'slideshow'
+        index=self.mode.findData('slideshow')
+        self.mode.setItemText(index,'Vaihtuvat kuvat · valitut kuvat' if dia else
+                             'Vaihtuvat kuvat · vaatii Dia Wall 77')
+        self.mode.setItemData(index,'' if dia else 'Vaihtuvat taustakuvat tarvitsevat käytössä olevan Dia Wall 77 -lisäosan.',
+                              Qt.ItemDataRole.ToolTipRole)
         self.interval.setEnabled(rotating); self.shuffle.setEnabled(rotating)
         self.hint.setText(f'{len(self.selected())} kuvaa valittu. ' + (
             'Valitse vähintään kaksi kuvaa Ctrl- tai Shift-näppäimellä. Vaihtoväli koskee vain taustakuvia.'
             if rotating else 'Valitse yksi kuva ja sen jälkeen kohde.'))
-        desktop, dia = self.manager.capabilities()
+        if rotating and not dia:
+            self.hint.setText(self.hint.text()+' Vaihtuvat kuvat eivät ole käytettävissä ilman Dia Wall 77 -lisäosaa.')
         valid = len(self.selected()) >= 2 if rotating else len(self.selected()) == 1
         self.desktop_button.setEnabled(desktop and valid and (not rotating or dia))
         self.lock_button.setEnabled(dia and valid); self.both_button.setEnabled(dia and valid)
+        reason='Erillinen lukituskuva tarvitsee käytössä olevan Dia Wall 77 -lisäosan.'
+        self.lock_button.setToolTip('Aseta valitut kuvat vain lukitusnäytölle.' if dia else reason)
+        self.both_button.setToolTip('Aseta valitut kuvat työpöydälle ja lukitusnäytölle.' if dia else reason)
 
     def refresh_current(self):
         desktop, dia = self.manager.capabilities()
-        self.current.setText('Työpöytä: ' + self.manager.current('desktop') +
-                            '\nLukitusnäyttö: ' + self.manager.current('lock'))
+        self.current.setText('Työpöytä: ' + self.manager.current('desktop',(desktop,dia)) +
+                            '\nLukitusnäyttö: ' + self.manager.current('lock',(desktop,dia)))
         self.support.setText('Dia Wall 77 käytössä · erilliset taustat ja vaihtuvat kuvat ovat käytettävissä.'
             if dia else ('Työpöydän taustan voi vaihtaa. Erillinen lukituskuva ja diaesitys tarvitsevat '
                 'käytössä olevan Dia Wall 77 -lisäosan. Ilman sitä GNOMEn lukitusnäyttö seuraa työpöydän taustaa.'
                 if desktop else self.manager.error or 'Taustakuvan vaihto tarvitsee GNOME-työpöydän.'))
         self.restore_button.setEnabled(self.manager.backup.is_file())
+        self.update_selection(desktop,dia)
 
     def apply(self, target):
         try:
@@ -232,13 +245,13 @@ class WallpapersPage(QWidget):
         try:
             self.manager.library.catalog(path, 'Teema-repo')
             self.controller.state.configure({'wallpaper_directory': path})
-            self.controller.settings_changed.emit(); self.reload()
+            self.controller.settings_changed.emit()
         except (OSError, ValueError, TypeError) as error: self.status.setText(str(error))
 
     def clear_folder(self):
         try:
             self.controller.state.configure({'wallpaper_directory': ''})
-            self.controller.settings_changed.emit(); self.reload()
+            self.controller.settings_changed.emit()
         except OSError as error: self.status.setText(str(error))
 
     def open_folder(self):
@@ -246,4 +259,4 @@ class WallpapersPage(QWidget):
         QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
     def showEvent(self, event):
-        super().showEvent(event);self.theme_options.load();self.refresh_current();self.selection_changed()
+        super().showEvent(event);self.theme_options.load();self.refresh_current()

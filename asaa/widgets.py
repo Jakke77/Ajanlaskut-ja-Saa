@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QWidget, QToolButton, QMenu, QApplication
 from .calendar import NAMES, MONTHS
 from .theme import paint_panel
 from .widget_themes import widget_theme
+from .clock_display import clock_mode as resolved_clock_mode, clock_digit_scale, clock_digit_color
 from .clock_config import SYSTEMS, PROFILE_KEYS, CLOCK_TITLES, clock_layout
 from .windowing import DESKTOP_FLAGS, WidgetFrame, apply_layer
 
@@ -22,6 +23,8 @@ class DesktopSurface(QWidget):
         self.controller, self.key = controller, key
         self.preview = preview
         self.profile_override = self.system_override = self.theme_override = None
+        self.appearance_key_override = None
+        self.clock_display_override = None
         self.button_theme = None
         self.month = None
         self.browsing = False
@@ -41,7 +44,7 @@ class DesktopSurface(QWidget):
             self.button('▦', 'Avaa kalenteri', self.open_calendar)
         self.button('▧', 'Taustakuvat · työpöytä ja lukitusnäyttö', lambda: controller.open_page('wallpapers'))
         self.button('⚙', 'Ajanlaskut ja kellon sisältö' if key in PROFILE_KEYS else 'Yhteiset asetukset',
-                    lambda: controller.open_page('clocks' if key in PROFILE_KEYS else 'settings'))
+                    lambda: controller.open_clock(key) if key in PROFILE_KEYS else controller.open_page('settings'))
         self.button('×', 'Piilota widget', lambda: controller.set_widget(key, False))
         self.frame=None if preview else WidgetFrame(self,controller,key)
         self.apply_options()
@@ -70,11 +73,21 @@ class DesktopSurface(QWidget):
 
     @property
     def theme(self):
-        return widget_theme(self.options, self.key, self.system, selection=self.theme_override)
+        return widget_theme(self.options, self.appearance_key_override or self.key,
+                            self.system, selection=self.theme_override)
 
     @property
     def analog_clock(self):
-        return self.key in PROFILE_KEYS and self.theme.motif == 'ubuntu'
+        return self.clock_mode in ('analog', 'both')
+
+    @property
+    def digital_clock(self):
+        return self.clock_mode in ('digital', 'both')
+
+    @property
+    def clock_mode(self):
+        if self.key not in PROFILE_KEYS:return None
+        return resolved_clock_mode(self.options,self.key,self.theme,selection=self.clock_display_override)
 
     def clock_tick(self):
         self.style_buttons()
@@ -143,7 +156,8 @@ class DesktopSurface(QWidget):
         self.controller.open_calendar(self.system if self.system != 'daily' else 'civil')
 
     def text(self, painter, value, y, size, color=None, bold=False, x=22, width=None, center=False, height=None, clock=False):
-        factor=self.options['widget_clock_scale' if clock else 'widget_text_scale']/100
+        factor=(clock_digit_scale(self.options,self.key,selection=self.clock_display_override)
+                if clock else self.options['widget_text_scale'])/100
         pixels=round(size*factor)
         width=self.logical_width-x*2 if width is None else width
         height=height or max(20,pixels*1.65)
@@ -151,7 +165,9 @@ class DesktopSurface(QWidget):
         metrics=QFontMetricsF(font)
         while pixels>6 and (metrics.height()>height or (clock and metrics.horizontalAdvance(value)>width)):
             pixels-=1;font.setPixelSize(pixels);metrics=QFontMetricsF(font)
-        painter.setFont(font); painter.setPen(QColor(color or self.theme.text))
+        default_color = (clock_digit_color(self.options, self.key, self.theme,
+                         selection=self.clock_display_override) if clock else self.theme.text)
+        painter.setFont(font); painter.setPen(QColor(color or default_color))
         rect = QRectF(x, y, width, height)
         shown=metrics.elidedText(value,Qt.TextElideMode.ElideRight,width)
         # Explicit single-line bounds prevent the next field from being covered.
@@ -198,10 +214,11 @@ class DesktopSurface(QWidget):
                     rect = paint_clock(p, QRectF(22, y+8, self.logical_width-44, height-16), now,
                                        theme, self.options['font'], self.options['opacity']/100,
                                        self.options['seconds'], self.options['widget_clock_scale']/100)
-                    self.text(p, value, rect.y(), 24, bold=True, x=rect.x(), width=rect.width(),
-                              center=True, height=rect.height(), clock=True)
-                else:
-                    self.text(p, value, y+5, 53, bold=True, center=True, height=76, clock=True)
+                    if self.digital_clock:
+                        self.text(p, value, rect.y(), 24, bold=True, x=rect.x(), width=rect.width(),
+                                  center=True, height=rect.height(), clock=True)
+                elif self.digital_clock:
+                    self.text(p, value, y+5, 53, bold=True, center=True, height=85, clock=True)
             elif field in ('date', 'weekday', 'phase'):
                 value = {'date':date_label, 'weekday':weekday, 'phase':phase}[field]
                 self.text(p, value, y+3, 19 if field=='date' else 14, theme.accent if field=='date' else theme.muted, center=True, height=height-8)
@@ -315,7 +332,7 @@ class DesktopSurface(QWidget):
             menu.addAction('Näytä kuukausi työpöydällä', lambda: self.controller.set_widget(self.system+'_calendar', True))
         menu.addAction('Yhteiset asetukset', lambda: self.controller.open_page('settings'))
         menu.addAction('Widgetin teema…', lambda: self.controller.open_page('widgets'))
-        if self.key in PROFILE_KEYS: menu.addAction('Ajanlaskut ja kellon sisältö', lambda:self.controller.open_page('clocks'))
+        if self.key in PROFILE_KEYS: menu.addAction('Ajanlaskut ja kellon sisältö', lambda:self.controller.open_clock(self.key))
         menu.addAction('Taustakuvat · työpöytä ja lukitusnäyttö', lambda: self.controller.open_page('wallpapers'))
         menu.addAction('Piilota widget', lambda: self.controller.set_widget(self.key, False))
         menu.addAction('Palauta tämän widgetin oletuskoko',self.frame.reset)

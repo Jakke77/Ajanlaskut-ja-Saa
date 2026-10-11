@@ -14,7 +14,8 @@ from .theme import THEMES, THEME_LABELS, paint_panel
 from .state import DEFAULTS
 from . import almanac
 from .widgets import WIDGET_LABELS
-from .widget_themes import widget_theme_choices, widget_theme_selection
+from .widget_themes import widget_theme, widget_theme_choices, widget_theme_selection
+from .color_control import ColorControl
 from .weather.providers import NAMES as SOURCES, slots, aligned, common_scales
 from .weather.windy_view import WindyView
 
@@ -319,11 +320,12 @@ class WeatherPage(QWidget):
 
 class WidgetsPage(QWidget):
     def __init__(self,controller):
-        super().__init__();self.controller=controller;self.checks={};self.themes={}
+        super().__init__();self.controller=controller;self.checks={};self.themes={};self.text_colors={}
         self.theme_drafts={};self.edited_themes=set();self.loading=True
+        self.text_color_drafts={};self.edited_text_colors=set()
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(12)
         layout.addWidget(label('TYÖPÖYDÄN NÄKYMÄT','eyebrow'));layout.addWidget(label('Valitse omat widgetisi','heading'))
-        layout.addWidget(label('Näkyvyys vaihtuu heti. Valitse jokaiselle widgetille oma teema ja tallenna teemavalinnat. Fontti ja sääpaikka ovat yhteiset.','muted',True))
+        layout.addWidget(label('Näkyvyys vaihtuu heti. Valitse jokaiselle widgetille oma teema ja tekstiväri. Tallenna ulkoasuvalinnat, kun ne ovat sopivat. Fontti ja sääpaikka ovat yhteiset.','muted',True))
         layout.addWidget(button('Vaihtuva kello · ajanlaskut ja sisältö',lambda:controller.open_page('clocks')))
         layout.addWidget(button('Näytä valitut widgetit',controller.restore_widgets,True))
         layout.addWidget(button('Vaihda työpöydän tai lukitusnäytön taustakuvaa',lambda:controller.open_page('wallpapers')))
@@ -334,30 +336,58 @@ class WidgetsPage(QWidget):
             content.addLayout(row)
             theme=QComboBox();theme.setAccessibleName(title+' · Teema')
             for name,token in widget_theme_choices(key):theme.addItem(name,token)
-            form=QFormLayout();form.addRow('Teema',theme);content.addLayout(form)
+            color=ColorControl(title=title+' · Valitse tekstiväri')
+            color.changed.connect(lambda k=key:self.change_text_color(k))
+            form=QFormLayout();form.addRow('Teema',theme);form.addRow('Tekstiväri',color);content.addLayout(form)
             theme.currentIndexChanged.connect(lambda _,k=key:self.change_theme(k))
-            layout.addWidget(frame);self.checks[key]=check;self.themes[key]=theme
-        self.status=label('Teemavalinnat otetaan käyttöön tallentamalla.','muted',True);layout.addWidget(self.status)
-        layout.addWidget(button('Tallenna widgettiteemat',self.save,True))
+            layout.addWidget(frame);self.checks[key]=check;self.themes[key]=theme;self.text_colors[key]=color
+        self.status=label('Ulkoasuvalinnat otetaan käyttöön tallentamalla.','muted',True);layout.addWidget(self.status)
+        layout.addWidget(button('Tallenna widgettien ulkoasu',self.save,True))
         layout.addStretch(1)
         layout.addWidget(button('Palauta widgetien paikat',controller.reset_positions))
         controller.settings_changed.connect(self.sync)
+        controller.clock_changed.connect(self.refresh_color_inheritance)
         self.loading=False;self.sync()
 
     def change_theme(self,key):
         if self.loading:return
         self.theme_drafts[key]=self.themes[key].currentData();self.edited_themes.add(key)
-        self.status.setText('Teemavalintoja muutettu — tallenna, kun valinnat ovat sopivat.')
+        self.text_colors[key].set_inherited_color(self.base_text_color(key))
+        self.status.setText('Ulkoasua muutettu — tallenna, kun valinnat ovat sopivat.')
+
+    def base_text_color(self,key,options=None):
+        options=self.controller.options if options is None else options
+        system=self.controller.time_rotation.current if key=='combined' else key.split('_')[0]
+        return widget_theme({**options,'widget_text_colors':{}},key,system,selection=self.theme_drafts[key]).text
+
+    def refresh_color_inheritance(self):
+        if self.loading:return
+        options=self.controller.options
+        for key,color in self.text_colors.items():color.set_inherited_color(self.base_text_color(key,options))
+
+    def change_text_color(self,key):
+        if self.loading:return
+        self.text_color_drafts[key]=self.text_colors[key].value;self.edited_text_colors.add(key)
+        self.status.setText('Ulkoasua muutettu — tallenna, kun valinnat ovat sopivat.')
 
     def save(self):
-        if not self.edited_themes:
-            self.status.setText('Ei uusia teemavalintoja tallennettavana.');return
-        selections=copy.deepcopy(self.controller.options.get('widget_themes',{}))
-        for key in self.edited_themes:selections[key]=self.theme_drafts[key]
+        if not (self.edited_themes or self.edited_text_colors):
+            self.status.setText('Ei uusia ulkoasuvalintoja tallennettavana.');return
+        options=self.controller.options;changes={}
+        if self.edited_themes:
+            selections=copy.deepcopy(options.get('widget_themes',{}))
+            for key in self.edited_themes:selections[key]=self.theme_drafts[key]
+            changes['widget_themes']=selections
+        if self.edited_text_colors:
+            colors=copy.deepcopy(options.get('widget_text_colors',{}))
+            for key in self.edited_text_colors:
+                if self.text_color_drafts[key] is None:colors.pop(key,None)
+                else:colors[key]=self.text_color_drafts[key]
+            changes['widget_text_colors']=colors
         try:
-            self.controller.configure({'widget_themes':selections})
-            self.edited_themes.clear();self.sync()
-            self.status.setText('Tallennettu — widgettien omat teemat on otettu käyttöön.')
+            self.controller.configure(changes)
+            self.edited_themes.clear();self.edited_text_colors.clear();self.sync()
+            self.status.setText('Tallennettu — widgettien omat teemat ja tekstivärit on otettu käyttöön.')
         except (OSError,ValueError,KeyError) as error:self.status.setText(str(error))
 
     def sync(self):
@@ -366,6 +396,8 @@ class WidgetsPage(QWidget):
             check.blockSignals(True);check.setChecked(options['widgets'][key]);check.blockSignals(False)
             if key not in self.edited_themes:self.theme_drafts[key]=widget_theme_selection(options,key)
             self.themes[key].setCurrentIndex(self.themes[key].findData(self.theme_drafts[key]))
+            if key not in self.edited_text_colors:self.text_color_drafts[key]=options.get('widget_text_colors',{}).get(key)
+            self.text_colors[key].load(self.text_color_drafts[key],self.base_text_color(key,options))
         self.loading=False
 
     def showEvent(self,event):
@@ -391,10 +423,11 @@ class SettingsPage(QWidget):
         self.text_scale.setAccessibleName('Widgettien tekstikoko')
         self.text_scale.setToolTip('Päiväykset, säätekstit, otsikot ja kuukausien päivät. Ei muuta widgetin kokoa.')
         self.clock_scale=QSpinBox();self.clock_scale.setRange(80,140);self.clock_scale.setSuffix(' %')
-        self.clock_scale.setAccessibleName('Kellon numeroiden koko')
-        self.clock_scale.setToolTip('Kellon numeroiden koko erikseen muista widgettien teksteistä.')
+        self.clock_scale.setAccessibleName('Yhteinen kellon numerokoko')
+        self.clock_scale.setToolTip('Oletuskoko digikelloille, jotka käyttävät yhteistä numerokokoa, ja analogisen kellotaulun numeroille. Kellon oman digikoon ja näyttötavan voi valita Ajanlaskuwidgetit-sivulla.')
         self.opacity=QSpinBox();self.opacity.setRange(0,100);self.opacity.setSuffix(' %')
-        for word,item in [('Teema',self.theme),('Fontti',self.font),('Widgettien tekstikoko',self.text_scale),('Kellon numeroiden koko',self.clock_scale),('Widgetien koko',self.scale),('Taustan peittävyys',self.opacity)]:form.addRow(word,item)
+        for word,item in [('Teema',self.theme),('Fontti',self.font),('Widgettien tekstikoko',self.text_scale),('Yhteinen kellon numerokoko',self.clock_scale),('Widgetien koko',self.scale),('Taustan peittävyys',self.opacity)]:form.addRow(word,item)
+        form.addRow('',button('Kellon oma numerokoko ja näyttötapa →',lambda:controller.open_page('clocks')))
         form.addRow('',self.all_widgets_theme)
         form.addRow(self.wallpaper_options)
         form.addRow('',label('Tekstikoko ei muuta widgetin kokoa. Pitkät tekstit sovitetaan käytettävissä olevaan tilaan.','muted',True))

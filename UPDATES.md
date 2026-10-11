@@ -44,6 +44,27 @@ Vanhat versiot eivät tunnista Ubuntu-teeman tallennettuja valintoja.
 Palautus säilyttää nykyiset merkinnät; älä korvaa `state.json`-tiedostoa vanhalla
 varmuuskopiolla tätä varten.
 
+## Valmiin deb-paketin asentaminen
+
+Lataa [ajanlaskut-ja-saa_1.6.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.1/ajanlaskut-ja-saa_1.6.1_all.deb)
+ja halutessasi tarkista sen SHA256SUMS samasta
+[packages/v1.6.1-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.1).
+Yksityinen repo edellyttää GitHubiin kirjautumista. Avaa pääte latauskansioon:
+
+```bash
+sudo apt install ./ajanlaskut-ja-saa_1.6.1_all.deb
+```
+
+Tämä päivittää **järjestelmäasennuksen**, joka käynnistyy komennolla
+`/usr/bin/ajanlaskut-ja-saa`. Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta,
+päivitä myös se alla olevalla [deb-asennuksen käyttöönottoketjulla](#komennon-käyttöönotto-deb-asennuksesta).
+Ketju rakentaa nyt 1.6.1-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
+Sen jälkeen käytä `codex-ajanlasku run` -komentoa. Asennukset käyttävät samaa
+asetustiedostoa, joten merkintöjä ei tarvitse siirtää.
+
+Valitse ennen uuden version käynnistystä vanhasta ohjelmasta **Lopeta sovellus**.
+Ubuntu tarvitsee paketin ilmoittamat PyQt6-riippuvuudet, vähintään version 6.8.
+
 ## Paikallinen päivityskansio
 
 ### Uuden GitHub-version tuominen nykyiseen käyttäjäasennukseen
@@ -85,8 +106,13 @@ muuten vastaanottaa uuden käynnistyskomennon ja näyttää edelleen vanhat vali
 kokonaan uusi käynnistys ottaa sen käyttöön.
 
 Widgettikohtaiset teemat 1.6.0 tallentuvat valinnaiseen `widget_themes`-karttaan.
+Versio 1.6.1 lisää kellojen näyttötavan, diginumeroiden koon ja numerovärin
+`clock_displays`-karttaan sekä kaikkien widgettien tekstivärit `widget_text_colors`-karttaan.
+Versio 1.6.0 ohittaa uudet kentät ja käyttää aiempaa kellon ulkoasua.
+Palautus ei poista uusia värivalintoja tai merkintöjä.
 Versio 1.5.0 lukee saman asetustiedoston ja käyttää aiempaa yhteistä teemaa ja
-kelloteemaa; widgettikohtaiset valinnat eivät näy siinä. Uudet merkinnät säilyvät.
+kelloteemaa; widgettikohtaiset valinnat eivät näy siinä. Digikellon koko käyttää
+palautuksen jälkeen aiempaa yhteistä numerosäätöä. Uudet merkinnät säilyvät.
 
 ### Komennon käyttöönotto deb-asennuksesta
 

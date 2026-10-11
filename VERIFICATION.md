@@ -1,5 +1,25 @@
 # Tarkistus 11.10.2026
 
+## Kellon näyttötapa ja widgettien tekstivärit 1.6.1
+
+- 159 yksikkötestiä läpäistiin; 25 uutta kellon näyttötavan ja värien testiä.
+
+- Kellojen näyttötapa, oma diginumeroiden koko ja väri sekä kahdeksan widgetin
+  tekstivärikartta validoidaan ja tallennetaan atomisesti. Puuttuvat valinnat
+  säilyttävät aiemman ulkoasun; vanhan tiedoston lukeminen ei kirjoita levyyn.
+- Oikeiden Qt-sivujen luonnokset, esikatselu, tallennus, eri sivujen samanaikaiset
+  muokkaukset ja levyvirheen jälkeinen uudelleenyritys tarkistetaan. Digitaalinen,
+  analoginen ja yhdistelmäkello toimivat kaikissa teemoissa. Todellinen digiajan
+  fonttikoko kasvaa 80–140 % sekä erillisessä digissä että kellotaulun sisällä.
+- Kolmen fontin, ajanlaskun ja näyttötavan tekstit pysyvät rajoissa myös
+  sekuntien piilotuksen ja nollan prosentin taustan kanssa.
+- Taustakuvien oikeat hiirellä avatut alasvetovalikot tarkistetaan ilman Diaa
+  ja Dia-tuen kanssa. Tallentamattomat valinnat säilyvät sivun vaihdossa ja
+  muiden asetusten muutoksissa. GNOMEn erillisen lukituskuvan rajoitusta ei ohiteta.
+- Pelkkä ulkoasun muutos säilyttää sääpalvelun, ennusteen, kartan, ajastimet,
+  kalenterit ja kierron määräajan. Käyttäjän dataa tai oikeaa GNOME-istuntoa
+  ei muuteta. Julkaisupaketti testataan uudelleen puretusta lähde-ZIPistä.
+
 ## Widgettikohtaiset teemat 1.6.0
 
 - 134 yksikkötestiä läpäistiin. Uudet 13 testiä kattavat harvan teemakartan,

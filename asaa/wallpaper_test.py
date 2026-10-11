@@ -1,8 +1,21 @@
 """Qt checks for theme wallpaper policy; only the isolated MemoryBackend is used."""
 import copy
 from unittest.mock import patch
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
 from .wallpapers import DESKTOP,SAVER,DIA
 from .state import State
+
+
+def choose(combo,value,app):
+    """Dispatch real popup mouse events rather than setting the saved value."""
+    combo.showPopup();app.processEvents()
+    view=combo.view();index=combo.model().index(combo.findData(value),0)
+    view.scrollTo(index);app.processEvents()
+    point=view.visualRect(index).center()
+    QTest.mouseMove(view.viewport(),point)
+    QTest.mouseClick(view.viewport(),Qt.MouseButton.LeftButton,pos=point)
+    app.processEvents();combo.hidePopup()
 
 
 def acceptance(controller,app,backend):
@@ -27,6 +40,38 @@ def acceptance(controller,app,backend):
         controller.configure({'theme':'frost','font':'Ubuntu'});controller.tick();app.processEvents()
         assert not backend.calls,'Same theme, fonts and clock rotation must not change backgrounds'
         page=controller.window.page_widgets['wallpapers']
+        controller.open_page('wallpapers');app.processEvents()
+        backend.dia=False;page.theme_options.load();page.refresh_current()
+        choose(page.theme_options.behavior,False,app)
+        assert page.theme_options.behavior.currentData() is False
+        assert not page.theme_options.target.isEnabled()
+        choose(page.theme_options.behavior,True,app)
+        assert page.theme_options.target.isEnabled()
+        for target in ('lock','both'):
+            index=page.theme_options.target.findData(target)
+            assert not page.theme_options.target.model().item(index).isEnabled()
+            assert 'vaatii Dia Wall 77' in page.theme_options.target.itemText(index)
+            choose(page.theme_options.target,target,app)
+            assert page.theme_options.target.currentData()=='desktop'
+        assert 'lukitusnäyttö käyttää työpöydän taustaa' in page.theme_options.support.text()
+        choose(page.mode,'slideshow',app)
+        assert page.mode.currentData()=='slideshow'
+        assert 'vaatii Dia Wall 77' in page.mode.currentText()
+        assert not any(button.isEnabled() for button in (page.desktop_button,page.lock_button,page.both_button))
+        choose(page.mode,'single',app)
+        assert page.mode.currentData()=='single'
+        backend.dia=True;page.theme_options.load();page.refresh_current()
+        choose(page.theme_options.target,'both',app)
+        assert page.theme_options.target.currentData()=='both'
+        choose(page.theme_options.behavior,False,app)
+        data=copy.deepcopy(controller.state.data);raw=controller.state.path.read_bytes()
+        controller.settings_changed.emit();app.processEvents()
+        page.hide();page.show();app.processEvents()
+        assert page.theme_options.behavior.currentData() is False
+        assert page.theme_options.target.currentData()=='both'
+        assert controller.state.data==data and controller.state.path.read_bytes()==raw
+        assert not backend.calls,'Popup choices and unrelated refreshes must remain read-only drafts'
+        print('PASS: wallpaper popup mouse choices work; missing Dia targets explain their limit, drafts survive refresh/reopen')
         page.theme_options.behavior.setCurrentIndex(page.theme_options.behavior.findData(False))
         page.save_theme_policy();app.processEvents()
         assert not controller.options['wallpaper_follow_theme'] and not backend.calls

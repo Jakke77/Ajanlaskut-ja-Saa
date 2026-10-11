@@ -17,7 +17,7 @@ from .widget_themes import widget_theme
 from .services import SharedWeather, DailyWeather
 from .widgets import DesktopSurface, WIDGET_LABELS
 from .wallpapers import WallpaperManager
-from .clock_config import ClockRotation, SYSTEMS
+from .clock_config import ClockRotation, SYSTEMS, PROFILE_KEYS
 from .windowing import WindowLayers
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -120,7 +120,7 @@ class Controller(QObject):
         else:commit()
         self.time_rotation.configure(self.options)
         changed_keys={key for key in changes if options.get(key)!=before.get(key)}
-        if changed_keys <= {'theme', 'widget_themes', 'time_theme'}:
+        if changed_keys <= {'theme', 'widget_themes', 'time_theme', 'widget_text_colors'}:
             if options['theme'] != before['theme']:
                 apply_theme(self.app,self.options)
             if widget_theme(before,'weather') != widget_theme(options,'weather'):
@@ -128,6 +128,7 @@ class Controller(QObject):
             self.settings_changed.emit();self.clock_changed.emit()
             return
         clock_only={'time_mode','time_system','time_systems','time_interval','time_theme','widget_themes','clock_profiles','clock_weather',
+                    'clock_displays','widget_clock_scale','widget_text_colors',
                     'calendar_extras_visible','calendar_extras','calendar_extras_scope','calendar_extra_cell',
                     'wallpaper_follow_theme','wallpaper_theme_target'}
         if changed_keys <= clock_only:
@@ -157,6 +158,12 @@ class Controller(QObject):
     def open_calendar(self,system,day=None):
         self.window.page_widgets['calendar'].set_day(system,day)
         self.open_page('calendar')
+
+    def open_clock(self,key):
+        if key not in PROFILE_KEYS:raise ValueError('Tuntematon kellowidget')
+        page=self.window.page_widgets['clocks']
+        page.target.setCurrentIndex(page.target.findData(key))
+        self.open_page('clocks')
 
     def select_time(self, system):
         if system not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')

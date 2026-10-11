@@ -90,9 +90,9 @@ def draw_line(p, x1, y1, x2, y2, shade, width=1, alpha=1, dashed=False):
     p.drawLine(QPointF(x1, y1), QPointF(x2, y2))
 
 
-def draw_icon(p, x, y, symbol, scale=1):
+def draw_icon(p, x, y, symbol, scale=1, unknown_shade="#b8b0ba"):
     if symbol == "unknown":
-        draw_text(p,"?",x-3,y+4,12,"#b8b0ba")
+        draw_text(p,"?",x-3,y+4,12,unknown_shade)
         return
     p.save()
     p.translate(x, y)
@@ -514,7 +514,7 @@ class WeatherWidget(QWidget):
                     if t != times[0]: draw_line(p,x,96,x,394+extra,accent,1,.4,True)
                 draw_text(p,local.strftime('%H'),x+7,108,11,text,right=True)
                 if h:
-                    draw_icon(p,x,126,h.symbol,.78)
+                    draw_icon(p,x,126,h.symbol,.78,muted or '#b8b0ba')
                     draw_text(p,f'{h.temperature:.0f}°',x+12,161+20*text_extra,18,text if palette else '#fff1e7',True,right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)
                     if h.feels_like is not None:
                         draw_text(p,f'{h.feels_like:.0f}°',x+8,178+35*text_extra,10,muted or '#b8b0ba',right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)

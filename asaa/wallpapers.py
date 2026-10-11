@@ -233,8 +233,8 @@ class WallpaperManager:
         dia = bool(desktop and self.backend.dia_active())
         return desktop, dia
 
-    def current(self, target):
-        desktop, dia = self.capabilities()
+    def current(self, target, capabilities=None):
+        desktop, dia = self.capabilities() if capabilities is None else capabilities
         if not desktop: return 'Ei saatavilla tässä työpöytäympäristössä'
         schema, key = DESKTOP, 'picture-uri-dark'
         if target == 'lock' and dia and self.backend.read(DIA, 'lock-mode') != 'off':

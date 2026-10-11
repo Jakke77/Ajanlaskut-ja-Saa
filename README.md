@@ -5,6 +5,48 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
+
+**Ajanlaskuwidgetit → Muokattava kello** tarjoaa jokaiselle kellolle omat
+näyttötavan ja diginumeroiden säädöt.
+
+Samalla sivulla **Näyttötapa** valitsee **Digitaalisen**, **Analogisen** tai
+**Analogisen ja digitaalisen** kellon teemasta riippumatta. **Teeman oletus**
+säilyttää aiemman ulkoasun: Ubuntu näyttää molemmat, muut teemat digikellon.
+Jokaisella kellolla voi olla oma näyttötapa.
+
+**Digikellon numerokoko** säätää valitun kellon digitaalisia numeroita
+80–140 %. Poista ensin **Käytä yhteistä numerokokoa** -valinta. Valinnat näkyvät
+esikatselussa heti; **Tallenna kelloasetukset** ottaa ne käyttöön työpöydällä.
+Yhteistä kokoa ja fontin perhettä voi edelleen säätää Asetukset-sivulla.
+Analogisessa näyttötavassa diginumeroiden säätö on pois käytöstä.
+Kellon **⚙** avaa suoraan kyseisen kellon asetukset.
+
+![Digitaalinen, analoginen ja yhdistelmäkello; esimerkkiaika](previews/clock-display-desktop.png)
+
+![Kellon näyttötavan ja diginumeroiden koon valinnat](previews/clock-displays.png)
+
+**Työpöytäwidgetit → Tekstiväri** antaa jokaiselle kahdeksalle widgetille
+oman värin. Valitse väri painikkeesta ja paina **Tallenna widgettien ulkoasu**.
+**Käytä teeman tekstiväriä** palauttaa teeman mukaisen värin.
+Otsikot, korostukset ja sääkäyrät säilyttävät teeman ja sääsuureiden värit.
+
+Digiajan numerot voi värittää erikseen **Ajanlaskuwidgetit → Digikellon numeroväri**.
+Ilman omaa numeroväriä ne seuraavat widgetin tekstiväriä. Valinta näkyy
+esikatselussa heti ja tulee työpöydälle tallennettaessa kelloasetukset.
+Omat värit säilyvät teeman vaihdossa.
+
+**Taustakuvat**-sivun alasvetovalintojen luonnokset säilyvät sivua päivittäessä.
+Lukitusnäytön ja molempien kohteiden valinnat sekä vaihtuvat kuvat kertovat nyt
+selvästi **Dia Wall 77** -lisäosan vaatimuksesta. Ilman lisäosaa GNOMEn
+lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaksi** -painiketta.
+
+![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
+
+Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
+[packages/v1.6.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.1).
+Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
+
 ## Oma teema jokaiselle widgetille · versio 1.6.0
 
 ![Ubuntu-kello, Halla-sää ja Kupari-kuukausiwidget; esimerkkisää](previews/widget-theme-desktop.png)
@@ -12,7 +54,7 @@ asetuksia.
 **Työpöytäwidgetit → Teema** tarjoaa jokaiselle kahdeksalle widgetille oman
 **Kupari**, **Halla** tai **Ubuntu** -valinnan. **Sovelluksen yhteinen teema**
 seuraa Asetukset-sivun teemaa. Valinnat otetaan käyttöön painikkeesta
-**Tallenna widgettiteemat**; pelkkä valikon vaihtaminen on vielä luonnos.
+**Tallenna widgettien ulkoasu**; pelkkä valikon vaihtaminen on vielä luonnos.
 Esimerkiksi Ubuntu-kello, Halla-säägraafi ja Kupari-kuukausiwidget voivat näkyä
 samaan aikaan. Widgetin oikean painikkeen **Widgetin teema…** avaa saman sivun.
 
@@ -79,14 +121,15 @@ valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDAT
 - **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,
   sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
 
-Version 1.0.1 fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
-**Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Kellon numeroiden koko**
+Yhteiset fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
+**Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Yhteinen kellon numerokoko**
 (80–140 %, oletus 100 %). Fontin perhe säilyy omana valintanaan. Kokoasetukset
 ovat erillisiä koko widgetin koosta, joten ikkunoiden paikat ja mitat eivät muutu.
 Säätö koskee uuden sovelluksen kaikkia widgettejä; erillinen vanha sääsovellus
 ei käytä näitä asetuksia. Pitkä päiväys tai paikan nimi lyhennetään tarvittaessa,
 ja kellon numerot sovitetaan omaan tilaansa. Varjoaika-kellon päiväennusteissa
 lämpö/sade ja sääkuvaus näytetään kahdella rivillä.
+Kellon oma diginumeroiden koko ohittaa yhteisen koon vain kyseisessä kellossa.
 
 Uudessa asennuksessa näkyvät **yhteinen ajanlaskukello** kolmen päivän säätiedoilla
 ja **Pöllönkankaan tuntisää**. Erikseen voi ottaa käyttöön Varjoajan, Tähtiajan
