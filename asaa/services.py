@@ -9,7 +9,7 @@ from urllib.parse import quote
 from PyQt6.QtCore import QObject, QTimer, QUrl, pyqtSignal
 from PyQt6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from PyQt6.QtWidgets import QMenu, QApplication
-from .theme import THEMES
+from .widget_themes import widget_theme
 from .weather.forecast import ForecastCache, UTC
 from .weather.providers import Place, slots, common_scales
 from .weather.widget import WeatherWidget
@@ -58,12 +58,18 @@ class SharedWeather(WeatherWidget):
 
     def apply_shared_options(self):
         options = self.controller.state.settings
-        self.paint_palette = THEMES[options['theme']]
         self.display_zone = ZoneInfo(options['zone'])
         self.apply_options({**self.options, **{k: options[k] for k in ('scale', 'opacity', 'locked', 'on_top', 'font', 'widget_text_scale', 'widget_clock_scale', 'windy_zoom', 'windy_layer')}, 'theme': 'ubuntu'})
+        self.apply_widget_theme()
+        self.setAccessibleName('Sääwidget · ' + self.place.name)
+
+    def apply_widget_theme(self):
+        """Repaint the chosen palette without reconfiguring forecast or windows."""
+        options = self.controller.state.settings
+        self.paint_palette = widget_theme(options, 'weather')
         for button,_ in self.controls:
             button.setStyleSheet(f'QToolButton {{color:{self.paint_palette.accent};background:transparent;border:0;padding:0;font:16px "{options["font"]}";}} QToolButton:hover,QToolButton:focus {{background:{self.paint_palette.border};border-radius:7px;}}')
-        self.setAccessibleName('Sääwidget · ' + self.place.name)
+        self.update()
 
     def restore_position(self):
         area = QApplication.primaryScreen().availableGeometry()
@@ -101,6 +107,7 @@ class SharedWeather(WeatherWidget):
         menu.addAction('Vaihda sääpalvelua', lambda: self.switch_provider(1))
         menu.addAction('Hae paikka…', self.open_place)
         menu.addAction('Päivitä ennuste', self.refresh)
+        menu.addAction('Widgetin teema…', lambda: self.controller.open_page('widgets'))
         menu.addAction('Yhteiset asetukset', self.open_settings)
         menu.addAction('Taustakuvat · työpöytä ja lukitusnäyttö', lambda: self.controller.open_page('wallpapers'))
         menu.addAction('Piilota sääwidget', lambda: self.controller.set_widget('weather', False))

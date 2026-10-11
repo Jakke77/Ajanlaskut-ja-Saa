@@ -46,6 +46,48 @@ varmuuskopiolla tätä varten.
 
 ## Paikallinen päivityskansio
 
+### Uuden GitHub-version tuominen nykyiseen käyttäjäasennukseen
+
+GitHubiin yhdistetty muutos tulee koneelle, kun uusi lähdepaketti julkaistaan
+omaan päivityskansioon. Lataa repon **Code → Download ZIP** GitHubiin
+kirjautuneena. Avaa pääte latauskansioon ja suorita:
+
+```bash
+(
+  umask 022
+  ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
+  ajanlasku_lahde="$(mktemp -d)" &&
+  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-main.zip "$ajanlasku_lahde" &&
+  /usr/bin/python3 "$ajanlasku_lahde/Ajanlaskut-ja-Saa-main/packaging/build.py" \
+    --publish-channel "$ajanlasku_kanava" &&
+  "$HOME/.local/bin/codex-ajanlasku" update &&
+  "$HOME/.local/bin/codex-ajanlasku" upgrade &&
+  "$HOME/.local/bin/codex-ajanlasku" status
+)
+```
+
+Tämä olettaa, että nykyinen `codex-ajanlasku` on rekisteröity yllä olevaan
+päivityskansioon. `status` näyttää käytössä olevan kansion. Vaihda tarvittaessa
+`ajanlasku_kanava` vastaamaan sitä. Komento käyttää ladatun päähaaran versiota;
+vanhasta `/usr/share/ajanlaskut-ja-saa`-kansiosta rakentaminen julkaisee edelleen
+siellä olevan vanhan version.
+
+Kun status näyttää uuden version, paina vanhan ohjelman vasemman valikon
+alareunasta **Lopeta sovellus** ja käynnistä käyttäjäasennus:
+
+```bash
+"$HOME/.local/bin/codex-ajanlasku" run --page widgets
+```
+
+**Ikkunan × voi vain piilottaa pääikkunan.** Käynnissä oleva vanha ohjelma voi
+muuten vastaanottaa uuden käynnistyskomennon ja näyttää edelleen vanhat valikot.
+`"$HOME/.local/bin/codex-ajanlasku" run --version` näyttää levyversion;
+kokonaan uusi käynnistys ottaa sen käyttöön.
+
+Widgettikohtaiset teemat 1.6.0 tallentuvat valinnaiseen `widget_themes`-karttaan.
+Versio 1.5.0 lukee saman asetustiedoston ja käyttää aiempaa yhteistä teemaa ja
+kelloteemaa; widgettikohtaiset valinnat eivät näy siinä. Uudet merkinnät säilyvät.
+
 ### Komennon käyttöönotto deb-asennuksesta
 
 Deb-asennus tarjoaa `ajanlaskut-ja-saa`-komennon. `codex-ajanlasku` otetaan

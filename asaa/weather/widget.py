@@ -444,6 +444,8 @@ class WeatherWidget(QWidget):
         accent = palette.accent if palette else '#ed9164'
         background = palette.background if palette else '#100e15'
         surface = palette.surface if palette else '#321e27'
+        text = palette.text if palette else '#d6d8dc'
+        muted = palette.muted if palette else None
         times = self.times if times is None else times
         scales = self.scales if scales is None else scales
         extra = max(0, height-HEIGHT)
@@ -456,67 +458,71 @@ class WeatherWidget(QWidget):
         text_extra=p.text_scale-1
         opacity = 1 if expanded else self.options['opacity']/100
         if opacity > 0:
-            if self.options['theme']=='ubuntu':
-                gradient = QLinearGradient(0,0,width,height)
-                gradient.setColorAt(0,color(surface,opacity))
-                gradient.setColorAt(.5,color(background,opacity))
-                gradient.setColorAt(1,color(background,opacity))
-                p.setBrush(gradient)
-            else: p.setBrush(color('#111218',opacity))
-            p.setPen(QPen(color(accent,.55*opacity),1))
-            p.drawRoundedRect(QRectF(.5,.5,width-1,height-1),16,16)
-            if self.options['theme']=='ubuntu':
-                p.save()
-                clip = QPainterPath(); clip.addRoundedRect(QRectF(1,1,width-2,height-2),16,16)
-                p.setClipPath(clip)
-                p.setBrush(Qt.BrushStyle.NoBrush)
-                p.setPen(QPen(color(accent,.12*opacity),.7))
-                p.drawEllipse(QRectF(420,-172,360,360))
-                p.drawEllipse(QRectF(408,-184,384,384))
-                for i in range(25):
-                    x,y = (i*83+41)%width,(i*37+11)%HEIGHT
-                    p.setPen(QPen(color('#edaa89',.22*opacity),1))
-                    p.drawPoint(QPointF(x,y))
-                p.restore()
+            if palette:
+                from ..theme import paint_panel
+                paint_panel(p, QRectF(0, 0, width, height), palette, opacity)
+            else:
+                if self.options['theme']=='ubuntu':
+                    gradient = QLinearGradient(0,0,width,height)
+                    gradient.setColorAt(0,color(surface,opacity))
+                    gradient.setColorAt(.5,color(background,opacity))
+                    gradient.setColorAt(1,color(background,opacity))
+                    p.setBrush(gradient)
+                else: p.setBrush(color('#111218',opacity))
+                p.setPen(QPen(color(accent,.55*opacity),1))
+                p.drawRoundedRect(QRectF(.5,.5,width-1,height-1),16,16)
+                if self.options['theme']=='ubuntu':
+                    p.save()
+                    clip = QPainterPath(); clip.addRoundedRect(QRectF(1,1,width-2,height-2),16,16)
+                    p.setClipPath(clip)
+                    p.setBrush(Qt.BrushStyle.NoBrush)
+                    p.setPen(QPen(color(accent,.12*opacity),.7))
+                    p.drawEllipse(QRectF(420,-172,360,360))
+                    p.drawEllipse(QRectF(408,-184,384,384))
+                    for i in range(25):
+                        x,y = (i*83+41)%width,(i*37+11)%HEIGHT
+                        p.setPen(QPen(color('#edaa89',.22*opacity),1))
+                        p.drawPoint(QPointF(x,y))
+                    p.restore()
         title = self.place.name.upper()
         draw_text(p,title,36,38,20,accent,True,max_width=width-72 if expanded else getattr(self,'header_title_width',466)+width-WIDTH)
         zone = getattr(self, 'display_zone', ZoneInfo(self.place.timezone))
         first, last = times[0].astimezone(zone),times[-1].astimezone(zone)
         subtitle = 'Ennusteaika valitaan kartan aikajanalta' if self.selected=='windy' else f'{first:%d.%m. %H} – {last:%d.%m. %H} · {len(times)} tuntia · {zone.key}'
-        draw_text(p,subtitle,36,58,10,'#b6b0bd',max_width=width-72)
+        draw_text(p,subtitle,36,58,10,muted or '#b6b0bd',max_width=width-72)
         draw_text(p,NAMES.get(self.selected,'WINDY · KARTTA'),36,83,11,accent,True)
         for i,key in enumerate((*PROVIDERS,'windy')):
             p.setPen(Qt.PenStyle.NoPen)
-            p.setBrush(QColor(accent if key==self.selected else '#66545c'))
+            p.setBrush(QColor(accent if key==self.selected else palette.border if palette else '#66545c'))
             p.drawEllipse(QPointF(width-87+i*14,78),3,3)
         if self.selected=='windy':
             if self.expanded and self.expanded.isVisible():
-                draw_text(p,'Kartta on avoinna isossa ikkunassa',width/2-135,230,16,'#f7ccb3')
-            draw_text(p,'Lämpötila · tuulihiukkaset' if self.options['windy_layer']=='temp' else 'Windyn sääkartta',36,height-33,10,'#d8b5a2')
-            draw_text(p,'Windy.com · kartalla oma ennusteaika ja väriskaala',36,height-16,9,'#ad98a6')
+                draw_text(p,'Kartta on avoinna isossa ikkunassa',width/2-135,230,16,text if palette else '#f7ccb3')
+            draw_text(p,'Lämpötila · tuulihiukkaset' if self.options['windy_layer']=='temp' else 'Windyn sääkartta',36,height-33,10,muted or '#d8b5a2')
+            draw_text(p,'Windy.com · kartalla oma ennusteaika ja väriskaala',36,height-16,9,muted or '#ad98a6')
             return
         hours = aligned(self.forecast,times)
         xs = [64+i*(width-136)/(len(times)-1) for i in range(len(times))]
         if not self.forecast:
-            draw_text(p,'Ennustetta ei saatavilla' if self.error else 'Haetaan sääennustetta…',64,164,18)
-            draw_text(p,self.error or 'Palvelut latautuvat hetken. Voit vaihtaa palvelua nuolilla.',64,192,11,'#bbb3bd')
+            draw_text(p,'Ennustetta ei saatavilla' if self.error else 'Haetaan sääennustetta…',64,164,18,text)
+            draw_text(p,self.error or 'Palvelut latautuvat hetken. Voit vaihtaa palvelua nuolilla.',64,192,11,muted or '#bbb3bd')
         else:
             for x,t,h in zip(xs,times,hours):
                 local = t.astimezone(zone)
                 if expanded and (t == times[0] or local.hour == 0):
-                    draw_text(p,local.strftime('%d.%m.'),x-15,92,9,'#ed9164')
-                    if t != times[0]: draw_line(p,x,96,x,394+extra,'#ed9164',1,.4,True)
-                draw_text(p,local.strftime('%H'),x+7,108,11,right=True)
+                    draw_text(p,local.strftime('%d.%m.'),x-15,92,9,accent)
+                    if t != times[0]: draw_line(p,x,96,x,394+extra,accent,1,.4,True)
+                draw_text(p,local.strftime('%H'),x+7,108,11,text,right=True)
                 if h:
                     draw_icon(p,x,126,h.symbol,.78)
-                    draw_text(p,f'{h.temperature:.0f}°',x+12,161+20*text_extra,18,'#fff1e7',True,right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)
+                    draw_text(p,f'{h.temperature:.0f}°',x+12,161+20*text_extra,18,text if palette else '#fff1e7',True,right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)
                     if h.feels_like is not None:
-                        draw_text(p,f'{h.feels_like:.0f}°',x+8,178+35*text_extra,10,'#b8b0ba',right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)
+                        draw_text(p,f'{h.feels_like:.0f}°',x+8,178+35*text_extra,10,muted or '#b8b0ba',right=True,max_width=(width-136)/(len(times)-1)-4,fit=True)
                     draw_arrow(p,x,387+extra,h.direction)
-                else: draw_text(p,'—',x+7,161,15,right=True)
-                draw_line(p,x,193,x,372+extra,'#b9aebd',.6,.13)
+                else: draw_text(p,'—',x+7,161,15,text,right=True)
+                draw_line(p,x,193,x,372+extra,muted or '#b9aebd',.6,.13)
             if any(h and h.feels_like is not None for h in hours):
-                draw_text(p,'tuntuu',12,178+35*text_extra,8,'#b8b0ba',max_width=43)
+                draw_text(p,'tuntuu',12,178+35*text_extra,8,muted or '#b8b0ba',max_width=43)
             draw_text(p,'LÄMPÖ °C',64,194+40*text_extra,9,'#ee9368',True)
             self.plot(p,xs,hours,'temperature',206+40*text_extra,rain_bottom,scales.temperature,'#f18a54')
             draw_text(p,'TUULI m/s',64,298+extra*.45,9,'#bca6f3',True)
@@ -534,8 +540,8 @@ class WeatherWidget(QWidget):
             rain = sum(h.rain or 0 for h in hours if h)
             partial = any(not h or h.rain is None for h in hours)
             draw_text(p,f'Sade {rain:.1f} mm'+(' · osittainen' if partial else ''),width-71,rain_bottom+3,10,'#77b8e8',right=True)
-        draw_text(p,'━ lämpö   ▪ sade   ━ tuuli   ╌ puuskat',36,414+extra,10,'#c7bdc8')
-        draw_text(p,'Yhteiset asteikot',width-36,414+extra,10,'#b1a5b1',right=True)
+        draw_text(p,'━ lämpö   ▪ sade   ━ tuuli   ╌ puuskat',36,414+extra,10,muted or '#c7bdc8')
+        draw_text(p,'Yhteiset asteikot',width-36,414+extra,10,muted or '#b1a5b1',right=True)
         if self.forecast:
             f = self.forecast
             stamp = f.updated if self.selected=='yr' else f.fetched
@@ -546,15 +552,16 @@ class WeatherWidget(QWidget):
         if self.selected=='foreca':
             resolved = self.caches['foreca'].read().get('resolved_name','')
             if resolved: source += ' · ' + resolved
-        draw_text(p,source,36,436+extra,9,'#a99aaa',max_width=width*.64-72)
-        draw_text(p,status,width-36,436+extra,9,'#baabb9',right=True,max_width=width*.36-18)
+        draw_text(p,source,36,436+extra,9,muted or '#a99aaa',max_width=width*.64-72)
+        draw_text(p,status,width-36,436+extra,9,muted or '#baabb9',right=True,max_width=width*.36-18)
 
     def plot(self,p,xs,hours,field,top,bottom,limits,shade):
         lo,hi = limits
+        palette = getattr(self, 'paint_palette', None)
         for frac in (0,.5,1):
             y = bottom-frac*(bottom-top)
-            draw_line(p,xs[0],y,xs[-1],y,'#c7b6c5',.6,.24)
-            draw_text(p,f'{lo+frac*(hi-lo):g}',52,y+3,9,'#bcaabb',right=True)
+            draw_line(p,xs[0],y,xs[-1],y,palette.muted if palette else '#c7b6c5',.6,.24)
+            draw_text(p,f'{lo+frac*(hi-lo):g}',52,y+3,9,palette.muted if palette else '#bcaabb',right=True)
         self.draw_series(p,xs,[getattr(h,field) if h else None for h in hours],top,bottom,lo,hi,shade,2.2)
 
     @staticmethod

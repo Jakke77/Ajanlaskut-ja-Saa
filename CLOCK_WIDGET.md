@@ -1,11 +1,11 @@
-# Komponentti: yhteinen ajanlaskuwidget · 1.2.0
+# Komponentit: ajanlaskukellot ja widgettiteemat · 1.6.0
 
 ## Tarve ja nykyiset mallit
 
 Erilliset Varjoajan, Tähtiajan ja gregoriaanisen kellot vievät turhaan samaa tilaa.
-Uusi `DesktopSurface('combined')` käyttää samaa lasipaneelia, fonttimittausta,
-taustakuva- ja kalenteripainikkeita kuin vanhat kellot. Säägraafin/kartan omaa
-piirtoa, välimuistia, paikkaa tai palveluasetuksia ei muuteta.
+Yhteinen `DesktopSurface('combined')` käyttää samaa paneelia, fonttimittausta,
+taustakuva- ja kalenteripainikkeita kuin vanhat kellot. Säägraafin ennuste,
+kartta, välimuisti, paikka ja palveluasetukset säilyvät teemanvaihdossa.
 
 ## Ominaisuudet ja variantit
 
@@ -14,21 +14,56 @@ piirtoa, välimuistia, paikkaa tai palveluasetuksia ei muuteta.
 | Vaihtotapa | järjestyksessä | kiinteä valinta, järjestys tai satunnainen |
 | Ajanlaskut | kaikki kolme | vähintään yksi, satunnainen ei toista heti samaa |
 | Vaihtoväli | 77 sekuntia | 1–3600 s, ei sama asetus kuin sään 77 minuuttia |
-| Kelloteema | ajanlaskun oma | vaihtoehtona sovelluksen yhteinen Kupari/Halla |
-| Varjoaika | Kupari | nykyinen kuparipaletti ja kiertoradat |
-| Tähtiaika | Astraali | tumma vihertävä pohja ja kultainen korostus |
-| Gregoriaaninen | Aamunkajo | sinertävä pohja ja vaalea kalenteriruudukko |
+| Kelloteema | sovelluksen yhteinen | widgetille voi valita Kuparin, Hallan, Ubuntun tai ajanlaskun oman teeman |
+| Varjoajan oma teema | Kupari | kuparipaletti ja kiertoradat |
+| Tähtiajan oma teema | Astraali | tumma vihertävä pohja ja kultainen korostus |
+| Gregoriaanisen oma teema | Aamunkajo | sinertävä pohja ja vaalea kalenteriruudukko |
 | Sisältö | kello, päiväys, päivänimi, vaihe, tavallinen päiväys, vyöhyke, sää | merkintä ja seuraava muistutus valinnaiset |
 
-Värit ovat `theme.py`:n `CALENDAR_THEMES`-tunnuksia. Paneelin säde on 16,
+Ajanlaskun omat värit ovat `theme.py`:n `CALENDAR_THEMES`-tunnuksia;
+Kupari, Halla ja Ubuntu ovat yhteisiä `THEMES`-paletteja. Paneelin säde on 16,
 sisäleveys 430, tekstin reunaväli 22 loogista pikseliä. Sisältökoostumus käyttää
 `clock_config.clock_layout`-paikkoja. Piilotettu kenttä supistaa paneelia, mutta
 ajanlaskun vaihtuminen ei muuta paneelin kokoa tai sijaintia. Kaikki kolme
 ajanlaskua näyttävät tavallisen paikallisen kellonajan, eivät eri nopeudella käyviä kelloja.
 
+## Widgettikohtaiset teemat
+
+Teema valitaan erikseen kaikille kahdeksalle widgetille: yhteiselle kellolle,
+kolmelle erilliselle kellolle, tuntisäägraafille, Varjosään kolmen päivän
+näkymälle sekä Varjoajan ja Tähtiajan kuukausiwidgeteille.
+**Työpöytäwidgetit → Teema** tarjoaa yhteisen teeman, Kuparin, Hallan ja Ubuntun.
+Kelloissa voi lisäksi valita **Ajanlaskun oma teema**. Ubuntu piirtää kelloihin
+analogisen kellotaulun ja digitaalisen ajan; muissa widgeteissä se vaihtaa paletin.
+
+**Ajanlaskuwidgetit**-sivulla teema ja sisällöt koskevat valittua kellowidgettiä.
+Esikatselu näyttää luonnoksen ennen tallennusta. Tallennus yhdistää vain
+muokatut widgettien teemavalinnat ja kelloprofiilien kentät viimeisimpään tilaan.
+Toisella sivulla tallennetut muiden widgettien valinnat tai muokkaamattomat
+sisältökentät säilyvät.
+
+Valinnainen `settings.widget_themes` on harva kartta: siinä ovat vain erikseen
+tallennetut widgettivalinnat. `shared` seuraa sovelluksen yhteistä teemaa ja
+`copper`, `frost` sekä `ubuntu` valitsevat kiinteän paletin. `calendar` on sallittu
+vain neljälle kellolle. Puuttuva kellon avain käyttää vanhaa `time_theme`-valintaa;
+muut widgetit seuraavat ilman omaa avainta yhteistä teemaa. Valinnat ratkaisee
+`widget_themes.py`, jota myös esikatselu käyttää.
+
+**Asetukset → Käytä valittua teemaa kaikissa widgeteissä** tyhjentää tallennettaessa
+`widget_themes`-kartan ja asettaa `time_theme`-valinnaksi `shared`. Valittu yhteinen
+teema tulee näin myös vanhoihin ajanlaskun omia värejä käyttäviin kelloihin.
+Widgettien näkyvyysvalinnat säilyvät.
+
+Sääwidgetin paletin vaihto piirtää nykyisen ennusteen uudelleen. Se ei tee
+verkkohakua, lataa Windyä tai käynnistä sään ajastuksia uudelleen.
+Kellon ajanlaskukierto jatkuu samalla määräajalla teeman tai sisällön vaihtuessa.
+Analoginen kellotaulu tarvitsee enemmän korkeutta: lyhyt kello voi kasvaa
+vähimmäiskokoon ja siirtyä näytön sisään.
+
 ## Tilat ja vuorovaikutus
 
-- Normaalitila: vain valitut kentät ja käynnissä olevan ajanlaskun värit.
+- Normaalitila: valitut kentät ja widgetin valitsema teema; ajanlaskun oma teema
+  vaihtaa värit näkyvän ajanlaskun mukana.
 - Ajastettu: laskuri alatunnisteessa, monotoninen ajastus ei riipu kellon säädöstä.
   Koneen herätessä yksi vaihto; ei nopeaa rästiin jääneiden vaihtojen sarjaa.
 - Kiinteä: valinta pysyy myös seuraavalla käynnistyksellä.
@@ -51,7 +86,11 @@ näkyy kokonaan tooltipissa. Piilotetut sisältökentät eivät vuoda tooltippii
 ## Päivitys ja rajat
 
 Vanha asetustiedosto täydentyy rikkomatta aiempia widgetvalintoja. Uusi asennus
-avaa yhteisen kellon ja sääwidgetin. Painike **Korvaa erilliset kellot** piilottaa
+avaa yhteisen kellon ja sääwidgetin, ja kellot seuraavat yhteistä teemaa.
+Vanhan tiedoston olemassa oleva `time_theme` säilyy. Jos se puuttuu, lukija
+käyttää aiempaa `calendar`-valintaa; puuttuva `widget_themes` täydentyy tyhjäksi
+kartaksi. Pelkkä lukeminen ei kirjoita tiedostoa uudelleen.
+Painike **Korvaa erilliset kellot** piilottaa
 vain kolme erillistä kellopaneelia. Niiden sisällöt ja vanhat sijainnit säilyvät.
 Yhteinen kello perii ensimmäisen näkyvän vanhan kellon sijainnin.
 
