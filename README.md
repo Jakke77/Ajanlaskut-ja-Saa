@@ -1,354 +1,57 @@
-# Ajanlaskut ja Sää
+# Ajanlaskut ja Sää 1.6.1 — valmis Debian-paketti
 
-Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, tavallinen kalenteri ja sää
-yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
-Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
-asetuksia.
+[Lataa ajanlaskut-ja-saa_1.6.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.1/ajanlaskut-ja-saa_1.6.1_all.deb)
 
-## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
+Yksityinen repo: avaa latauslinkki GitHubiin kirjautuneena. Myös tiedoston **Download raw file** lataa paketin.
 
-**Ajanlaskuwidgetit → Muokattava kello** tarjoaa jokaiselle kellolle omat
-näyttötavan ja diginumeroiden säädöt.
-
-Samalla sivulla **Näyttötapa** valitsee **Digitaalisen**, **Analogisen** tai
-**Analogisen ja digitaalisen** kellon teemasta riippumatta. **Teeman oletus**
-säilyttää aiemman ulkoasun: Ubuntu näyttää molemmat, muut teemat digikellon.
-Jokaisella kellolla voi olla oma näyttötapa.
-
-**Digikellon numerokoko** säätää valitun kellon digitaalisia numeroita
-80–140 %. Poista ensin **Käytä yhteistä numerokokoa** -valinta. Valinnat näkyvät
-esikatselussa heti; **Tallenna kelloasetukset** ottaa ne käyttöön työpöydällä.
-Yhteistä kokoa ja fontin perhettä voi edelleen säätää Asetukset-sivulla.
-Analogisessa näyttötavassa diginumeroiden säätö on pois käytöstä.
-Kellon **⚙** avaa suoraan kyseisen kellon asetukset.
-
-![Digitaalinen, analoginen ja yhdistelmäkello; esimerkkiaika](previews/clock-display-desktop.png)
-
-![Kellon näyttötavan ja diginumeroiden koon valinnat](previews/clock-displays.png)
-
-**Työpöytäwidgetit → Tekstiväri** antaa jokaiselle kahdeksalle widgetille
-oman värin. Valitse väri painikkeesta ja paina **Tallenna widgettien ulkoasu**.
-**Käytä teeman tekstiväriä** palauttaa teeman mukaisen värin.
-Otsikot, korostukset ja sääkäyrät säilyttävät teeman ja sääsuureiden värit.
-
-Digiajan numerot voi värittää erikseen **Ajanlaskuwidgetit → Digikellon numeroväri**.
-Ilman omaa numeroväriä ne seuraavat widgetin tekstiväriä. Valinta näkyy
-esikatselussa heti ja tulee työpöydälle tallennettaessa kelloasetukset.
-Omat värit säilyvät teeman vaihdossa.
-
-**Taustakuvat**-sivun alasvetovalintojen luonnokset säilyvät sivua päivittäessä.
-Lukitusnäytön ja molempien kohteiden valinnat sekä vaihtuvat kuvat kertovat nyt
-selvästi **Dia Wall 77** -lisäosan vaatimuksesta. Ilman lisäosaa GNOMEn
-lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaksi** -painiketta.
-
-![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
-
-Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.6.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.1).
-Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
-
-## Oma teema jokaiselle widgetille · versio 1.6.0
-
-![Ubuntu-kello, Halla-sää ja Kupari-kuukausiwidget; esimerkkisää](previews/widget-theme-desktop.png)
-
-**Työpöytäwidgetit → Teema** tarjoaa jokaiselle kahdeksalle widgetille oman
-**Kupari**, **Halla** tai **Ubuntu** -valinnan. **Sovelluksen yhteinen teema**
-seuraa Asetukset-sivun teemaa. Valinnat otetaan käyttöön painikkeesta
-**Tallenna widgettien ulkoasu**; pelkkä valikon vaihtaminen on vielä luonnos.
-Esimerkiksi Ubuntu-kello, Halla-säägraafi ja Kupari-kuukausiwidget voivat näkyä
-samaan aikaan. Widgetin oikean painikkeen **Widgetin teema…** avaa saman sivun.
-
-**Ajanlaskuwidgetit → Muokattava kello → Kellon teema** muuttaa kyseisen kellon
-teemaa. Kellot tarjoavat lisäksi **Ajanlaskun oma teema** -valinnan. Valittu
-kello näkyy esikatselussa, ja sen sisältö tallentuu omana profiilinaan.
-
-**Asetukset → Teema → Ubuntu** antaa yhteisen Ubuntu-ilmeen myös sääwidgetille.
-Valitsemalla **Käytä valittua teemaa kaikissa widgeteissä** ja tallentamalla
-voi palauttaa kaikki widgetit seuraamaan tätä teemaa yhdellä kertaa.
-Omat teemavalinnat säilyvät tavallisessa yhteisen teeman vaihdossa.
-Yksittäisen widgetin teemavalinta ei vaihda työpöydän taustakuvaa.
-
-Vanhojen asennusten kelloteemat säilyvät päivityksessä. Uudessa asennuksessa
-widgetit seuraavat yhteistä teemaa, kunnes niille valitaan oma teema.
-Sääteeman vaihto päivittää paletin ja koristeet säilyttäen sääpalvelun,
-ennusteen, hakuvälin ja kartan. Ubuntu-kellon vähimmäiskorkeus on edelleen
-suurempi kuin digitaalisen kellon.
-
-**Päivityksen jälkeen valitse vanhasta ohjelmasta Lopeta sovellus ja avaa se
-uudelleen**, jotta uusi käyttöliittymä tulee näkyviin. [Päivitysohje](UPDATES.md).
-
-## Ubuntu-teema ja analoginen kello · versio 1.5.0
-
-![Ubuntu-kellon esikatselu, esimerkkiaika 10.10.2026 klo 10.10.30](previews/ubuntu-desktop.png)
-
-**Ajanlaskuwidgetit → Kellon teema → Ubuntu · analoginen kello** ottaa käyttöön
-oranssin kellotaulun, analogiset viisarit ja digitaalisen ajan. Valinta näkyy ensin
-esikatselussa; **Tallenna kelloasetukset** ottaa sen käyttöön työpöydällä.
-Sama paikallinen aika ja valittu ajanlasku säilyvät. Sekuntivalinta ohjaa sekä
-digitaalisen ajan sekunteja että sekuntiviisaria; **Kellon numeroiden koko**
-vaikuttaa digitaaliseen aikaan ja kellotaulun numerointiin.
-
-**Asetukset → Teema → Ubuntu · oranssi ja munakoiso** antaa koko sovellukselle
-saman väripaletin. Kellon **Sovelluksen yhteinen teema** seuraa tätä valintaa;
-Ubuntu-kellon voi myös valita erikseen Kuparin tai Hallan rinnalle.
-Analoginen kellotaulu tarvitsee enemmän korkeutta kuin digitaalinen kello:
-lyhyt widget voi kasvaa vähimmäiskokoon ja siirtyä näytön sisään. Ajanlaskun
-vaihtuminen ei muuta kellon kokoa. Sisältövalinnat, fontti, vetäminen ja
-koonmuutos toimivat myös tässä teemassa.
-
-Mukana on **Ubuntu · oranssi tähtikello** -taustakuva (1920 × 1080),
-alkuperäinen paikallisesti piirretty SVG-teos. Teeman mukana vaihtuva tausta
-noudattaa aiempaa työpöytä-/lukituskuvan valintaa. Kellon oma teemavalinta
-ei vaihda taustakuvaa tai sääwidgetin värejä. Nollan prosentin tausta poistaa
-kellon pohjan, kehykset ja koristeet; viisarit, numerot ja tekstit jäävät näkyviin.
-
-Itsenäinen Ubuntu-henkinen faniteema. Ubuntu-nimi ja Circle of Friends
--tavaramerkki kuuluvat Canonicalille. Vanhaan ohjelmaversioon palaaminen:
-valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDATES.md).
-
-## Sovelluksen näkymät
-
-- **Yleiskatsaus:** sama hetki kolmessa ajanlaskussa, tuntiennuste ja kolmen päivän sää.
-- **Kalenterit:** Varjoajan 13 kuukautta, Tähtiajan 17 kuukautta ja gregoriaaninen kalenteri.
-  Kuukausi- ja vuosivalinta, päivän merkinnät, muistutukset ja valinnaiset rinnakkaispäiväykset.
-- **Ajanlaskuwidgetit:** yhteinen vaihtuva kello, omat ajanlaskuteemat,
-  sisältövalinnat ja tallentamaton esikatselu.
-- **Sää:** Yr/MET Norway, Foreca, Ilmatieteen laitos ja Windyn kartta;
-  12 tai 24 tuntia. Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
-- **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää ja omat teemavalinnat.
-- **Taustakuvat:** Kupari-, Halla- ja Ubuntu-galleria, oma teema-repo ja omat kuvat; eri taustat
-  työpöydälle ja lukitusnäytölle sekä 1–77 minuutin diaesitys.
-- **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,
-  sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
-
-Yhteiset fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
-**Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Yhteinen kellon numerokoko**
-(80–140 %, oletus 100 %). Fontin perhe säilyy omana valintanaan. Kokoasetukset
-ovat erillisiä koko widgetin koosta, joten ikkunoiden paikat ja mitat eivät muutu.
-Säätö koskee uuden sovelluksen kaikkia widgettejä; erillinen vanha sääsovellus
-ei käytä näitä asetuksia. Pitkä päiväys tai paikan nimi lyhennetään tarvittaessa,
-ja kellon numerot sovitetaan omaan tilaansa. Varjoaika-kellon päiväennusteissa
-lämpö/sade ja sääkuvaus näytetään kahdella rivillä.
-Kellon oma diginumeroiden koko ohittaa yhteisen koon vain kyseisessä kellossa.
-
-Uudessa asennuksessa näkyvät **yhteinen ajanlaskukello** kolmen päivän säätiedoilla
-ja **Pöllönkankaan tuntisää**. Erikseen voi ottaa käyttöön Varjoajan, Tähtiajan
-ja gregoriaanisen kellon, Varjosään sekä kuukausiwidgetit. Päivitys säilyttää vanhat
-widgetvalinnat, kunnes erilliset kellot korvataan yhteisellä kellolla.
-
-Oletusteema **Kupari** pohjautuu Pöllönkankaan sääwidgetin tummaan, kupariseen
-ja läpikuultavaan ilmeeseen. Muut teemat ovat sininen **Halla** ja oranssi **Ubuntu**. Teeman ja fontin
-muutos koskee sovellusta ja sääwidgettejä. Kelloilla voi olla omat ajanlaskuteemat
-tai sama yhteinen teema. Koko ja taustan
-peittävyys koskevat widgettejä. Sääpalvelujen semanttiset käyrävärit säilyvät.
-
-Sään oletushakuväli on **77 minuuttia**. Kellot päivittyvät sekunnin välein ja
-säägraafi siirtää näkyvää tuntijaksoa minuutin välein. Säälähteiden välimuisti ja
-käyttörajoitukset voivat lykätä uutta verkkohakua. Windyn kartta käyttää omaa
-ennusteaikajanaansa. Tavallinen päivittäinen sää on wttr.in-palvelusta.
-
-## Halla-yön tausta ja teemanvaihto · versio 1.4.0
-
-Mukana on **Halla-yön tähtikello**, jäinen hopeansininen Ubuntu-tausta
-(1672 × 941 pikseliä). Se ja Kuparinen tähtikello löytyvät **Taustakuvat**-sivulta
-sekä paikallisesta `Ajanlaskut-ja-Saa-Teemat`-reposta luontikuvauksineen.
-
-Oletuksena **Vaihda teeman mukana** vaihtaa työpöydän taustan, kun sovelluksen
-yhteinen teema vaihdetaan Kuparin ja Hallan välillä ja tallennetaan.
-**Asetukset → Taustakuva teeman vaihtuessa** tarjoaa myös vaihtoehdon
-**Säilytä valittu taustakuva**: oma kuva tai diaesitys säilyy silloin ennallaan.
-Sama valinta on Taustakuvat-sivulla; sen **Tallenna teemanvaihdon valinta**
-ei itsessään vaihda nykyistä kuvaa. **Käytä nykyisen teeman taustaa** vaihtaa
-sen heti valittuun kohteeseen. Pelkkä käynnistys, fonttisäätö tai kellojen
-ajanlaskukierto ei muuta taustaa.
-
-Teemataustan kohde on oletuksena **Työpöytä**. **Lukitusnäyttö** ja **Molemmat**
-voi valita erikseen Dia Wall 77:n ollessa käytössä. Lukituksen turvallisuutta
-tai kellotilaa ei muuteta. Jos teeman tai taustan tallennus epäonnistuu,
-aiemmat asetukset ja taustat palautetaan; valinta ei jää puolittain voimaan.
-
-## Ikkunoiden järjestys ja widgettikohtainen koko · versio 1.3.0
-
-Pääohjelma ja sen kalenteri-, sää- ja valintaikkunat näytetään työpöytäwidgettien
-edessä. Ikkunan suurennus säilyy, kun kalenteri tai sää avataan widgetistä.
-Jos **Pidä widgetit muiden ikkunoiden päällä** on valittu, se koskee muita
-sovelluksia; oman sovelluksen avoin pääikkuna ja valintaikkunat saavat etusijan.
-Valinta palautuu widgeteille, kun pääikkuna piilotetaan tai minimoidaan eikä
-valintaikkunoita ole avoinna. Widgettien näkyvyysvalintoja ei muuteta.
-
-Jokaisen kahdeksan widgetin kokoa voi muuttaa **reunasta tai kulmasta vetämällä**.
-Reunassa osoitin vaihtuu koonmuutosnuoleksi. Koko tallentuu erikseen kyseiselle
-widgetille, vasta kun hiiren painike vapautetaan. **Esc** peruu käynnissä olevan
-koonmuutoksen. **Lukitse widgetien paikat** estää siirtämisen, ei koon muuttamista.
-Sisällön mittasuhteet säilyvät; säägraafi ja Windy-kartta käyttävät uuden tilan.
-
-Oikean painikkeen valikossa **Palauta tämän widgetin oletuskoko** palauttaa vain
-kyseisen widgetin yhteiseen prosenttikokoon. Muiden widgettien kokoja tai paikkoja
-ei muuteta. Oma koko säilyy fontin, teeman, ajanlaskun ja yhteisen koon valinnan
-vaihtuessa. Ilman omaa kokoa widget käyttää yhä yhteistä kokoasetusta.
-
-Omat koot ovat käyttäjätiedoston valinnaisessa `widget_sizes`-kohdassa. Vanhoja
-ikkunapaikkoja ei muuteta, eikä uusi käynnistys kirjoita omaa kokoa automaattisesti.
-Vanhat ohjelmaversiot voivat edelleen lukea saman kalenteritiedoston; ne eivät
-käytä uusia kokoja. Nykyiset merkinnät ja kokoarvot säilyvät myös ohjelmaversion
-palautuksessa. Muilta ohjelmilta ei muuteta ikkuna-asetuksia.
-
-## Oma päivityskomento · versio 1.2.1
-
-Paikalliseen käyttäjäasennukseen on oma komento ilman ylläpitäjän salasanaa:
+Asenna latauskansiosta:
 
 ```bash
-codex-ajanlasku update && codex-ajanlasku upgrade
+sudo apt install ./ajanlaskut-ja-saa_1.6.1_all.deb
 ```
 
-Se tarkistaa ja asentaa vain omaan paikalliseen päivityskansioon julkaistun version.
-Päivityksen jälkeen valitse **Lopeta sovellus** ja avaa `codex-ajanlasku run`.
-`status` näyttää version ja `rollback` palauttaa edellisen ohjelmaversion
-säilyttäen nykyiset merkinnät. Käyttäjän tiedot ja taustakuvat jäävät ennalleen.
-Katso asennus, julkaisukansio, rajat ja uuden paketin tarkistusohje: `UPDATES.md`.
+Valitse vanhasta sovelluksesta **Lopeta sovellus**. Järjestelmäasennus käynnistyy komennolla `/usr/bin/ajanlaskut-ja-saa`.
 
-## Yhteinen kello ja rinnakkaiskalenterit · versio 1.2.0
-
-**Ajanlaskuwidgetit**-sivulla valitaan kiinteä ajanlasku, järjestyksessä vaihtuva
-tai satunnaisesti vaihtuva tila. Vaihtoväli on 1–3600 **sekuntia**, oletus 77.
-Se ei muuta sään hakuväliä. Voit valita vaihtoon vain haluamasi ajanlaskut.
-Satunnainen tila ei toista samaa heti, paitsi jos valittuna on vain yksi.
-
-Kellon ‹/› vaihtavat ajanlaskua heti; oikean painikkeen valikosta voi lukita
-haluamansa ajanlaskun. ▦ avaa juuri näkyvän ajanlaskun kalenterin, ⚙ avaa
-kellon sisältövalinnat. **Korvaa erilliset kellot yhteisellä widgetillä** piilottaa
-kolme erillistä kelloa säilyttäen niiden asetukset ja paikat. Sääwidgettiä ei muuteta.
-
-Omissa kelloteemoissa Varjoaika käyttää Kuparia, Tähtiaika vihreäkultaista
-Astraalia ja Gregoriaaninen sinistä Aamunkajoa. Teema ja päiväys vaihtuvat,
-mutta paneelin paikka ja koko pysyvät samoina. Sisällöistä valitaan kello,
-päivämäärä, päivän nimi, symbolinen vaihe / ISO-viikko, tavallinen päiväys,
-aikavyöhyke, sää, päivän merkintä ja seuraava muistutus. Valinnat ovat erillisiä
-yhteiselle widgetille ja kullekin vanhalle kellolle. Esikatselu ei vielä tallenna mitään.
-
-**Kalenterit → Valitse lisäkalenterit…** tarjoaa islamilaisen taulukollisen
-kuukalenterin, heprealaisen kuu–aurinkokalenterin sekä persialaisen, juliaanisen,
-koptilaisen ja Intian Saka-aurinkokalenterin. Voit valita jokaisen erikseen,
-piilottaa kaikki, näyttää ne vain Tähtiajassa tai kaikissa kolmessa näkymässä
-sekä valita yhden lisäpäiväyksen päivien ruutuihin. Sama päivän merkintä säilyy.
-
-Päiväykset lasketaan [convertdate-kirjastolla](https://convertdate.readthedocs.io/en/latest/)
-valitun siviilipäivän keskipäivälle, ei paikallisen auringonlaskun mukaan.
-Islamilainen päiväys ei ole kuuhavaintoihin tai Umm al-Quraan perustuva.
-Persialainen tähtitieteellinen laskenta on rajattu vuosille 1900–2100;
-alueen ulkopuolella näytetään puuttuva tieto, ei keksittyä päiväystä.
-Tähtiajan oma 510 päivän kalenteri ja sen symboliset vaiheet säilyvät ennallaan.
-
-## Taustakuvat · versio 1.1.0
-
-Widgetin ▧-painike ja oikean painikkeen valikon **Taustakuvat** avaavat saman
-gallerian. Valitse yksi kuva ja **Työpöydän taustaksi**, **Lukitusnäytön taustaksi**
-tai **Molempiin**. Valinta galleriassa ei vielä muuta mitään. **Palauta edelliset
-taustat** palauttaa edellisen valinnan kuvat ja vaihtotavan.
-
-Sovelluksen mukana tulevat **Kuparinen tähtikello** ja **Halla-yön tähtikello**
-(molemmat 1672 × 941 pikseliä). Oma
-teema-repo on `Ajanlaskut-ja-Saa-Teemat`; liitä se **Valitse teema-repon kansio…**
--painikkeesta. Kuvien tiedot ovat repon `catalog.json`-tiedostossa. Tavallisesta
-kuvakansiosta luetaan sen juuren PNG-, JPEG-, WebP- ja BMP-kuvat. **Lisää omia
-kuvia…** kopioi kuvan sovelluksen kirjastoon muuttamatta alkuperäistä.
-
-**Vaihtuvat kuvat** -tilaan valitaan vähintään kaksi eri kuvaa Ctrl- tai
-Shift-näppäimellä. Vaihtoväli on 1–77 minuuttia, oletus 77. Työpöydällä ja
-lukitusnäytöllä voi olla omat kuvat ja omat diaesitykset. Sään hakuväliä ei muuteta.
-
-GNOMEn erillinen lukituskuva ja diaesitys käyttävät käytössä olevaa **Dia Wall 77**
--lisäosaa. Ilman sitä tarjolla on työpöydän yhden kuvan vaihto; tavallisen GNOMEn
-lukitusnäyttö seuraa työpöydän taustaa. Tukea ei päätellä pelkästä vanhasta
-`screensaver picture-uri` -avaimesta, vaan käynnissä oleva lisäosa tarkistetaan.
-Sovellus ei asenna tai ota lisäosia käyttöön automaattisesti. Se ei muuta
-`lock-enabled`-asetusta, lukitusviivettä, Super+L:n toimintaa tai kuva- ja kellotilaa.
-
-Käytössä olevat kuvat säilytetään käyttäjän datahakemistossa, joten teema-repon
-siirtäminen ei riko taustaa. Varavalinta on `wallpaper-previous.json`. Käynnistys
-ja testit eivät muuta koneen taustakuvia. GSettings-arvot tarkistetaan ja
-asetuskokonaisuus tallennetaan painikkeesta tai tallennetusta teemanvaihdosta käyttäen
-[GNOMEn delay/apply-toimintoa](https://docs.gtk.org/gio/class.Settings.html#delay-apply-mode).
-Repoa ei synkronoida verkosta automaattisesti; **Päivitä galleria** lukee paikalliset
-kuvat uudelleen.
-
-## Käyttö
-
-Ubuntu 26.04:ssa tarvitset Python 3:n ja PyQt6:n. `.deb`-paketti määrittelee
-tarvittavat riippuvuudet; paketissa ei toimiteta Qt- tai Python-binaareja.
-
-Lähdekansiosta:
+Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta, päivitä myös se uuden debin asentamisen jälkeen. Aja seuraava ilman sudoa:
 
 ```bash
-python3 main.py
+(
+  umask 022
+  ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
+  /usr/bin/python3 /usr/share/ajanlaskut-ja-saa/packaging/build.py \
+    --publish-channel "$ajanlasku_kanava" &&
+  /usr/bin/python3 "$ajanlasku_kanava/update-upgrade.py" setup &&
+  export PATH="$HOME/.local/bin:$PATH" &&
+  codex-ajanlasku update &&
+  codex-ajanlasku upgrade &&
+  codex-ajanlasku status
+)
 ```
 
-Sovellusvalikon oma käynnistin:
+Käytä samaa päivityskansiota, jonka `codex-ajanlasku status` ilmoittaa. Lopeta vanha ohjelma kokonaan ja käynnistä `codex-ajanlasku run`. Molemmat asennustavat käyttävät samoja asetuksia ja merkintöjä.
+
+Paketti vaatii Python 3.10:n sekä PyQt6:n ja sen multimediaosan vähintään 6.8. APT tarkistaa riippuvuudet.
+
+## Muutokset
+
+- Digitaalinen, analoginen tai yhdistelmäkello jokaiselle kellolle.
+- Oma diginumeroiden koko 80–140 % ja numeroväri, esikatselu ennen tallennusta.
+- Oma tekstiväri kaikille kahdeksalle widgetille; teeman väriin voi palata.
+- Taustakuvavalintojen luonnokset säilyvät sivua päivittäessä. Erillinen lukituskuva ja vaihtuvat kuvat kertovat Dia Wall 77 -vaatimuksen. Ilman lisäosaa GNOMEn lukitusnäyttö seuraa työpöydän taustaa.
+
+## Tarkistus
+
+159 yksikkötestiä ja eristetyt Qt-käyttöliittymätestit läpäistiin myös puretusta julkaisun lähdepaketista.
+Päivitys 1.6.0 → 1.6.1 → 1.6.0 → 1.6.1 säilytti asetustiedoston tavut, värit, merkinnät ja muistutukset.
+
+Lataa myös SHA256SUMS ja tarkista latauskansiosta:
 
 ```bash
-python3 install.py
+sha256sum -c SHA256SUMS
 ```
 
-Vaihtoehtoiset käynnistykset:
+SHA256: `5f3695fc082e350d64c13d01b9f597a74d99c7476d4e39273086a95ddd8a1d41`
 
-```bash
-python3 main.py --no-widgets             # pääikkuna, ei uusia työpöytäikkunoita
-python3 main.py --widgets-only           # vain valitut widgetit
-python3 main.py --page calendar
-python3 main.py --page clocks
-python3 main.py --page wallpapers
-python3 main.py --offline                # ei uusia säähakuja
-```
+[Lähdekoodi ja käyttöohje](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/5925f484e99b07313ea03b7bd414ddc63cf727c5)
 
-Uusi käynnistys ohjaa jo käynnissä olevaan sovellukseen. Pääikkunan sulkeminen
-piilottaa sen, jos widgettejä tai tarjotinkuvake on käytössä. **Lopeta sovellus**
-sulkee koko kokonaisuuden. Widgetin × piilottaa vain kyseisen widgetin ja muistaa
-valinnan. Widgettiä voi siirtää raahaamalla; kuukausiwidgetin päivää painamalla
-avautuu sama päivä pääkalenterissa. Oikean painikkeen valikosta pääsee asetuksiin.
-Jos pääikkuna avattiin `--no-widgets`-valinnalla, **Näytä valitut widgetit** tuo
-muistetun työpöytäkokoonpanon näkyviin yhdellä painalluksella.
-
-Vanhojen sovellusten prosesseja, käynnistimiä tai kirjautumisasetuksia ei poisteta
-eikä muuteta. Jos ne ovat edelleen käynnissä, samasta kellosta voi näkyä kaksi
-versiota. Sulje vanhat itse, kun haluat siirtyä uuteen kokonaisuuteen.
-
-## Merkinnät ja tietosuoja
-
-Yhteinen tiedosto on `~/.local/share/ajanlaskut-ja-saa/state.json` tai
-`$XDG_DATA_HOME/ajanlaskut-ja-saa/state.json`. Merkintä tallennetaan todellisen
-päivän ISO-tunnisteella: sama merkintä löytyy kaikista ajanlaskuista.
-Muistutukset tallennetaan UTC-hetkinä. Muistutukset toimivat sovelluksen ollessa
-käynnissä; seuraavalla käynnistyksellä näytetään myös erääntynyt muistutus.
-Merkintä ja siihen liittyvä uusi muistutus tallentuvat yhdellä kirjoituksella.
-
-Ensimmäisellä käynnistyksellä tuodaan paikallisten Goottikalenterin ja Tähtiajan
-päivämerkinnät, jos niiden tunnetut tiedostot löytyvät. Alkuperäiset tiedostot
-jätetään koskemattomiksi ja tuoduista tiedoista tehdään erillinen kopio
-`alkuperaiset-kalenterit.json`. Tuonti ei kopioi vanhoja muistutuksia tai asetuksia.
-
-Sovellus ei vaadi käyttäjätiliä tai API-avainta. Säähaku välittää valitun
-paikan koordinaatit sääpalveluille; hakuteksti menee Open-Meteon paikkahakuun.
-Laitteen sijaintia pyydetään vain käyttäjän painaessa sijaintipainiketta ja
-hyväksyessä luvan. Kalenterimerkintöjä ei lähetetä verkkoon. Windy näkyy virallisena
-verkkoupotuksena omassa tallentamattomassa selainprofiilissa.
-
-Varjoaika ja Tähtiaika ovat kuvitteellisia rinnakkaiskalentereita. Varjoajan alkupäivä on
-28.9.2026, Tähtiajan 1.7.2026. Kuuvaiheiden nimet ovat symbolisia, eivät
-tähtitieteellisiä havaintoja. Kellot näyttävät tavallista paikallista aikaa.
-
-## Testit ja paketti
-
-```bash
-python3 -m unittest discover -s tests -p 'test_*.py' -v
-python3 main.py --self-test --preview-dir outputs
-python3 packaging/build.py
-```
-
-Toimintatesti käyttää erillistä tilapäishakemistoa ja poistaa verkkohakujen
-käytön. Testien esikatselukuvissa on selkeästi merkitty **esimerkkisää**, ei oikea
-ennuste. Testit kattavat ajanlaskumuunnokset, kuukausirajat, pysyvän tallennuksen,
-vanhojen merkintöjen tuonnin, kaikkien kahdeksan widgetin toiminnan, yhteisen
-teeman ja yhden sovellusinstanssin ohjauksen. Lisäksi sääkerroksen testit
-tarkistavat välimuistin, puuttuvat tiedot, sademäärien tunnit ja kesäajan vaihdon.
-
-Oma sovelluskoodi: MIT, tekijä Jakke77. Katso `THIRD_PARTY_NOTICES.md`.
+Tämä haara sisältää vain valmiin asennuspaketin ja sen ohjeet. Ohjelman lähdekoodi on yllä linkitetyssä muutoksessa.
