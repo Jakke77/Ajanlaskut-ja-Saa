@@ -4,7 +4,8 @@ from PyQt6.QtCore import Qt, QRectF, QPointF, QSize
 from PyQt6.QtGui import QPainter, QFont, QFontMetricsF, QColor, QPen
 from PyQt6.QtWidgets import QWidget, QToolButton, QMenu, QApplication
 from .calendar import NAMES, MONTHS
-from .theme import THEMES, CALENDAR_THEMES, paint_panel
+from .theme import paint_panel
+from .widget_themes import widget_theme
 from .clock_config import SYSTEMS, PROFILE_KEYS, CLOCK_TITLES, clock_layout
 from .windowing import DESKTOP_FLAGS, WidgetFrame, apply_layer
 
@@ -69,11 +70,7 @@ class DesktopSurface(QWidget):
 
     @property
     def theme(self):
-        if self.key in PROFILE_KEYS:
-            selection = self.theme_override or self.options['time_theme']
-            if selection == 'ubuntu': return THEMES['ubuntu']
-            if selection == 'calendar': return CALENDAR_THEMES[self.system]
-        return THEMES[self.options['theme']]
+        return widget_theme(self.options, self.key, self.system, selection=self.theme_override)
 
     @property
     def analog_clock(self):
@@ -317,6 +314,7 @@ class DesktopSurface(QWidget):
         if self.system in ('shadow', 'star'):
             menu.addAction('Näytä kuukausi työpöydällä', lambda: self.controller.set_widget(self.system+'_calendar', True))
         menu.addAction('Yhteiset asetukset', lambda: self.controller.open_page('settings'))
+        menu.addAction('Widgetin teema…', lambda: self.controller.open_page('widgets'))
         if self.key in PROFILE_KEYS: menu.addAction('Ajanlaskut ja kellon sisältö', lambda:self.controller.open_page('clocks'))
         menu.addAction('Taustakuvat · työpöytä ja lukitusnäyttö', lambda: self.controller.open_page('wallpapers'))
         menu.addAction('Piilota widget', lambda: self.controller.set_widget(self.key, False))

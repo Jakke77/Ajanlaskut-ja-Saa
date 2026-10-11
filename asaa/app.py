@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QApplication, QMenu, QSystemTrayIcon, QMessageBox
 from .calendar import Calendars
 from .state import State, data_directory
 from .theme import apply_theme
+from .widget_themes import widget_theme
 from .services import SharedWeather, DailyWeather
 from .widgets import DesktopSurface, WIDGET_LABELS
 from .wallpapers import WallpaperManager
@@ -99,7 +100,8 @@ class Controller(QObject):
     def visible_widgets(self):return any(w.isVisible() for w in self.widgets.values())
 
     def configure(self,changes):
-        previous=self.options['autostart'];candidate=self.state.configured_data(changes)
+        before=self.options
+        previous=before['autostart'];candidate=self.state.configured_data(changes)
         changed_start=changes.get('autostart',previous) != previous
         def commit():
             if changed_start:
@@ -117,10 +119,20 @@ class Controller(QObject):
             self.wallpapers.apply([picture.path],options['wallpaper_theme_target'],commit=commit)
         else:commit()
         self.time_rotation.configure(self.options)
-        clock_only={'time_mode','time_system','time_systems','time_interval','time_theme','clock_profiles','clock_weather',
+        changed_keys={key for key in changes if options.get(key)!=before.get(key)}
+        if changed_keys <= {'theme', 'widget_themes', 'time_theme'}:
+            if options['theme'] != before['theme']:
+                apply_theme(self.app,self.options)
+            if widget_theme(before,'weather') != widget_theme(options,'weather'):
+                self.weather.apply_widget_theme()
+            self.settings_changed.emit();self.clock_changed.emit()
+            return
+        clock_only={'time_mode','time_system','time_systems','time_interval','time_theme','widget_themes','clock_profiles','clock_weather',
                     'calendar_extras_visible','calendar_extras','calendar_extras_scope','calendar_extra_cell',
                     'wallpaper_follow_theme','wallpaper_theme_target'}
-        if set(changes) <= clock_only:
+        if changed_keys <= clock_only:
+            if widget_theme(before,'weather') != widget_theme(options,'weather'):
+                self.weather.apply_widget_theme()
             self.settings_changed.emit();self.clock_changed.emit()
             return
         self.calendars=Calendars(self.options['zone'],self.options['star_epoch'])

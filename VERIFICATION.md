@@ -1,4 +1,33 @@
-# Tarkistus 10.10.2026
+# Tarkistus 11.10.2026
+
+## Widgettikohtaiset teemat 1.6.0
+
+- 134 yksikkötestiä läpäistiin. Uudet 13 testiä kattavat harvan teemakartan,
+  vanhojen kelloteemojen säilymisen, uuden asennuksen yhteisen oletusteeman,
+  widgettikohtaisen valinnan, paletin ja virheellisten valintojen atomisen hylkäyksen.
+- Eristetty Qt-toimintatesti käyttää oikeita Työpöytäwidgetit-,
+  Ajanlaskuwidgetit- ja Asetukset-sivuja. Kaikilla kahdeksalla widgetillä on oma
+  teemavalinta. Tallentamaton luonnos ei muuta työpöytää; tallennus säilyy
+  asetustiedoston uudelleenluvussa. Yhteisen teeman seuraajat vaihtuvat,
+  erikseen valitut paletit säilyvät ja Käytä valittua teemaa kaikissa widgeteissä
+  palauttaa kaikki seuraamaan yhteistä teemaa.
+- Eri sivujen keskeneräiset teema- ja sisältövalinnat yhdistetään uusimpiin
+  asetuksiin vain muokattujen avainten ja kenttien osalta. Pakotettu levykirjoitusvirhe
+  jättää aiemman tiedoston, asetukset ja näkyvän sääpaletin ennalleen.
+- Pelkkä teemavalinta, yhteisen teeman valinta Asetukset-sivulla sekä kellon
+  teeman ja sisällön yhteinen tallennus säilyttävät ennusteen, sääpalvelun,
+  hakuvälin, Windyn, ajastimet ja kalenteriolion. Verkkohaku- ja
+  karttalatauskutsujen puuttuminen tarkistetaan erikseen. Widgettikohtainen
+  teema ei kirjoita taustakuva-asetuksia; yhteinen teema käyttää aiempaa politiikkaa.
+- Riippumaton Qt-tarkistus kattoi myös piilotetun widgetin tallennetun teeman
+  käyttöönoton ensimmäisessä näyttämisessä sekä sääpaletin ja kellosisällön
+  muuttamisen samassa asetuskokonaisuudessa.
+- `previews/widget-theme-desktop.png` on Qt:llä renderöity yhdistelmäkuva
+  Ubuntu-kellosta, Halla-säägraafista ja Kupari-kuukausiwidgetistä. Sää on
+  kuvassa merkitty esimerkkisääksi. Testit käyttävät offscreen-alustaa ja
+  taustakuvien muistialustaa; käyttäjän dataa tai oikeaa GNOME-istuntoa ei muuteta.
+  Julkaisutoiminto toistaa koko testin puretusta lähde-ZIPistä ennen kanavan päivitystä.
+
 
 ## Ubuntu-teema ja analoginen kello 1.5.0
 

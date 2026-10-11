@@ -8,6 +8,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QImage, QPainter
 from .clock_config import PROFILE_KEYS, SYSTEMS
 from .theme import THEMES, apply_theme
+from .widget_themes import widget_theme
 
 
 def acceptance(controller, app, preview_dir=None):
@@ -17,6 +18,8 @@ def acceptance(controller, app, preview_dir=None):
     weather = (controller.weather.selected, controller.weather.size(), controller.weather.pos(),
                controller.weather.paint_palette, controller.daily.timer.interval())
     deadline = controller.time_rotation.deadline
+    clock_palettes = {key: widget_theme(controller.options,key,controller.widgets[key].system)
+                      for key in PROFILE_KEYS if key != 'combined'}
     page = controller.window.page_widgets['clocks']
     try:
         # The draft changes only the preview; Save explicitly applies the clock theme.
@@ -26,7 +29,7 @@ def acceptance(controller, app, preview_dir=None):
         with patch.object(controller.weather, 'apply_shared_options') as apply_weather:
             page.save();app.processEvents()
             assert not apply_weather.called
-        assert controller.options['time_theme'] == 'ubuntu'
+        assert controller.options['widget_themes']['combined'] == 'ubuntu'
         assert controller.time_rotation.deadline == deadline
         assert weather == (controller.weather.selected, controller.weather.size(), controller.weather.pos(),
                            controller.weather.paint_palette, controller.daily.timer.interval())
@@ -34,9 +37,10 @@ def acceptance(controller, app, preview_dir=None):
         assert controller.state.data['notes'] == before['notes']
         assert controller.state.data['reminders'] == before['reminders']
         assert controller.state.data.get('widget_sizes') == before.get('widget_sizes')
+        assert controller.widgets['combined'].analog_clock
         for key in PROFILE_KEYS:
             widget = controller.widgets[key];widget.grab()
-            assert widget.analog_clock and widget.theme == THEMES['ubuntu']
+            assert widget.theme == (THEMES['ubuntu'] if key == 'combined' else clock_palettes[key])
 
         # The global theme is also selectable with the existing wallpaper-follow policy.
         settings = controller.window.page_widgets['settings'];settings.load()
@@ -48,7 +52,7 @@ def acceptance(controller, app, preview_dir=None):
         preserved = Path(unquote(urlparse(uri).path))
         assert preserved.read_bytes() == controller.wallpapers.library.for_theme('ubuntu').path.read_bytes()
         assert controller.window.theme_title.text().startswith('UBUNTU')
-        controller.configure({'time_theme': 'shared'});app.processEvents()
+        controller.configure({'time_theme': 'shared', 'widget_themes': {}});app.processEvents()
         assert controller.widgets['combined'].analog_clock
 
         profiles = controller.options['clock_profiles']

@@ -31,7 +31,8 @@ sisältävät yhteiset värit, fontin ja paikan sekä kahdeksan näkyvyysvalinta
 Tallennus on atominen ja tiedostolla on vain käyttäjän luku-/kirjoitusoikeus.
 
 Ohjaimen signaalit erottavat kellon tikityksen, asetusten muutoksen ja merkintöjen
-muutoksen. Teeman vaihto päivittyy kaikkiin näkymiin yhdellä asetuskokonaisuudella.
+muutoksen. Yhteisen teeman vaihto päivittyy sovelluksen näkymiin ja sitä seuraaviin
+widgetteihin yhdellä asetuskokonaisuudella.
 Varjoajan ja Tähtiajan aiemmat muunnossäännöt säilyvät; alkuperäisten sovellusten
 käyttöliittymät eivät kuulu uuteen prosessiin.
 
@@ -39,7 +40,8 @@ käyttöliittymät eivät kuulu uuteen prosessiin.
 Ulkoasun tai sisällön muutos ei aloita vaihtoväliä uudelleen. Neljä kelloprofiilia
 sisältävät riippumattomat kenttävalinnat; sama `clock_layout` ja `DesktopSurface`
 piirtävät sekä työpöydän että tallentamattoman esikatselun. Kellon tai lisäkalenterien
-asetukset eivät kutsu sääwidgetin ulkoasu-/karttapäivitystä.
+asetukset säilyttävät sään nykyisen toiminnan. Kellosisällön ja kellon oman teeman
+samanaikainen tallennus käyttää myös tätä rajattua päivityspolkua.
 
 `almanac` tarjoaa välimuistitetut convertdate-muunnokset oikeille kalentereille
 valitun siviilipäivän keskipäivällä. Se ei korvaa kuvitteellisia muunnossääntöjä,
@@ -47,6 +49,51 @@ merkintöjen tunnisteita tai muistutusaikoja. Persialainen laskenta on rajattu
 1900–2100. Sovelluksen `vendor/` sisältää muuttamattoman convertdate 2.4.0:n ja
 PyMeeus 0.5.12:n lähdekoodit ja lisenssit; järjestelmässä asennettuja vastaavia
 kirjastoja voi käyttää niiden sijaan. Kalenterimuunnokset eivät käytä verkkoa.
+
+## Widgettiteemat ja luonnosten tallennus · 1.6.0
+
+Kaikilla kahdeksalla widgetillä on oma teemavalinta. Yhteinen kello ja kolme
+erillistä kelloa käyttävät `PROFILE_KEYS`-tunnuksia; muut näkymät ovat tuntisää,
+kolmen päivän Varjosää sekä kaksi kuukausiwidgettiä. `State.settings.widget_themes`
+on valinnainen harva kartta widgetin tunnuksesta teemavalintaan. Sallittuja
+valintoja ovat `shared`, `copper`, `frost` ja `ubuntu`; `calendar` hyväksytään
+vain neljälle kellolle. Validoitu kartta tallentuu samassa atomisessa
+asetuskokonaisuudessa muiden tietojen kanssa.
+
+`widget_themes.widget_theme_selection` käyttää puuttuvalle kellon avaimelle
+olemassa olevaa `time_theme`-valintaa ja muille widgeteille `shared`-valintaa.
+`widget_theme` ratkaisee `shared`-valinnan yhteisestä `THEMES[theme]`-paletista,
+`calendar`-valinnan näkyvän ajanlaskun `CALENDAR_THEMES`-paletista ja kiinteän
+valinnan suoraan `THEMES`-paletista. `widget_theme_choices` tarjoaa samat
+valinnat työpöytäwidgettien sivulle ja kellon esikatseluun. Ubuntu-paletin
+kellot käyttävät `ubuntu_clock`-piirtäjää; sää- ja kuukausiwidgetit saavat sen värit.
+
+Uudessa asennuksessa `time_theme` on `shared` ja kartta tyhjä, joten yhteinen
+teema ulottuu kaikkiin widgetteihin. Vanhaa tiedostoa luettaessa tallennettu
+`time_theme` säilyy; puuttuva arvo täydentyy `calendar`-valinnaksi ja puuttuva
+kartta tyhjäksi. Lukeminen ei kirjoita käyttäjän tiedostoa. Erillinen `shared`-avain
+voi ohittaa vanhan kellon `calendar`- tai `ubuntu`-fallbackin.
+
+`WidgetsPage` ja `ClocksPage` pitävät tallentamattomat valinnat luonnoksina.
+Teemakarttaa tallennettaessa pohjaksi kopioidaan viimeisin kartta ja vaihdetaan
+vain luonnoksessa muokatut widgetin avaimet. Kelloprofiileissa yhdistetään vain
+muokatut sisältökentät. Asetussignaalit päivittävät luonnoksen muokkaamattomat
+valinnat, joten toisella sivulla tallennettu uudempi valinta säilyy.
+Kellon esikatselu käyttää erillisiä teema-, ajanlasku- ja sisältöylikirjoituksia
+muuttamatta tallennettua tilaa.
+
+Asetussivun **Käytä valittua teemaa kaikissa widgeteissä** on nimenomainen
+kaikkien teemavalintojen palautus yhteiseen teemaan. Tallennus tyhjentää kartan
+ja asettaa `time_theme`-arvoksi `shared`; näkyvyys ja kellosisällöt säilyvät.
+Yksittäisen widgetin teemavalinta ei kirjoita taustakuva-asetuksia. Yhteinen
+sovellusteema noudattaa edelleen tallennettua teeman mukana vaihtuvan taustan valintaa.
+
+`Controller.configure` vertaa muuttuneita asetuksia ja sääwidgetin todellista
+palettia. Paletin muuttuessa `SharedWeather.apply_widget_theme` vaihtaa piirto-
+ja painikevärit ja kutsuu `update`-piirtoa. Se säilyttää ennusteen, palveluvalinnan,
+Windy-näkymän sekä sää- ja kellokierron ajastukset; verkkohakuja, karttalatauksia
+tai ajastusten uudelleenkäynnistyksiä ei tehdä. Säägraafin lämpö-, sade- ja
+tuulisarjojen semanttiset värit säilyvät.
 
 ## Sää, viat ja yksittäisinstanssi
 

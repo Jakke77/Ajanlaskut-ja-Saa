@@ -17,7 +17,8 @@ DEFAULTS = {
     'wallpaper_interval': 77, 'wallpaper_shuffle': True,
     'wallpaper_follow_theme': True, 'wallpaper_theme_target': 'desktop',
     'time_mode': 'cycle', 'time_system': 'shadow', 'time_systems': list(SYSTEMS),
-    'time_interval': 77, 'time_theme': 'calendar', 'clock_profiles': copy.deepcopy(DEFAULT_PROFILES),
+    'time_interval': 77, 'time_theme': 'shared', 'clock_profiles': copy.deepcopy(DEFAULT_PROFILES),
+    'widget_themes': {},
     'calendar_extras_visible': True, 'calendar_extras': ['islamic', 'hebrew', 'persian'],
     'calendar_extras_scope': 'star', 'calendar_extra_cell': 'none',
     'seconds': True, 'locked': False, 'on_top': False, 'zone': 'Europe/Helsinki',
@@ -55,6 +56,8 @@ class State:
             if not isinstance(loaded, dict) or loaded.get('version') != 1: raise ValueError('Tuntematon asetustiedosto')
             old_settings = loaded.get('settings', {})
             settings = {**copy.deepcopy(DEFAULTS), **old_settings}
+            # Files written before clock-theme settings used calendar-specific palettes.
+            if 'time_theme' not in old_settings: settings['time_theme'] = 'calendar'
             settings['widgets'] = {**DEFAULTS['widgets'], **settings.get('widgets', {})}
             # Existing installations keep their selected windows until explicitly merged.
             if 'combined' not in old_settings.get('widgets', {}): settings['widgets']['combined'] = False
@@ -81,6 +84,13 @@ class State:
         if settings['time_mode'] not in ('fixed', 'cycle', 'random'): raise ValueError('Tuntematon ajanlaskun vaihtotapa')
         if settings['time_system'] not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')
         if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu'): raise ValueError('Tuntematon kelloteema')
+        widget_themes = settings.get('widget_themes', {})
+        if not isinstance(widget_themes, dict): raise ValueError('Virheelliset widgettiteemat')
+        for key, selection in widget_themes.items():
+            if (key not in DEFAULTS['widgets'] or not isinstance(selection, str)
+                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'calendar')
+                or selection == 'calendar' and key not in PROFILE_KEYS):
+                raise ValueError('Tuntematon widgettiteema')
         systems = settings['time_systems']
         if (not isinstance(systems, list) or not systems or any(s not in SYSTEMS for s in systems)
             or len(set(systems)) != len(systems)): raise ValueError('Valitse vähintään yksi eri ajanlasku.')

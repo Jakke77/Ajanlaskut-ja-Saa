@@ -1,4 +1,5 @@
 """Unified dashboard, calendars, forecasts, widget controls and appearance."""
+import copy
 from datetime import date, datetime, time
 from zoneinfo import available_timezones
 from PyQt6.QtCore import Qt, QTimer, QRectF, QTime
@@ -13,6 +14,7 @@ from .theme import THEMES, THEME_LABELS, paint_panel
 from .state import DEFAULTS
 from . import almanac
 from .widgets import WIDGET_LABELS
+from .widget_themes import widget_theme_choices, widget_theme_selection
 from .weather.providers import NAMES as SOURCES, slots, aligned, common_scales
 from .weather.windy_view import WindyView
 
@@ -317,10 +319,11 @@ class WeatherPage(QWidget):
 
 class WidgetsPage(QWidget):
     def __init__(self,controller):
-        super().__init__();self.controller=controller;self.checks={}
+        super().__init__();self.controller=controller;self.checks={};self.themes={}
+        self.theme_drafts={};self.edited_themes=set();self.loading=True
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(12)
         layout.addWidget(label('TYÖPÖYDÄN NÄKYMÄT','eyebrow'));layout.addWidget(label('Valitse omat widgetisi','heading'))
-        layout.addWidget(label('Näkyvyys vaihtuu heti. Kellot voivat käyttää omia ajanlaskuteemojaan. Fontti ja sääpaikka ovat yhteiset.','muted',True))
+        layout.addWidget(label('Näkyvyys vaihtuu heti. Valitse jokaiselle widgetille oma teema ja tallenna teemavalinnat. Fontti ja sääpaikka ovat yhteiset.','muted',True))
         layout.addWidget(button('Vaihtuva kello · ajanlaskut ja sisältö',lambda:controller.open_page('clocks')))
         layout.addWidget(button('Näytä valitut widgetit',controller.restore_widgets,True))
         layout.addWidget(button('Vaihda työpöydän tai lukitusnäytön taustakuvaa',lambda:controller.open_page('wallpapers')))
@@ -328,13 +331,45 @@ class WidgetsPage(QWidget):
             frame,content=card();row=QHBoxLayout();row.addWidget(label(title));row.addStretch(1)
             check=QCheckBox('Näytä työpöydällä');check.setChecked(controller.options['widgets'][key])
             check.toggled.connect(lambda checked,k=key:controller.set_widget(k,checked));row.addWidget(check)
-            content.addLayout(row);layout.addWidget(frame);self.checks[key]=check
+            content.addLayout(row)
+            theme=QComboBox();theme.setAccessibleName(title+' · Teema')
+            for name,token in widget_theme_choices(key):theme.addItem(name,token)
+            form=QFormLayout();form.addRow('Teema',theme);content.addLayout(form)
+            theme.currentIndexChanged.connect(lambda _,k=key:self.change_theme(k))
+            layout.addWidget(frame);self.checks[key]=check;self.themes[key]=theme
+        self.status=label('Teemavalinnat otetaan käyttöön tallentamalla.','muted',True);layout.addWidget(self.status)
+        layout.addWidget(button('Tallenna widgettiteemat',self.save,True))
         layout.addStretch(1)
         layout.addWidget(button('Palauta widgetien paikat',controller.reset_positions))
         controller.settings_changed.connect(self.sync)
+        self.loading=False;self.sync()
+
+    def change_theme(self,key):
+        if self.loading:return
+        self.theme_drafts[key]=self.themes[key].currentData();self.edited_themes.add(key)
+        self.status.setText('Teemavalintoja muutettu — tallenna, kun valinnat ovat sopivat.')
+
+    def save(self):
+        if not self.edited_themes:
+            self.status.setText('Ei uusia teemavalintoja tallennettavana.');return
+        selections=copy.deepcopy(self.controller.options.get('widget_themes',{}))
+        for key in self.edited_themes:selections[key]=self.theme_drafts[key]
+        try:
+            self.controller.configure({'widget_themes':selections})
+            self.edited_themes.clear();self.sync()
+            self.status.setText('Tallennettu — widgettien omat teemat on otettu käyttöön.')
+        except (OSError,ValueError,KeyError) as error:self.status.setText(str(error))
+
     def sync(self):
+        self.loading=True;options=self.controller.options
         for key,check in self.checks.items():
-            check.blockSignals(True);check.setChecked(self.controller.options['widgets'][key]);check.blockSignals(False)
+            check.blockSignals(True);check.setChecked(options['widgets'][key]);check.blockSignals(False)
+            if key not in self.edited_themes:self.theme_drafts[key]=widget_theme_selection(options,key)
+            self.themes[key].setCurrentIndex(self.themes[key].findData(self.theme_drafts[key]))
+        self.loading=False
+
+    def showEvent(self,event):
+        super().showEvent(event);self.sync()
 
 class SettingsPage(QWidget):
     def __init__(self,controller):
@@ -346,6 +381,8 @@ class SettingsPage(QWidget):
         appearance,form_box=card();form_box.addWidget(label('Ulkoasu ja työpöytä','eyebrow'));form=QFormLayout();form.setSpacing(12)
         self.theme=QComboBox()
         for key,title in THEME_LABELS.items():self.theme.addItem(title,key)
+        self.all_widgets_theme=QCheckBox('Käytä valittua teemaa kaikissa widgeteissä')
+        self.all_widgets_theme.setToolTip('Tallennettaessa widgettien omat teemavalinnat korvataan yhteisellä teemalla.')
         from .wallpaper_options import ThemeWallpaperOptions
         self.wallpaper_options=ThemeWallpaperOptions(controller)
         self.font=QFontComboBox();self.scale=QSpinBox();self.scale.setRange(60,150);self.scale.setSuffix(' %')
@@ -358,6 +395,7 @@ class SettingsPage(QWidget):
         self.clock_scale.setToolTip('Kellon numeroiden koko erikseen muista widgettien teksteistä.')
         self.opacity=QSpinBox();self.opacity.setRange(0,100);self.opacity.setSuffix(' %')
         for word,item in [('Teema',self.theme),('Fontti',self.font),('Widgettien tekstikoko',self.text_scale),('Kellon numeroiden koko',self.clock_scale),('Widgetien koko',self.scale),('Taustan peittävyys',self.opacity)]:form.addRow(word,item)
+        form.addRow('',self.all_widgets_theme)
         form.addRow(self.wallpaper_options)
         form.addRow('',label('Tekstikoko ei muuta widgetin kokoa. Pitkät tekstit sovitetaan käytettävissä olevaan tilaan.','muted',True))
         self.seconds=QCheckBox('Näytä sekunnit');self.locked=QCheckBox('Lukitse widgetien paikat');self.top=QCheckBox('Pidä widgetit muiden ikkunoiden päällä')
@@ -369,6 +407,7 @@ class SettingsPage(QWidget):
         form_box.addLayout(form);layout.addWidget(appearance)
         layout.addWidget(button('Taustakuvat · työpöytä ja lukitusnäyttö',lambda:controller.open_page('wallpapers')))
         layout.addWidget(button('Ajanlaskut ja kellojen näkyvä sisältö',lambda:controller.open_page('clocks')))
+        layout.addWidget(button('Widgettien omat teemavalinnat',lambda:controller.open_page('widgets')))
         weather,box=card();box.addWidget(label('Aika ja sää','eyebrow'));form=QFormLayout();form.setSpacing(12)
         self.zone=QComboBox();self.zone.setEditable(True);self.zone.addItems(sorted(available_timezones()))
         self.refresh=QSpinBox();self.refresh.setRange(15,180);self.refresh.setSuffix(' minuuttia')
@@ -397,6 +436,7 @@ class SettingsPage(QWidget):
         self.theme.setCurrentIndex(0);self.font.setCurrentFont(QFont('Ubuntu'));self.scale.setValue(77);self.opacity.setValue(77)
         self.text_scale.setValue(DEFAULTS['widget_text_scale']);self.clock_scale.setValue(DEFAULTS['widget_clock_scale'])
         self.seconds.setChecked(True);self.locked.setChecked(False);self.top.setChecked(False)
+        self.all_widgets_theme.setChecked(False)
         self.wallpaper_options.behavior.setCurrentIndex(0);self.wallpaper_options.target.setCurrentIndex(0)
     def save(self):
         changes={'theme':self.theme.currentData(),'font':self.font.currentFont().family(),'scale':self.scale.value(),'opacity':self.opacity.value(),
@@ -404,7 +444,12 @@ class SettingsPage(QWidget):
             'zone':self.zone.currentText(),'refresh_minutes':self.refresh.value(),'windy_zoom':self.zoom.value(),'windy_layer':self.layer.currentData(),'star_side':self.side.currentData()}
         changes.update({key:item.isChecked() for item,key in [(self.seconds,'seconds'),(self.locked,'locked'),(self.top,'on_top'),(self.clock_weather,'clock_weather'),(self.sound,'sound'),(self.autostart,'autostart')]})
         changes.update(self.wallpaper_options.changes())
-        try:self.controller.configure(changes);self.status.setText('Tallennettu — sama ulkoasu on nyt kaikissa näkymissä.')
+        use_for_all=self.all_widgets_theme.isChecked()
+        if use_for_all:changes.update({'widget_themes':{},'time_theme':'shared'})
+        try:
+            self.controller.configure(changes);self.all_widgets_theme.setChecked(False)
+            self.status.setText('Tallennettu — valittu teema on käytössä kaikissa widgeteissä.' if use_for_all else
+                                'Tallennettu — yhteiset asetukset on otettu käyttöön. Widgettien omat teemat säilyvät.')
         except (OSError,ValueError,KeyError) as error:self.status.setText(str(error))
     def showEvent(self,event):
         super().showEvent(event);self.place.setText(self.controller.options['place']['name'])

@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGri
 from .clock_config import SYSTEMS, PROFILE_KEYS, CLOCK_TITLES, FIELD_LABELS
 from .theme import CALENDAR_THEME_NAMES, THEME_NAMES
 from .widgets import DesktopSurface, WIDGET_LABELS
+from .widget_themes import widget_theme_choices, widget_theme_selection
 from .ui import label, button, card
 
 class ClocksPage(QWidget):
@@ -12,6 +13,7 @@ class ClocksPage(QWidget):
         super().__init__();self.controller = controller
         self.loading = True;self.dirty = False;self.editing = 'combined'
         self.profiles = copy.deepcopy(controller.options['clock_profiles'])
+        self.theme_drafts = {};self.edited_themes = set();self.profile_edits = {};self.global_edits = set()
         layout = QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(12)
         layout.addWidget(label('AJANLASKUWIDGETIT', 'eyebrow'))
         heading = QHBoxLayout();heading.addWidget(label('Yksi kello, monta ajanlaskua', 'heading'));heading.addStretch(1)
@@ -24,29 +26,32 @@ class ClocksPage(QWidget):
         layout.addWidget(button('Korvaa erilliset kellot yhteisellä widgetillä', self.combine))
         split = QHBoxLayout();split.setSpacing(18);left = QVBoxLayout();split.addLayout(left, 1)
         frame, content = card();content.addWidget(label('AJANLASKUN VAIHTO', 'eyebrow'));form = QFormLayout()
+        self.target = QComboBox()
+        for key in PROFILE_KEYS:self.target.addItem(WIDGET_LABELS[key],key)
+        self.target.currentIndexChanged.connect(self.change_target)
+        form.addRow('Muokattava kello',self.target)
         self.mode = QComboBox()
         for title, key in [('Pidä valittu ajanlasku','fixed'), ('Vaihda järjestyksessä','cycle'), ('Vaihda satunnaisesti','random')]: self.mode.addItem(title, key)
         self.system = QComboBox()
         for key in SYSTEMS: self.system.addItem(CLOCK_TITLES[key], key)
         self.interval = QSpinBox();self.interval.setRange(1,3600);self.interval.setSuffix(' sekuntia')
-        self.theme = QComboBox();self.theme.addItem('Ajanlaskun oma teema', 'calendar');self.theme.addItem('Sovelluksen yhteinen teema', 'shared');self.theme.addItem('Ubuntu · analoginen kello', 'ubuntu')
+        self.theme = QComboBox()
+        for title,key in widget_theme_choices(self.editing):self.theme.addItem(title,key)
         for title, control in [('Vaihtotapa',self.mode),('Valittu ajanlasku',self.system),('Vaihtoväli',self.interval),('Kellon teema',self.theme)]:form.addRow(title,control)
         content.addLayout(form)
         self.pool = {};pool_row = QHBoxLayout()
         for key in SYSTEMS:
             check = QCheckBox(CLOCK_TITLES[key]);pool_row.addWidget(check);self.pool[key] = check
-            check.toggled.connect(self.changed)
+            check.toggled.connect(lambda _:self.changed(setting='time_systems'))
         content.addWidget(label('Vaihtoon osallistuvat ajanlaskut', 'muted'));content.addLayout(pool_row)
         content.addWidget(label('Kupari · Varjoaika / Astraali · Tähtiaika / Aamunkajo · Gregoriaaninen. Kellon paikka ja koko eivät muutu ajanlaskun vaihtuessa.', 'muted', True))
-        content.addWidget(label('Ubuntu näyttää analogisen kellotaulun. Voit valita sen erikseen kellolle tai yhteiseksi teemaksi asetuksissa.', 'muted', True))
+        content.addWidget(label('Kellon teema ja näkyvä sisältö koskevat yllä valittua kellowidgetiä. Ubuntu näyttää analogisen kellotaulun. Vaihtotapa koskee yhteistä kelloa.', 'muted', True))
         left.addWidget(frame)
         frame, content = card();content.addWidget(label('NÄKYVÄ SISÄLTÖ', 'eyebrow'))
-        self.target = QComboBox()
-        for key in PROFILE_KEYS: self.target.addItem(WIDGET_LABELS[key], key)
-        self.target.currentIndexChanged.connect(self.change_target);content.addWidget(self.target)
         grid = QGridLayout();self.fields = {}
         for index, (key, title) in enumerate(FIELD_LABELS.items()):
-            check = QCheckBox(title);self.fields[key] = check;grid.addWidget(check,index//2,index%2);check.toggled.connect(self.changed)
+            check = QCheckBox(title);self.fields[key] = check;grid.addWidget(check,index//2,index%2)
+            check.toggled.connect(lambda _,field=key:self.changed(field=field))
         content.addLayout(grid)
         content.addWidget(label('Sisältövalinnat tallentuvat erikseen yhteiselle widgetille ja vanhoille erillisille kelloille. Kuun- ja kierronvaiheet ovat kuvitteellisia, paitsi gregoriaanisen ISO-viikko.', 'muted', True))
         content.addWidget(button('Tekstikoko ja fontti →', lambda:controller.open_page('settings')))
@@ -65,8 +70,10 @@ class ClocksPage(QWidget):
         layout.addWidget(button('Tallenna kelloasetukset', self.save, True))
         self.preview_widget = DesktopSurface(controller, 'combined', preview=True, parent=self)
         self.preview_widget.hide()
-        for control in (self.mode,self.system,self.theme):control.currentIndexChanged.connect(self.changed)
-        self.interval.valueChanged.connect(self.changed)
+        for control,key in ((self.mode,'time_mode'),(self.system,'time_system')):
+            control.currentIndexChanged.connect(lambda _,setting=key:self.changed(setting=setting))
+        self.theme.currentIndexChanged.connect(lambda _:self.changed(theme=True))
+        self.interval.valueChanged.connect(lambda _:self.changed(setting='time_interval'))
         self.preview_system.currentIndexChanged.connect(self.refresh_preview)
         controller.clock_changed.connect(self.refresh_preview)
         controller.daily.changed.connect(self.refresh_preview)
@@ -77,7 +84,10 @@ class ClocksPage(QWidget):
         self.loading = True
         options = self.controller.options
         self.profiles = copy.deepcopy(options['clock_profiles'])
-        for control, key in [(self.mode,'time_mode'),(self.system,'time_system'),(self.theme,'time_theme')]:control.setCurrentIndex(control.findData(options[key]))
+        self.theme_drafts = {key:widget_theme_selection(options,key) for key in PROFILE_KEYS}
+        self.edited_themes.clear();self.profile_edits.clear();self.global_edits.clear()
+        for control, key in [(self.mode,'time_mode'),(self.system,'time_system')]:control.setCurrentIndex(control.findData(options[key]))
+        self.theme.setCurrentIndex(self.theme.findData(self.theme_drafts[self.editing]))
         self.interval.setValue(options['time_interval'])
         for key, check in self.pool.items():check.setChecked(key in options['time_systems'])
         self.enabled.blockSignals(True);self.enabled.setChecked(options['widgets']['combined']);self.enabled.blockSignals(False)
@@ -85,9 +95,21 @@ class ClocksPage(QWidget):
         self.loading = False;self.dirty = False;self.refresh_preview()
 
     def sync(self):
-        self.enabled.blockSignals(True);self.enabled.setChecked(self.controller.options['widgets']['combined']);self.enabled.blockSignals(False)
-        if not self.dirty:self.load()
-        else:self.refresh_preview()
+        if not self.dirty:self.load();return
+        self.loading = True;options = self.controller.options
+        self.enabled.blockSignals(True);self.enabled.setChecked(options['widgets']['combined']);self.enabled.blockSignals(False)
+        for key in PROFILE_KEYS:
+            for field,value in options['clock_profiles'][key].items():
+                if field not in self.profile_edits.get(key,set()):self.profiles[key][field]=value
+            if key not in self.edited_themes:self.theme_drafts[key]=widget_theme_selection(options,key)
+        for control,key in ((self.mode,'time_mode'),(self.system,'time_system')):
+            if key not in self.global_edits:control.setCurrentIndex(control.findData(options[key]))
+        if 'time_interval' not in self.global_edits:self.interval.setValue(options['time_interval'])
+        if 'time_systems' not in self.global_edits:
+            for key,check in self.pool.items():check.setChecked(key in options['time_systems'])
+        self.theme.setCurrentIndex(self.theme.findData(self.theme_drafts[self.editing]))
+        for key,check in self.fields.items():check.setChecked(self.profiles[self.editing][key])
+        self.loading=False;self.refresh_preview()
 
     def set_visible(self, enabled):
         if not self.loading:self.controller.set_widget('combined',enabled)
@@ -96,15 +118,23 @@ class ClocksPage(QWidget):
         try:self.controller.combine_clocks();self.status.setText('Erilliset kellot on piilotettu. Niiden asetukset ja sijainnit säilyvät.')
         except OSError as error:self.status.setText(str(error))
 
-    def changed(self):
+    def changed(self,setting=None,field=None,theme=False):
         if self.loading:return
-        self.dirty = True;self.status.setText('Esikatselu — tallenna, kun valinnat ovat sopivat.');self.refresh_preview()
+        if setting:self.global_edits.add(setting)
+        if field:
+            self.profiles[self.editing][field]=self.fields[field].isChecked()
+            self.profile_edits.setdefault(self.editing,set()).add(field)
+        if theme:
+            self.theme_drafts[self.editing]=self.theme.currentData();self.edited_themes.add(self.editing)
+        self.dirty = bool(self.global_edits or self.profile_edits or self.edited_themes)
+        self.status.setText('Esikatselu — tallenna, kun valinnat ovat sopivat.');self.refresh_preview()
 
     def change_target(self):
         if self.loading:return
         self.profiles[self.editing] = {key:check.isChecked() for key,check in self.fields.items()}
         self.editing = self.target.currentData();self.loading = True
         for key, check in self.fields.items():check.setChecked(self.profiles[self.editing][key])
+        self.theme.setCurrentIndex(self.theme.findData(self.theme_drafts[self.editing]))
         self.loading = False;self.refresh_preview()
 
     def refresh_preview(self):
@@ -114,6 +144,8 @@ class ClocksPage(QWidget):
         for check in self.pool.values():check.setEnabled(not fixed)
         system = self.editing if self.editing in SYSTEMS else (self.system.currentData() if fixed else self.preview_system.currentData())
         self.preview_system.setEnabled(self.editing=='combined' and not fixed)
+        if not self.preview_system.isEnabled():
+            self.preview_system.blockSignals(True);self.preview_system.setCurrentIndex(self.preview_system.findData(system));self.preview_system.blockSignals(False)
         self.preview_widget.profile_override = {key:check.isChecked() for key,check in self.fields.items()}
         self.preview_widget.system_override = system
         self.preview_widget.theme_override = self.theme.currentData()
@@ -124,14 +156,24 @@ class ClocksPage(QWidget):
         choice = self.theme.currentData()
         name = (CALENDAR_THEME_NAMES[system] if choice=='calendar' else
                 'Ubuntu · analoginen kello' if choice=='ubuntu' else
-                'Yhteinen ' + THEME_NAMES[self.controller.options['theme']])
-        self.preview_caption.setText(f'{CLOCK_TITLES[system]} · {name}\nEsikatselu ei muuta työpöydän widgettiä. Sää käyttää yhteistä ennustetta, jos se on saatavilla.')
+                'Yhteinen ' + THEME_NAMES[self.controller.options['theme']] if choice=='shared' else THEME_NAMES[choice])
+        self.preview_caption.setText(f'{WIDGET_LABELS[self.editing]} · {CLOCK_TITLES[system]} · {name}\nEsikatselu ei muuta työpöydän widgettiä. Sää käyttää yhteistä ennustetta, jos se on saatavilla.')
 
     def save(self):
-        self.profiles[self.editing] = {key:check.isChecked() for key,check in self.fields.items()}
-        changes = {'time_mode':self.mode.currentData(), 'time_system':self.system.currentData(),
-            'time_interval':self.interval.value(), 'time_theme':self.theme.currentData(),
-            'time_systems':[key for key,check in self.pool.items() if check.isChecked()], 'clock_profiles':copy.deepcopy(self.profiles)}
+        options=self.controller.options
+        global_values={'time_mode':self.mode.currentData(),'time_system':self.system.currentData(),
+                       'time_interval':self.interval.value(),'time_systems':[key for key,check in self.pool.items() if check.isChecked()]}
+        changes={key:global_values[key] for key in self.global_edits}
+        if self.edited_themes:
+            themes=copy.deepcopy(options.get('widget_themes',{}))
+            for key in self.edited_themes:themes[key]=self.theme_drafts[key]
+            changes['widget_themes']=themes
+        if self.profile_edits:
+            profiles=copy.deepcopy(options['clock_profiles'])
+            for key,fields in self.profile_edits.items():
+                for field in fields:profiles[key][field]=self.profiles[key][field]
+            changes['clock_profiles']=profiles
+        if not changes:self.status.setText('Ei uusia kelloasetuksia tallennettavana.');return
         try:
             self.controller.configure(changes);self.dirty = False;self.load();self.status.setText('Tallennettu — ajanlaskut, sisältö ja teema on otettu käyttöön.')
         except (ValueError,OSError) as error:self.status.setText(str(error))

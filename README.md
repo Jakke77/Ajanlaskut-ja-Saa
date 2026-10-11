@@ -5,6 +5,36 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Oma teema jokaiselle widgetille · versio 1.6.0
+
+![Ubuntu-kello, Halla-sää ja Kupari-kuukausiwidget; esimerkkisää](previews/widget-theme-desktop.png)
+
+**Työpöytäwidgetit → Teema** tarjoaa jokaiselle kahdeksalle widgetille oman
+**Kupari**, **Halla** tai **Ubuntu** -valinnan. **Sovelluksen yhteinen teema**
+seuraa Asetukset-sivun teemaa. Valinnat otetaan käyttöön painikkeesta
+**Tallenna widgettiteemat**; pelkkä valikon vaihtaminen on vielä luonnos.
+Esimerkiksi Ubuntu-kello, Halla-säägraafi ja Kupari-kuukausiwidget voivat näkyä
+samaan aikaan. Widgetin oikean painikkeen **Widgetin teema…** avaa saman sivun.
+
+**Ajanlaskuwidgetit → Muokattava kello → Kellon teema** muuttaa kyseisen kellon
+teemaa. Kellot tarjoavat lisäksi **Ajanlaskun oma teema** -valinnan. Valittu
+kello näkyy esikatselussa, ja sen sisältö tallentuu omana profiilinaan.
+
+**Asetukset → Teema → Ubuntu** antaa yhteisen Ubuntu-ilmeen myös sääwidgetille.
+Valitsemalla **Käytä valittua teemaa kaikissa widgeteissä** ja tallentamalla
+voi palauttaa kaikki widgetit seuraamaan tätä teemaa yhdellä kertaa.
+Omat teemavalinnat säilyvät tavallisessa yhteisen teeman vaihdossa.
+Yksittäisen widgetin teemavalinta ei vaihda työpöydän taustakuvaa.
+
+Vanhojen asennusten kelloteemat säilyvät päivityksessä. Uudessa asennuksessa
+widgetit seuraavat yhteistä teemaa, kunnes niille valitaan oma teema.
+Sääteeman vaihto päivittää paletin ja koristeet säilyttäen sääpalvelun,
+ennusteen, hakuvälin ja kartan. Ubuntu-kellon vähimmäiskorkeus on edelleen
+suurempi kuin digitaalisen kellon.
+
+**Päivityksen jälkeen valitse vanhasta ohjelmasta Lopeta sovellus ja avaa se
+uudelleen**, jotta uusi käyttöliittymä tulee näkyviin. [Päivitysohje](UPDATES.md).
+
 ## Ubuntu-teema ja analoginen kello · versio 1.5.0
 
 ![Ubuntu-kellon esikatselu, esimerkkiaika 10.10.2026 klo 10.10.30](previews/ubuntu-desktop.png)
@@ -43,7 +73,7 @@ valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDAT
   sisältövalinnat ja tallentamaton esikatselu.
 - **Sää:** Yr/MET Norway, Foreca, Ilmatieteen laitos ja Windyn kartta;
   12 tai 24 tuntia. Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
-- **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää.
+- **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää ja omat teemavalinnat.
 - **Taustakuvat:** Kupari-, Halla- ja Ubuntu-galleria, oma teema-repo ja omat kuvat; eri taustat
   työpöydälle ja lukitusnäytölle sekä 1–77 minuutin diaesitys.
 - **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,

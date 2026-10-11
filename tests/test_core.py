@@ -58,7 +58,8 @@ class StateTests(unittest.TestCase):
 
     def test_defaults(self):
         self.assertEqual(self.state.settings['theme'], 'copper')
-        self.assertEqual(self.state.settings['time_theme'], 'calendar')
+        self.assertEqual(self.state.settings['time_theme'], 'shared')
+        self.assertEqual(self.state.settings['widget_themes'], {})
         self.assertEqual([k for k, v in self.state.settings['widgets'].items() if v], ['combined', 'weather'])
         self.assertEqual(self.state.settings['refresh_minutes'], 77)
         self.assertEqual(self.state.settings['place']['name'], 'Pöllönkangas, Oulu')
