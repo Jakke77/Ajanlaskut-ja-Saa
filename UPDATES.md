@@ -46,19 +46,19 @@ varmuuskopiolla tätä varten.
 
 ## Valmiin deb-paketin asentaminen
 
-Lataa [ajanlaskut-ja-saa_1.6.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.1/ajanlaskut-ja-saa_1.6.1_all.deb)
+Lataa [ajanlaskut-ja-saa_1.6.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.2/ajanlaskut-ja-saa_1.6.2_all.deb)
 ja halutessasi tarkista sen SHA256SUMS samasta
-[packages/v1.6.1-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.1).
+[packages/v1.6.2-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.2).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Avaa pääte latauskansioon:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.6.1_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.6.2_all.deb
 ```
 
 Tämä päivittää **järjestelmäasennuksen**, joka käynnistyy komennolla
 `/usr/bin/ajanlaskut-ja-saa`. Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta,
 päivitä myös se alla olevalla [deb-asennuksen käyttöönottoketjulla](#komennon-käyttöönotto-deb-asennuksesta).
-Ketju rakentaa nyt 1.6.1-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
+Ketju rakentaa nyt 1.6.2-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
 Sen jälkeen käytä `codex-ajanlasku run` -komentoa. Asennukset käyttävät samaa
 asetustiedostoa, joten merkintöjä ei tarvitse siirtää.
 

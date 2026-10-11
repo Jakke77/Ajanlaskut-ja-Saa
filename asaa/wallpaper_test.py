@@ -1,7 +1,8 @@
 """Qt checks for theme wallpaper policy; only the isolated MemoryBackend is used."""
 import copy
+from pathlib import Path
 from unittest.mock import patch
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt,QPoint,QRect
 from PyQt6.QtTest import QTest
 from .wallpapers import DESKTOP,SAVER,DIA
 from .state import State
@@ -18,7 +19,20 @@ def choose(combo,value,app):
     app.processEvents();combo.hidePopup()
 
 
-def acceptance(controller,app,backend):
+def click_with_visible_feedback(page,scroll,action,app):
+    """Only scroll before the click, then require feedback in the same viewport."""
+    scroll.ensureWidgetVisible(action,50,70);app.processEvents()
+    viewport=scroll.viewport()
+    assert viewport.rect().contains(QRect(action.mapTo(viewport,QPoint(0,0)),action.size()))
+    position=scroll.verticalScrollBar().value()
+    QTest.mouseClick(action,Qt.MouseButton.LeftButton,pos=action.rect().center())
+    app.processEvents();app.processEvents()
+    assert page.status.text()
+    assert viewport.rect().contains(QRect(page.status.mapTo(viewport,QPoint(0,0)),page.status.size()))
+    assert scroll.verticalScrollBar().value()==position,'Feedback must be visible without further scrolling'
+
+
+def acceptance(controller,app,backend,preview_dir=None):
     before=copy.deepcopy(controller.state.data)
     backgrounds=copy.deepcopy(backend.values)
     try:
@@ -117,6 +131,40 @@ def acceptance(controller,app,backend):
         copper=controller.wallpapers.library.preserve(controller.wallpapers.library.for_theme('copper').path).as_uri()
         assert backend.values[DESKTOP]['picture-uri']==copper
         assert not controller.options['wallpaper_follow_theme']
+        # At the recorded user's window size, action results must be visible
+        # beside the buttons, including a failed backend write.
+        controller.configure({'theme':'ubuntu','wallpaper_follow_theme':False,'wallpaper_theme_target':'desktop'})
+        controller.window.resize(1440,800);controller.open_page('wallpapers');app.processEvents()
+        page.theme_options.target.setCurrentIndex(page.theme_options.target.findData('desktop'))
+        copper_index=next(index for index,item in enumerate(page.items) if item.theme=='copper')
+        page.gallery.clearSelection();page.gallery.setCurrentRow(copper_index);app.processEvents()
+        assert page.selected()[0].theme=='copper'
+        assert page.current_theme_button.text()=='Aseta Ubuntu-teeman tausta'
+        assert 'Galleriassa valittu kuva' in page.current_theme_button.toolTip()
+        scroll=controller.window.pages.currentWidget()
+        backend.calls.clear()
+        click_with_visible_feedback(page,scroll,page.save_theme_button,app)
+        assert page.status.text().startswith('Tallennettu') and not backend.calls
+        click_with_visible_feedback(page,scroll,page.current_theme_button,app)
+        ubuntu=controller.wallpapers.library.preserve(controller.wallpapers.library.for_theme('ubuntu').path).as_uri()
+        assert backend.values[DESKTOP]['picture-uri']==ubuntu and ubuntu!=copper
+        assert page.selected()[0].theme=='copper'
+        assert page.status.text().startswith('Teeman tausta asetettu:')
+        if preview_dir:
+            preview_dir=Path(preview_dir);preview_dir.mkdir(parents=True,exist_ok=True)
+            assert controller.window.grab().save(str(preview_dir/'wallpaper-feedback-success.png'))
+        previous_state=copy.deepcopy(controller.state.data);raw=controller.state.path.read_bytes()
+        previous_background=copy.deepcopy(backend.values)
+        backend.fail=DESKTOP
+        click_with_visible_feedback(page,scroll,page.current_theme_button,app)
+        assert 'simulated storage failure' in page.status.text()
+        assert controller.state.data==previous_state and controller.state.path.read_bytes()==raw
+        assert backend.values==previous_background
+        if preview_dir:
+            assert controller.window.grab().save(str(preview_dir/'wallpaper-feedback-error.png'))
+        controller.configure({'theme':'frost'});app.processEvents()
+        assert page.current_theme_button.text()=='Aseta Halla-teeman tausta'
+        print('PASS: wallpaper success/error feedback stays visible at 1440x800; named theme action differs from selected gallery image')
         print('PASS: Halla/Kupari follow by default, keep policy persists, desktop/lock scope and unchanged clock/widget geometry')
         print('PASS: no startup/font/rotation wallpaper writes; failed settings/backend save restores both theme and backgrounds')
     finally:

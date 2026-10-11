@@ -5,6 +5,16 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Taustakuvatoimintojen näkyvä palaute · versio 1.6.2
+
+Tallennuksen, taustakuvan asettamisen ja virheiden viestit näkyvät nyt
+Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
+(tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
+asettaa **Työpöydän taustaksi** -painike.
+
+[Lataa valmis 1.6.2-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.2).
+Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
+
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
 
 **Ajanlaskuwidgetit → Muokattava kello** tarjoaa jokaiselle kellolle omat
@@ -44,7 +54,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.6.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.1).
+[packages/v1.6.2-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.2).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0

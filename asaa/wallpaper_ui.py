@@ -56,9 +56,16 @@ class WallpapersPage(QWidget):
         from .wallpaper_options import ThemeWallpaperOptions
         self.theme_options=ThemeWallpaperOptions(controller)
         content.addWidget(self.theme_options)
+        self.status = label('', 'status', True)
+        self.status.setAccessibleName('Taustakuvatoiminnon palaute')
+        content.addWidget(self.status)
         policy_actions=QHBoxLayout()
-        policy_actions.addWidget(button('Tallenna teemanvaihdon valinta',self.save_theme_policy))
-        policy_actions.addWidget(button('Käytä nykyisen teeman taustaa',self.apply_current_theme))
+        self.save_theme_button=button('Tallenna teemanvaihdon valinta',self.save_theme_policy)
+        self.current_theme_button=button('',self.apply_current_theme)
+        self.current_theme_button.setToolTip('Asettaa sovelluksen nykyisen teeman oletustaustan. '
+            'Galleriassa valittu kuva asetetaan Työpöydän taustaksi -painikkeella.')
+        policy_actions.addWidget(self.save_theme_button)
+        policy_actions.addWidget(self.current_theme_button)
         content.addLayout(policy_actions)
         controls = QHBoxLayout()
         self.mode = QComboBox()
@@ -85,7 +92,6 @@ class WallpapersPage(QWidget):
         self.restore_button = button('Palauta edelliset taustat', self.restore)
         content.addWidget(self.restore_button)
         layout.addWidget(frame)
-        self.status = label('', 'muted', True); layout.addWidget(self.status)
         bottom = QHBoxLayout()
         bottom.addWidget(button('Avaa teemakansio', self.open_folder))
         bottom.addWidget(button('Käytä vain sovelluksen galleriaa', self.clear_folder))
@@ -178,6 +184,8 @@ class WallpapersPage(QWidget):
         self.both_button.setToolTip('Aseta valitut kuvat työpöydälle ja lukitusnäytölle.' if dia else reason)
 
     def refresh_current(self):
+        name=THEME_NAMES[self.controller.options['theme']]
+        self.current_theme_button.setText('Aseta '+name+'-teeman tausta')
         desktop, dia = self.manager.capabilities()
         self.current.setText('Työpöytä: ' + self.manager.current('desktop',(desktop,dia)) +
                             '\nLukitusnäyttö: ' + self.manager.current('lock',(desktop,dia)))

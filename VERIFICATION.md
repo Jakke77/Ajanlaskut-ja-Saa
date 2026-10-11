@@ -1,5 +1,13 @@
 # Tarkistus 11.10.2026
 
+## Taustakuvatoimintojen palaute 1.6.2
+
+- Videolla työpöydän taustakuva vaihtui, mutta toiminnon kuittaus jäi
+  vieritettävän sivun alareunaan. Kuittaus on siirretty painikkeiden lähelle.
+- Käyttöliittymätesti tarkistaa toiminnon onnistumis- ja virheviestin näkyvyyden
+  sekä nykyisen teeman kuvan asettamisen erillään gallerian valinnasta.
+- Paketti käyttää samaa asetusrakennetta ja riippuvuuksia kuin 1.6.1.
+
 ## Kellon näyttötapa ja widgettien tekstivärit 1.6.1
 
 - 159 yksikkötestiä läpäistiin; 25 uutta kellon näyttötavan ja värien testiä.
