@@ -15,6 +15,8 @@ kartta, välimuisti, paikka ja palveluasetukset säilyvät teemanvaihdossa.
 | Ajanlaskut | kaikki kolme | vähintään yksi, satunnainen ei toista heti samaa |
 | Vaihtoväli | 77 sekuntia | 1–3600 s, ei sama asetus kuin sään 77 minuuttia |
 | Kelloteema | sovelluksen yhteinen | widgetille voi valita Kuparin, Hallan, Ubuntun tai ajanlaskun oman teeman |
+| Näyttötapa | teeman oletus | digitaalinen, analoginen tai molemmat; valinta erikseen jokaiselle kellolle |
+| Digikellon numerokoko | yhteinen 100 % | oma 80–140 % valitulle kellolle; fontti säilyy yhteisenä |
 | Varjoajan oma teema | Kupari | kuparipaletti ja kiertoradat |
 | Tähtiajan oma teema | Astraali | tumma vihertävä pohja ja kultainen korostus |
 | Gregoriaanisen oma teema | Aamunkajo | sinertävä pohja ja vaalea kalenteriruudukko |
@@ -33,8 +35,9 @@ Teema valitaan erikseen kaikille kahdeksalle widgetille: yhteiselle kellolle,
 kolmelle erilliselle kellolle, tuntisäägraafille, Varjosään kolmen päivän
 näkymälle sekä Varjoajan ja Tähtiajan kuukausiwidgeteille.
 **Työpöytäwidgetit → Teema** tarjoaa yhteisen teeman, Kuparin, Hallan ja Ubuntun.
-Kelloissa voi lisäksi valita **Ajanlaskun oma teema**. Ubuntu piirtää kelloihin
-analogisen kellotaulun ja digitaalisen ajan; muissa widgeteissä se vaihtaa paletin.
+Kelloissa voi lisäksi valita **Ajanlaskun oma teema**. Ubuntu vaihtaa paletin ja
+käyttää oletuksena analogista kellotaulua ja digitaalista aikaa. **Näyttötapa**
+voi valita digin, analogin tai molemmat missä tahansa teemassa.
 
 **Ajanlaskuwidgetit**-sivulla teema ja sisällöt koskevat valittua kellowidgettiä.
 Esikatselu näyttää luonnoksen ennen tallennusta. Tallennus yhdistää vain

@@ -175,7 +175,7 @@ class WidgetThemeResolutionTests(unittest.TestCase):
                 expected = {'shared', 'copper', 'frost', 'ubuntu'}
                 if key in PROFILE_KEYS:
                     expected.add('calendar')
-                    self.assertEqual(labels['ubuntu'], 'Ubuntu · analoginen kello')
+                    self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
                 else:
                     self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
                 self.assertEqual(set(labels), expected)

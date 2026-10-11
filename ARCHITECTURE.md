@@ -66,7 +66,16 @@ olemassa olevaa `time_theme`-valintaa ja muille widgeteille `shared`-valintaa.
 `calendar`-valinnan näkyvän ajanlaskun `CALENDAR_THEMES`-paletista ja kiinteän
 valinnan suoraan `THEMES`-paletista. `widget_theme_choices` tarjoaa samat
 valinnat työpöytäwidgettien sivulle ja kellon esikatseluun. Ubuntu-paletin
-kellot käyttävät `ubuntu_clock`-piirtäjää; sää- ja kuukausiwidgetit saavat sen värit.
+kellot käyttävät oletuksena `ubuntu_clock`-piirtäjää; sää- ja kuukausiwidgetit saavat sen värit.
+
+Valinnainen `clock_displays` on neljän kellon harva kartta. Osittaisen valinnan
+`mode` on `theme`, `digital`, `analog` tai `both`; `digit_scale` on oma
+digitaalisten numeroiden koko 80–140 %. Puuttuva näyttötapa käyttää teeman
+oletusta (Ubuntu: molemmat, muut: digitaalinen), ja puuttuva koko seuraa yhteistä
+`widget_clock_scale`-asetusta. `clock_display` ratkaisee samat valinnat
+työpöydälle ja esikatselulle. Näyttötapa on teemasta riippumaton; pelkkä
+analoginen kello jättää digiajan piirtämättä. Kuparin ja Hallan kellotauluissa
+ei piirretä Ubuntun tunnusta. Vanha tiedosto täydentyy vain muistissa.
 
 Uudessa asennuksessa `time_theme` on `shared` ja kartta tyhjä, joten yhteinen
 teema ulottuu kaikkiin widgetteihin. Vanhaa tiedostoa luettaessa tallennettu
@@ -77,7 +86,10 @@ voi ohittaa vanhan kellon `calendar`- tai `ubuntu`-fallbackin.
 `WidgetsPage` ja `ClocksPage` pitävät tallentamattomat valinnat luonnoksina.
 Teemakarttaa tallennettaessa pohjaksi kopioidaan viimeisin kartta ja vaihdetaan
 vain luonnoksessa muokatut widgetin avaimet. Kelloprofiileissa yhdistetään vain
-muokatut sisältökentät. Asetussignaalit päivittävät luonnoksen muokkaamattomat
+muokatut sisältökentät. Näyttötapakartassakin
+yhdistetään vain muokatut kentät, jotta toisen tallennuksen uusi koko säilyy
+näyttötapaa vaihdettaessa ja yhteiseen kokoon palaaminen voi poistaa oman koon.
+Signaalit päivittävät luonnoksen muokkaamattomat
 valinnat, joten toisella sivulla tallennettu uudempi valinta säilyy.
 Kellon esikatselu käyttää erillisiä teema-, ajanlasku- ja sisältöylikirjoituksia
 muuttamatta tallennettua tilaa.

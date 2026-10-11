@@ -102,6 +102,8 @@ def run_tests(app, preview_dir=None):
             ubuntu_acceptance(controller,app,preview_dir)
             from .widget_theme_test import acceptance as widget_theme_acceptance
             widget_theme_acceptance(controller,app,preview_dir)
+            from .clock_display_test import acceptance as clock_display_acceptance
+            clock_display_acceptance(controller,app,preview_dir)
             dimensions={key:widget.size() for key,widget in controller.widgets.items()}
             positions={key:widget.pos() for key,widget in controller.widgets.items()}
             settings=controller.window.page_widgets['settings']

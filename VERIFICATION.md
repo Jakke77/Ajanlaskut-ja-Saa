@@ -2,9 +2,11 @@
 
 ## Widgettikohtaiset teemat 1.6.0
 
-- 134 yksikkötestiä läpäistiin. Uudet 13 testiä kattavat harvan teemakartan,
+- 148 yksikkötestiä läpäistiin. Uudet 27 testiä kattavat harvan teemakartan,
   vanhojen kelloteemojen säilymisen, uuden asennuksen yhteisen oletusteeman,
   widgettikohtaisen valinnan, paletin ja virheellisten valintojen atomisen hylkäyksen.
+  Kellon näyttötapa ja oma diginumeroiden koko säilyvät erikseen jokaiselle
+  kellolle. Puuttuvat valinnat säilyttävät aiemman teeman näyttötavan ja yhteisen koon.
 - Eristetty Qt-toimintatesti käyttää oikeita Työpöytäwidgetit-,
   Ajanlaskuwidgetit- ja Asetukset-sivuja. Kaikilla kahdeksalla widgetillä on oma
   teemavalinta. Tallentamaton luonnos ei muuta työpöytää; tallennus säilyy
@@ -22,6 +24,16 @@
 - Riippumaton Qt-tarkistus kattoi myös piilotetun widgetin tallennetun teeman
   käyttöönoton ensimmäisessä näyttämisessä sekä sääpaletin ja kellosisällön
   muuttamisen samassa asetuskokonaisuudessa.
+- Kellon näyttötavan ja numerokoon oikeat Qt-valinnat testataan luonnoksena,
+  tallennettuna, toisen asetuskentän samanaikaisen muutoksen kanssa ja
+  kirjoitusvirheen jälkeen. Digi, analogi ja molemmat toimivat kaikissa teemoissa.
+  Digiajan todellinen fonttikoko kasvaa 80–140 % sekä erillisessä digissä että
+  kellotaulun sisällä; yhteinen koko seuraa asetuksia vain ilman omaa kokovalintaa.
+  Kolmen fontin, ajanlaskun ja näyttötavan tekstit pysyvät rajoissa myös
+  sekuntien piilotuksen ja nollan prosentin taustan kanssa.
+- `previews/clock-display-desktop.png` näyttää kolme näyttötapaa ja
+  `previews/clock-displays.png` oikean kelloasetussivun, jossa näyttötapa ja
+  diginumeroiden koko ovat esillä. Kuvissa on merkitty esimerkkiaika.
 - `previews/widget-theme-desktop.png` on Qt:llä renderöity yhdistelmäkuva
   Ubuntu-kellosta, Halla-säägraafista ja Kupari-kuukausiwidgetistä. Sää on
   kuvassa merkitty esimerkkisääksi. Testit käyttävät offscreen-alustaa ja

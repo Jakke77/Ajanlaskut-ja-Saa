@@ -20,6 +20,22 @@ samaan aikaan. Widgetin oikean painikkeen **Widgetin teema…** avaa saman sivun
 teemaa. Kellot tarjoavat lisäksi **Ajanlaskun oma teema** -valinnan. Valittu
 kello näkyy esikatselussa, ja sen sisältö tallentuu omana profiilinaan.
 
+Samalla sivulla **Näyttötapa** valitsee **Digitaalisen**, **Analogisen** tai
+**Analogisen ja digitaalisen** kellon teemasta riippumatta. **Teeman oletus**
+säilyttää aiemman ulkoasun: Ubuntu näyttää molemmat, muut teemat digikellon.
+Jokaisella kellolla voi olla oma näyttötapa.
+
+**Digikellon numerokoko** säätää valitun kellon digitaalisia numeroita
+80–140 %. Poista ensin **Käytä yhteistä numerokokoa** -valinta. Valinnat näkyvät
+esikatselussa heti; **Tallenna kelloasetukset** ottaa ne käyttöön työpöydällä.
+Yhteistä kokoa ja fontin perhettä voi edelleen säätää Asetukset-sivulla.
+Analogisessa näyttötavassa diginumeroiden säätö on pois käytöstä.
+Kellon **⚙** avaa suoraan kyseisen kellon asetukset.
+
+![Digitaalinen, analoginen ja yhdistelmäkello; esimerkkiaika](previews/clock-display-desktop.png)
+
+![Kellon näyttötavan ja diginumeroiden koon valinnat](previews/clock-displays.png)
+
 **Asetukset → Teema → Ubuntu** antaa yhteisen Ubuntu-ilmeen myös sääwidgetille.
 Valitsemalla **Käytä valittua teemaa kaikissa widgeteissä** ja tallentamalla
 voi palauttaa kaikki widgetit seuraamaan tätä teemaa yhdellä kertaa.
@@ -79,14 +95,15 @@ valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDAT
 - **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,
   sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
 
-Version 1.0.1 fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
-**Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Kellon numeroiden koko**
+Yhteiset fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
+**Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Yhteinen kellon numerokoko**
 (80–140 %, oletus 100 %). Fontin perhe säilyy omana valintanaan. Kokoasetukset
 ovat erillisiä koko widgetin koosta, joten ikkunoiden paikat ja mitat eivät muutu.
 Säätö koskee uuden sovelluksen kaikkia widgettejä; erillinen vanha sääsovellus
 ei käytä näitä asetuksia. Pitkä päiväys tai paikan nimi lyhennetään tarvittaessa,
 ja kellon numerot sovitetaan omaan tilaansa. Varjoaika-kellon päiväennusteissa
 lämpö/sade ja sääkuvaus näytetään kahdella rivillä.
+Kellon oma diginumeroiden koko ohittaa yhteisen koon vain kyseisessä kellossa.
 
 Uudessa asennuksessa näkyvät **yhteinen ajanlaskukello** kolmen päivän säätiedoilla
 ja **Pöllönkankaan tuntisää**. Erikseen voi ottaa käyttöön Varjoajan, Tähtiajan

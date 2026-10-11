@@ -56,8 +56,9 @@ def paint_clock(painter, rect, now, theme, font_family, opacity=1, seconds=True,
         line = QColor(theme.accent);line.setAlphaF(opacity*.2)
         painter.setPen(QPen(line, 1))
         painter.drawEllipse(circle.adjusted(16, 16, -16, -16))
-        emblem = QColor(theme.accent);emblem.setAlphaF(opacity*.85)
-        ubuntu_mark(painter, center-QPointF(0, radius*.37), radius*.075, emblem)
+        if theme.motif == 'ubuntu':
+            emblem = QColor(theme.accent);emblem.setAlphaF(opacity*.85)
+            ubuntu_mark(painter, center-QPointF(0, radius*.37), radius*.075, emblem)
 
     # Marks and hands are clock content: they remain readable on a zero-opacity background.
     for tick in range(60):

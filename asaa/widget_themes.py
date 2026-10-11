@@ -26,8 +26,7 @@ def widget_theme_choices(key):
     if key in PROFILE_KEYS:
         choices.append(('Ajanlaskun oma teema', 'calendar'))
     for selection in ('copper', 'frost', 'ubuntu'):
-        label = (('Ubuntu · analoginen kello' if key in PROFILE_KEYS
-                  else 'Ubuntu · oranssi ja munakoiso') if selection == 'ubuntu'
+        label = ('Ubuntu · oranssi ja munakoiso' if selection == 'ubuntu'
                  else THEME_NAMES[selection])
         choices.append((label, selection))
     return choices

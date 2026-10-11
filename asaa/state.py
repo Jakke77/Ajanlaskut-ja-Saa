@@ -18,7 +18,7 @@ DEFAULTS = {
     'wallpaper_follow_theme': True, 'wallpaper_theme_target': 'desktop',
     'time_mode': 'cycle', 'time_system': 'shadow', 'time_systems': list(SYSTEMS),
     'time_interval': 77, 'time_theme': 'shared', 'clock_profiles': copy.deepcopy(DEFAULT_PROFILES),
-    'widget_themes': {},
+    'widget_themes': {}, 'clock_displays': {},
     'calendar_extras_visible': True, 'calendar_extras': ['islamic', 'hebrew', 'persian'],
     'calendar_extras_scope': 'star', 'calendar_extra_cell': 'none',
     'seconds': True, 'locked': False, 'on_top': False, 'zone': 'Europe/Helsinki',
@@ -91,6 +91,18 @@ class State:
                 or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'calendar')
                 or selection == 'calendar' and key not in PROFILE_KEYS):
                 raise ValueError('Tuntematon widgettiteema')
+        clock_displays = settings.get('clock_displays', {})
+        if not isinstance(clock_displays, dict): raise ValueError('Virheelliset kellon näyttötavat')
+        for key, display in clock_displays.items():
+            if (key not in PROFILE_KEYS or not isinstance(display, dict)
+                or not set(display) <= {'mode', 'digit_scale'}):
+                raise ValueError('Virheellinen kellon näyttötapa')
+            if 'mode' in display and (not isinstance(display['mode'], str)
+                or display['mode'] not in ('theme', 'digital', 'analog', 'both')):
+                raise ValueError('Tuntematon kellon näyttötapa')
+            if 'digit_scale' in display and (type(display['digit_scale']) is not int
+                or not 80 <= display['digit_scale'] <= 140):
+                raise ValueError('Virheellinen digikellon koko')
         systems = settings['time_systems']
         if (not isinstance(systems, list) or not systems or any(s not in SYSTEMS for s in systems)
             or len(set(systems)) != len(systems)): raise ValueError('Valitse vähintään yksi eri ajanlasku.')

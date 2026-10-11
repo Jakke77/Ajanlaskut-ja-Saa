@@ -84,9 +84,11 @@ muuten vastaanottaa uuden käynnistyskomennon ja näyttää edelleen vanhat vali
 `"$HOME/.local/bin/codex-ajanlasku" run --version` näyttää levyversion;
 kokonaan uusi käynnistys ottaa sen käyttöön.
 
-Widgettikohtaiset teemat 1.6.0 tallentuvat valinnaiseen `widget_themes`-karttaan.
+Widgettikohtaiset teemat 1.6.0 tallentuvat valinnaiseen `widget_themes`-karttaan,
+kellojen näyttötapa ja diginumeroiden oma koko `clock_displays`-karttaan.
 Versio 1.5.0 lukee saman asetustiedoston ja käyttää aiempaa yhteistä teemaa ja
-kelloteemaa; widgettikohtaiset valinnat eivät näy siinä. Uudet merkinnät säilyvät.
+kelloteemaa; widgettikohtaiset valinnat eivät näy siinä. Digikellon koko käyttää
+palautuksen jälkeen aiempaa yhteistä numerosäätöä. Uudet merkinnät säilyvät.
 
 ### Komennon käyttöönotto deb-asennuksesta
 
