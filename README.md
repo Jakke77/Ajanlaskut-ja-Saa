@@ -1,18 +1,26 @@
-# Ajanlaskut ja Sää 1.8.0 · Ubuntu 26.10 Dark ja oletuskuvakkeet
+# Ajanlaskut ja Sää 1.8.1 · Windy-kartan latauskorjaus
 
-[Lataa ajanlaskut-ja-saa_1.8.0_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.0/ajanlaskut-ja-saa_1.8.0_all.deb).
+[Lataa ajanlaskut-ja-saa_1.8.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.1/ajanlaskut-ja-saa_1.8.1_all.deb).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Tiedoston **Download raw file** lataa paketin.
 Lataa myös [SHA256SUMS](SHA256SUMS) halutessasi tarkistamista varten.
 
 Asenna latauskansiosta:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.8.0_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.8.1_all.deb
 ```
 
 **Valitse vanhasta ohjelmasta Lopeta sovellus.** Ikkunan × voi vain piilottaa sen.
 Käynnistä uusi järjestelmäasennus komennolla `/usr/bin/ajanlaskut-ja-saa`.
-Ikkunan otsikossa ja alareunassa näkyy nyt **1.8.0**.
+Ikkunan otsikossa ja alareunassa näkyy nyt **1.8.1**.
+
+## Windy-kartan latauskorjaus
+
+Kartta ladataan vasta näkymän ilmestymisen ja koon valmistumisen jälkeen.
+**Sää → Päivitä** lataa molemmat näkyvät Windy-kartat myös ennustehaun ollessa kesken.
+Latausvirheessä **Yritä uudelleen** tekee uuden yrityksen, ja **Avaa Windy selaimessa** avaa saman rajauksen selaimeen.
+Kartanäkymän avaaminen uudelleen yrittää epäonnistuneen latauksen uudelleen.
+Tavallinen ennuste- tai ulkoasupäivitys säilyttää toimivan kartan ja näkyvän virheen.
 
 ## Ubuntu 26.10 Dark
 
@@ -33,7 +41,6 @@ Avaa **Asetukset → vieritä alas → Sovelluskuvakkeet** tai vastaava kohta **
 3. **Kuvakkeet teeman vaihtuessa → Vaihda teeman mukana** ja tallennus ottaa vapaaehtoisen automaattisen vaihdon käyttöön.
 4. **Käytä järjestelmän oletuskuvakkeita** palauttaa koneen oman oletusteeman ja sovelluksen tekemät käynnistinkuvakekorjaukset. Se poistaa kuvakkeiden automaattisen vaihdon käytöstä ja säilyttää widgettien teeman sekä taustakuvan.
 
-![Sovelluskuvakkeet ja uusi oletuspainike](ubuntu-dark-oletuskuvakkeet.png)
 
 Teemapaketit sisältyvät sovellukseen. Kuvakevaihto ei tarvitse verkkolatausta.
 Oletuksena nykyiset kuvakkeet säilyvät. Palautuspainikkeet palauttavat aiemman teeman ja käynnistinkuvakkeet.
@@ -58,12 +65,12 @@ Aja debin asennuksen jälkeen ilman sudoa:
 Julkaisun laaja Qt-piirrostesti voi kestää useita minuutteja.
 
 Käytä samaa päivityskansiota, jonka nykyinen `codex-ajanlasku status` ilmoittaa.
-Kun status näyttää **1.8.0**, lopeta vanha ohjelma valikosta ja käynnistä `codex-ajanlasku run`.
+Kun status näyttää **1.8.1**, lopeta vanha ohjelma valikosta ja käynnistä `codex-ajanlasku run`.
 Molemmat asennukset käyttävät samoja kalenterimerkintöjä. Päivitys ei tyhjennä niitä.
 
 Myös zipistä käynnistetty `python3 main.py` voi avata jo käynnissä olevan vanhan ohjelman.
 Sulje siksi vanha kokonaan ennen lähdekoodin kokeilua.
-[1.8.0-lähdepaketti](Ajanlaskut-ja-Saa-1.8.0-lahdekoodi.zip) sisältää Python-koodin;
+[1.8.1-lähdepaketti](Ajanlaskut-ja-Saa-1.8.1-lahdekoodi.zip) sisältää Python-koodin;
 repon oletushaaran ZIP ei ole sama tiedosto.
 
 ## Tarkistus
@@ -72,7 +79,7 @@ repon oletushaaran ZIP ei ole sama tiedosto.
 sha256sum -c SHA256SUMS
 ```
 
-212 sovellustestiä ja 50 kuvakeasentimen testiä läpäisi. Laaja Qt-hyväksyntätesti tarkisti myös kellot, widgetit, fontit ja taustakuvat. Puretusta deb-paketista tarkistettiin myös versionumero, kuvakepaneelit molemmilla sivuilla ja käynnistyksen säilyttävä toiminta.
-[QA.log](QA.log) erottaa teemakokonaisuuden hyväksyntätestin, lopullisen 212 testin ajon ja lopullisen debin toimintatarkistuksen. Paketti vaatii Python 3.10:n ja PyQt6:n vähintään 6.8.
+241 testiä läpäisi. Näistä 29 uutta Qt-testiä kattaa tallennetun Windy-valinnan kaksi käynnistystä, näkyvät ja piilotetut kartat, uudelleenyritykset, kesken olevan ennustehaun sekä sulkemisen. Lopullisesta debistä ajettiin samat 29 Windy-testiä ja tarkistettiin versio 1.8.1. Todellisen WebEnginen paikallinen testisivu varmisti näkyvän näkymän alustuksen; se ei ole Windyn karttatiilien/WebGL:n verkkotesti.
+Katso [QA.log](QA.log). Paketti vaatii Python 3.10:n ja PyQt6:n vähintään 6.8.
 
-[Lähdekoodi ja täydet päivitysohjeet](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/codex/ubuntu-2610-dark).
+[Lähdekoodi ja täydet päivitysohjeet](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/codex/fix-windy-restart).
