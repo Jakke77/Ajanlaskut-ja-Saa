@@ -5,6 +5,39 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Kuvakkeet yhteisen teeman mukaan · versio 1.7.0
+
+**Asetukset** ja **Taustakuvat** tarjoavat samat työpöydän kuvakevalinnat.
+Kupari-, Halla- ja Ubuntu-kuvaketeemat tulevat sovelluksen mukana; erillistä
+latausta tai teema-repon valintaa ei tarvita.
+
+1. Paina **Asenna ja korjaa sovelluskuvakkeet**. Se asentaa kolme teemaa ja
+   korjaa tuettujen sovellusten kuvakkeet sovellusvalikossa ja telakassa myös
+   silloin, kun Firefox tai Thunderbird on Snapina tai GIMP apt-pakettina.
+2. Paina **Käytä nykyisen teeman kuvakkeita**, kun haluat ottaa sovelluksen
+   tallennettua yhteistä teemaa vastaavat kuvakkeet käyttöön heti.
+3. Jos haluat kuvakkeiden vaihtuvan jatkossa taustakuvan kanssa, valitse
+   **Kuvakkeet teeman vaihtuessa → Vaihda teeman mukana** ja tallenna.
+   Taustakuvan oma teemanvaihdon valinta on erillinen. Kumpikin valinta seuraa
+   Asetukset-sivun yhteistä teemaa; yksittäisen widgetin teema ei muuta työpöytää.
+
+Oletuksena **Säilytä nykyiset kuvakkeet** pitää aiemmat kuvakkeet käytössä.
+Valinnan tallentaminen yksin ei vielä vaihda kuvakkeita, ja sivujen keskeneräiset
+valinnat säilyvät erillisinä luonnoksina. Asennus- ja palautuspainikkeet eivät
+tallenna näitä luonnoksia. Sovelluksen käynnistäminen tai kellojen kierto ei
+vaihda työpöydän taustaa tai kuvakkeita.
+
+**Väritä myös muut sovellukset yleiskuvakkeilla** antaa muille sovelluksille
+käyttötarkoitukseen sopivan kuvakkeen niiden oman tunnuksen sijaan. Valinta
+koskee seuraavaa **Asenna ja korjaa** -painallusta. Ohjelmien sisäiset
+työkalupainikkeet eivät kuulu työpöydän kuvaketeemaan.
+
+**Palauta edellinen kuvaketeema** palauttaa aiemman työpöydän kuvaketeeman ja
+poistaa kuvakkeiden automaattisen vaihdon käytöstä. **Palauta sovelluskuvakkeet**
+peruu erikseen sovellusvalikon kuvakekorjaukset. Muutokset tehdään vain
+nykyiselle käyttäjälle ilman pääkäyttäjän oikeuksia. Kuvakkeiden vaihto tarvitsee
+GNOME-työpöydän; teemat voi asentaa myös muualla.
+
 ## Taustakuvatoimintojen näkyvä palaute · versio 1.6.2
 
 Tallennuksen, taustakuvan asettamisen ja virheiden viestit näkyvät nyt

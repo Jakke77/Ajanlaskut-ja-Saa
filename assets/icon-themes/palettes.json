@@ -1,0 +1,29 @@
+{
+  "copper": {
+    "name": "Kupari",
+    "background": "#100e15",
+    "surface": "#1e1822",
+    "border": "#68483e",
+    "accent": "#ef986e",
+    "text": "#f6e5db",
+    "muted": "#c2aeb8"
+  },
+  "frost": {
+    "name": "Halla",
+    "background": "#10151e",
+    "surface": "#192330",
+    "border": "#405b72",
+    "accent": "#a3cfe9",
+    "text": "#e9f4fb",
+    "muted": "#a3bacb"
+  },
+  "ubuntu": {
+    "name": "Ubuntu",
+    "background": "#17121f",
+    "surface": "#2b1b33",
+    "border": "#6e3c36",
+    "accent": "#e95420",
+    "text": "#fff4ed",
+    "muted": "#c6aebd"
+  }
+}
