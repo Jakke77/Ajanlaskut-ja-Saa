@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img"><title>sheet</title><defs>
+          <linearGradient id="panel" x2="0.8" y2="1"><stop stop-color="#2C001E"/><stop offset="1" stop-color="#000000"/></linearGradient>
+          <linearGradient id="metal" x2="0.65" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".22" stop-color="#E95420"/><stop offset="1" stop-color="#E95420"/></linearGradient>
+          <linearGradient id="folder" x2="0.25" y2="1"><stop stop-color="#E95420"/><stop offset="1" stop-color="#E95420"/></linearGradient>
+          <clipPath id="clip"><rect x="5" y="5" width="54" height="54" rx="15"/></clipPath>
+        </defs><rect x="5" y="5" width="54" height="54" rx="15" fill="url(#panel)" stroke="#E95420" stroke-width="1.6"/>
+              <rect x="8" y="8" width="48" height="48" rx="12" fill="none" stroke="#5E2750" stroke-opacity=".65" stroke-width=".8"/>
+              <path d="M20 8h24" fill="none" stroke="#FFFFFF" stroke-opacity=".17" stroke-width=".8"/>
+              <path d="M24 56h16" fill="none" stroke="#E95420" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round"/><g transform="translate(5 5) scale(.84)" fill="none" stroke="url(#metal)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11h20l10 10v32H18ZM38 11v11h10M23 29h20v18H23ZM23 35h20M23 41h20M30 29v18m7-18v18"/></g></svg>

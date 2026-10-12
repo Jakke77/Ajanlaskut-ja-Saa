@@ -8,6 +8,7 @@ from unittest.mock import patch
 from PyQt6.QtGui import QImage, QColor
 
 from asaa.state import State, atomic_json
+from asaa.theme import THEMES
 from asaa.wallpapers import (WallpaperManager, WallpaperLibrary, image_size,
                              DESKTOP, SAVER, DIA, ALLOWED_KEYS)
 
@@ -165,7 +166,7 @@ class WallpaperTests(unittest.TestCase):
         bundle=Path(__file__).resolve().parents[1]/'assets/wallpapers'
         library=WallpaperLibrary(bundle,self.root/'assets-test')
         payload=json.loads((bundle/'catalog.json').read_text())
-        for theme in ('copper','frost'):
+        for theme in THEMES:
             item=library.for_theme(theme)
             record=next(record for record in payload['wallpapers'] if record['theme']==theme)
             self.assertEqual(image_size(item.path),(record['width'],record['height']))

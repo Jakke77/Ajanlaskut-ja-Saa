@@ -25,5 +25,14 @@
     "accent": "#e95420",
     "text": "#fff4ed",
     "muted": "#c6aebd"
+  },
+  "ubuntu2610_dark": {
+    "name": "Ubuntu 26.10 Dark",
+    "background": "#000000",
+    "surface": "#2C001E",
+    "border": "#5E2750",
+    "accent": "#E95420",
+    "text": "#FFFFFF",
+    "muted": "#AEA79F"
   }
 }

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img"><title>search</title><defs>
+          <linearGradient id="panel" x2="0.8" y2="1"><stop stop-color="#2C001E"/><stop offset="1" stop-color="#000000"/></linearGradient>
+          <linearGradient id="metal" x2="0.65" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".22" stop-color="#E95420"/><stop offset="1" stop-color="#E95420"/></linearGradient>
+          <linearGradient id="folder" x2="0.25" y2="1"><stop stop-color="#E95420"/><stop offset="1" stop-color="#E95420"/></linearGradient>
+          <clipPath id="clip"><rect x="5" y="5" width="54" height="54" rx="15"/></clipPath>
+        </defs><path d="M5 21v-4a5 5 0 0 1 5-5h15l6 6h23a5 5 0 0 1 5 5v29H5Z" fill="#2C001E" stroke="#E95420" stroke-width="1.4"/>
+          <path d="M5 26a5 5 0 0 1 5-5h44a5 5 0 0 1 5 5v24a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5Z" fill="url(#folder)" stroke="#E95420" stroke-width="1"/>
+          <path d="M10 24h44" fill="none" stroke="#FFFFFF" stroke-opacity=".3" stroke-width="1"/>
+          <path d="M10 52h44" fill="none" stroke="#000000" stroke-opacity=".35" stroke-width="1"/><g transform="translate(12 16) scale(.62)" fill="none" stroke="#000000" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="28" r="15"/><path d="m39 39 14 14"/></g></svg>

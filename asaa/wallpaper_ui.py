@@ -20,7 +20,7 @@ class WallpapersPage(QWidget):
         layout.setContentsMargins(0, 0, 0, 0); layout.setSpacing(14)
         layout.addWidget(label('TYÖPÖYTÄ JA LUKITUSNÄYTTÖ', 'eyebrow'))
         layout.addWidget(label('Oma taivas, oma taustakuva', 'heading'))
-        layout.addWidget(label('Kuparin, Hallan ja Ubuntun taustakuvat sekä oma teema-repo samassa galleriassa. '
+        layout.addWidget(label('Sovelluksen teemoihin sopivat taustakuvat sekä oma teema-repo samassa galleriassa. '
             'Erillinen lukituskuva on käytettävissä Dia Wall 77 -lisäosan kanssa.', 'muted', True))
         tools = QHBoxLayout()
         tools.addWidget(button('Lisää omia kuvia…', self.import_images))
@@ -117,7 +117,7 @@ class WallpapersPage(QWidget):
         previous = {str(item.path) for item in self.selected()}
         self.loaded_folder = self.controller.options['wallpaper_directory']
         self.folder.setText('Teema-repo: ' + self.loaded_folder if self.loaded_folder
-                            else 'Sovelluksen Kupari-, Halla- ja Ubuntu-galleria · voit liittää myös erillisen teema-repon.')
+                            else 'Sovelluksen oma teemagalleria · voit liittää myös erillisen teema-repon.')
         self.gallery.blockSignals(True)
         try:
             self.items = self.manager.library.list(self.loaded_folder)

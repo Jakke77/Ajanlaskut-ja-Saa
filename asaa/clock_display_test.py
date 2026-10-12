@@ -55,11 +55,11 @@ def acceptance(controller, app, preview_dir=None):
 
         # An absent display preference retains both Ubuntu's dial and other themes' digits.
         controller.configure({'clock_displays': {}})
-        for theme in ('copper', 'frost', 'ubuntu'):
+        for theme in THEMES:
             controller.configure({'widget_themes': {'combined': theme}})
             _, digits = draw(controller.options['seconds'])
             assert digits and widget.digital_clock
-            assert widget.analog_clock == (theme == 'ubuntu')
+            assert widget.analog_clock == (THEMES[theme].motif == 'ubuntu')
             for mode in ('digital', 'analog', 'both'):
                 controller.configure({'clock_displays': {'combined': {'mode': mode}}})
                 _, digits = draw(controller.options['seconds'])

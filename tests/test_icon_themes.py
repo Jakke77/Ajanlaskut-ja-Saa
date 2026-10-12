@@ -1,5 +1,6 @@
 """Hermetic icon-theme and combined appearance transaction checks."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -9,7 +10,7 @@ from unittest.mock import Mock, patch
 
 from PyQt6.QtGui import QColor, QImage
 
-from asaa.icon_themes import IconThemeManager, INTERFACE, ICON_KEY, THEMES, validate_plan
+from asaa.icon_themes import GioIconBackend, IconThemeManager, INTERFACE, ICON_KEY, THEMES, validate_plan
 from asaa.state import State, atomic_json
 from asaa.wallpapers import WallpaperManager
 from tests.test_wallpapers import MemoryBackend
@@ -22,9 +23,14 @@ class MemoryIconBackend:
         self.values = {INTERFACE: {ICON_KEY: 'Yaru', 'gtk-theme': 'Yaru-dark', 'color-scheme': 'prefer-dark'}}
         self.calls = []
         self.fail = False
+        self.default = 'Yaru'
+        self.default_fail = False
 
     def desktop_available(self): return self.desktop
     def read(self, schema, key): return self.values[schema][key]
+    def default_theme(self):
+        if self.default_fail: raise OSError('simulated default lookup failure')
+        return self.default
     def preflight(self, plan): validate_plan(plan)
     def write(self, schema, values):
         validate_plan({schema: values})
@@ -42,6 +48,7 @@ class MemoryInstaller:
         self.launcher_calls = []
         self.restore_calls = []
         self.fail = False
+        self.restore_fail = False
 
     def install_theme(self, source, destination):
         if self.fail: raise OSError('simulated installation failure')
@@ -54,6 +61,7 @@ class MemoryInstaller:
 
     def restore_app_launchers(self, data_home):
         self.restore_calls.append(data_home)
+        if self.restore_fail: raise ValueError('simulated launcher restore failure')
 
 
 class IconThemeFixture:
@@ -82,6 +90,104 @@ class IconThemeTests(IconThemeFixture, unittest.TestCase):
         self.assertEqual(self.backend.calls, [])
         self.assertEqual(self.installer.installed, [])
         self.assertFalse(self.manager.backup.exists())
+
+    def test_default_status_reads_actual_system_default_without_changing_icons(self):
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.backend.default = 'Ubuntu-Studio'
+        self.assertTrue(self.manager.default_available())
+        self.assertEqual(self.manager.system_default(), 'Ubuntu-Studio')
+        self.assertEqual(self.manager.current(), 'Papirus')
+        self.assertEqual(self.backend.calls, [])
+        self.assertEqual(self.installer.installed, [])
+        self.assertFalse(self.manager.backup.exists())
+
+    def test_gio_default_uses_installed_setting_default_not_current_value(self):
+        backend = object.__new__(GioIconBackend)
+        backend.settings = Mock()
+        backend.settings.get_default_value.return_value.unpack.return_value = 'Ubuntu-Studio'
+        self.assertEqual(backend.default_theme(), 'Ubuntu-Studio')
+        backend.settings.get_default_value.assert_called_once_with(ICON_KEY)
+        backend.settings.get_string.assert_not_called()
+        backend.settings.get_default_value.return_value = None
+        with self.assertRaises(ValueError): backend.default_theme()
+
+    def test_default_action_needs_no_backup_or_bundled_theme_and_changes_only_icons(self):
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.backend.default = 'Ubuntu-Studio'
+        shutil.rmtree(self.bundle)
+        expected = copy.deepcopy(self.backend.values)
+        expected[INTERFACE][ICON_KEY] = 'Ubuntu-Studio'
+        self.manager.apply_default()
+        self.assertEqual(self.backend.values, expected)
+        self.assertEqual(self.installer.installed, [])
+        self.assertEqual(self.installer.launcher_calls, [])
+        self.assertEqual(self.installer.restore_calls, [])
+        self.assertEqual(json.loads(self.manager.backup.read_text())['settings'],
+                         {INTERFACE: {ICON_KEY: 'Papirus'}})
+
+    def test_default_action_keeps_original_backup_after_bundled_theme_changes(self):
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.backend.default = 'Ubuntu-Studio'
+        self.manager.apply('copper'); self.manager.apply('frost')
+        original = self.manager.backup.read_bytes()
+        installed = list(self.installer.installed)
+        self.manager.apply_default()
+        self.assertEqual(self.manager.current(), 'Ubuntu-Studio')
+        self.assertEqual(self.manager.backup.read_bytes(), original)
+        self.assertEqual(self.installer.installed, installed)
+        self.manager.restore()
+        self.assertEqual(self.manager.current(), 'Papirus')
+
+    def test_unavailable_or_invalid_system_default_does_not_write_or_install(self):
+        for value in (None, '', '../bad', 'bad/name', 1):
+            with self.subTest(default=value):
+                self.backend.default = value
+                self.assertFalse(self.manager.default_available())
+                with self.assertRaises(ValueError): self.manager.apply_default()
+        self.backend.default = 'Yaru'; self.backend.desktop = False
+        self.assertFalse(self.manager.default_available())
+        with self.assertRaises(ValueError): self.manager.apply_default()
+        self.assertEqual(self.backend.calls, [])
+        self.assertEqual(self.installer.installed, [])
+        self.assertFalse(self.manager.backup.exists())
+
+    def test_default_lookup_failure_skips_commit_and_desktop_writes(self):
+        self.backend.default_fail = True
+        commit = Mock()
+        self.assertFalse(self.manager.default_available())
+        with self.assertRaisesRegex(OSError, 'default lookup failure'):
+            self.manager.apply_default(commit=commit)
+        commit.assert_not_called()
+        self.assertEqual(self.backend.calls, [])
+        self.assertFalse(self.manager.backup.exists())
+
+    def test_failed_default_write_or_commit_restores_previous_icons(self):
+        for failure in ('backend', 'settings'):
+            with self.subTest(failure=failure):
+                self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+                previous = copy.deepcopy(self.backend.values)
+                if failure == 'backend': self.backend.fail = True
+                commit = Mock(side_effect=OSError('disk full')) if failure == 'settings' else Mock()
+                with self.assertRaises(OSError): self.manager.apply_default(commit=commit)
+                self.assertEqual(self.backend.values, previous)
+                self.assertFalse(self.manager.backup.exists())
+                if failure == 'backend': commit.assert_not_called()
+        self.assertEqual(self.installer.installed, [])
+
+    def test_failed_default_write_retains_prior_bundled_snapshot(self):
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.manager.apply('copper')
+        previous = copy.deepcopy(self.backend.values); original = self.manager.backup.read_bytes()
+        self.backend.fail = True
+        with self.assertRaises(OSError): self.manager.apply_default()
+        self.assertEqual(self.backend.values, previous)
+        self.assertEqual(self.manager.backup.read_bytes(), original)
+
+    def test_default_backup_failure_happens_before_any_desktop_write(self):
+        with patch('asaa.icon_themes.atomic_json', side_effect=OSError('disk full')):
+            with self.assertRaises(OSError): self.manager.apply_default()
+        self.assertEqual(self.backend.calls, [])
+        self.assertEqual(self.installer.installed, [])
 
     def test_apply_changes_only_icon_theme_and_never_fixes_launchers(self):
         self.manager.apply('frost')
@@ -169,7 +275,7 @@ class IconThemeTests(IconThemeFixture, unittest.TestCase):
         with self.assertRaises(ValueError): self.manager.apply('copper')
         self.assertEqual(self.installer.installed, [])
         self.assertEqual(self.manager.install(), (3, ['unknown.desktop']))
-        self.assertEqual(len(self.installer.installed), 3)
+        self.assertEqual(len(self.installer.installed), len(THEMES))
         self.assertEqual(self.installer.launcher_calls, [(self.root / 'xdg', False)])
         self.assertEqual(self.backend.calls, [])
         self.assertFalse(self.manager.backup.exists())
@@ -249,7 +355,8 @@ class AppearanceTransactionTests(IconThemeFixture, unittest.TestCase):
         self.wallpaper_backend = MemoryBackend()
         wallpaper_bundle = self.root / 'wallpapers'; wallpaper_bundle.mkdir()
         records = []
-        for theme, color in (('copper', '#ef986e'), ('frost', '#a3cfe9'), ('ubuntu', '#e95420')):
+        for theme, color in (('copper', '#ef986e'), ('frost', '#a3cfe9'), ('ubuntu', '#e95420'),
+                             ('ubuntu2610_dark', '#2C001E')):
             filename = theme + '.png'
             image = QImage(32, 18, QImage.Format.Format_RGB32)
             image.fill(QColor(color)); self.assertTrue(image.save(str(wallpaper_bundle / filename)))
@@ -280,6 +387,21 @@ class AppearanceTransactionTests(IconThemeFixture, unittest.TestCase):
         self.configure({'theme': 'frost'})
         self.assertEqual(self.backend.values, self.before)
         self.assertTrue(self.wallpaper_backend.calls)
+
+    def test_dark_ubuntu_switches_icons_and_saves_theme_without_changing_widget_overrides(self):
+        self.configure({'icon_follow_theme': True, 'time_theme': 'calendar',
+                        'widget_themes': {'weather': 'frost', 'combined': 'ubuntu'}})
+        self.state.data['notes']['2026-10-12'] = 'Oma merkintä'
+        self.state.geometry('weather', [123, 456])
+        expected = copy.deepcopy(self.state.data)
+        expected['settings']['theme'] = 'ubuntu2610_dark'
+        self.configure({'theme': 'ubuntu2610_dark'})
+        self.assertEqual(State(self.state.path).data, expected)
+        self.assertEqual(self.backend.values[INTERFACE][ICON_KEY], 'Ajanlaskut-Ubuntu-2610-Dark')
+        self.assertEqual(self.backend.values[INTERFACE]['gtk-theme'], self.before[INTERFACE]['gtk-theme'])
+        self.assertEqual(self.backend.values[INTERFACE]['color-scheme'], self.before[INTERFACE]['color-scheme'])
+        self.assertEqual(self.installer.launcher_calls, [])
+        self.assertEqual(self.installer.installed[-1][1].name, 'Ajanlaskut-Ubuntu-2610-Dark')
 
     def test_settings_failure_restores_icons_wallpaper_and_original_settings(self):
         self.configure({'icon_follow_theme': True})
@@ -334,6 +456,90 @@ class AppearanceTransactionTests(IconThemeFixture, unittest.TestCase):
             with self.assertRaises(OSError): self.Controller.restore_icon_theme(self.controller)
         self.assertEqual(self.state.data, previous)
         self.assertEqual(self.backend.values, icons)
+
+    def test_system_default_disables_follow_and_preserves_widget_and_wallpaper_choices(self):
+        self.state.configure({'icon_follow_theme': True, 'theme': 'ubuntu2610_dark',
+                              'wallpaper_follow_theme': True,
+                              'widget_themes': {'weather': 'frost'}})
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.backend.default = 'Ubuntu-Studio'
+        expected = copy.deepcopy(self.state.data)
+        expected['settings']['icon_follow_theme'] = False
+        with patch.object(self.manager, '_installer', side_effect=AssertionError('installer must not run')):
+            self.Controller.use_system_default_icons(self.controller)
+        self.assertEqual(self.state.data, expected)
+        self.assertEqual(State(self.state.path).data, expected)
+        self.assertEqual(self.manager.current(), 'Ubuntu-Studio')
+        self.assertEqual(self.wallpaper_backend.calls, [])
+        self.assertEqual(self.installer.installed, [])
+        self.assertEqual(self.installer.launcher_calls, [])
+        self.assertEqual(self.installer.restore_calls, [])
+        self.controller.settings_changed.emit.assert_called_once_with()
+
+    def test_system_default_aborts_before_launcher_restore_on_desktop_or_storage_failure(self):
+        registry = self.manager.data_home / 'ajanlaskut-icon-themes/launchers.json'
+        atomic_json(registry, {'tracked.desktop': {}})
+        self.state.configure({'icon_follow_theme': True})
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        previous = copy.deepcopy(self.state.data)
+        for failure in ('lookup', 'desktop', 'storage'):
+            with self.subTest(failure=failure):
+                self.backend.default_fail = failure == 'lookup'
+                self.backend.fail = failure == 'desktop'
+                commit = self.state.commit
+                if failure == 'storage': commit = Mock(side_effect=OSError('disk full'))
+                with patch.object(self.state, 'commit', side_effect=commit):
+                    with self.assertRaises(OSError):
+                        self.Controller.use_system_default_icons(self.controller)
+                self.assertEqual(self.state.data, previous)
+                self.assertEqual(self.manager.current(), 'Papirus')
+                self.assertFalse(self.manager.backup.exists())
+        self.assertEqual(self.installer.restore_calls, [])
+        self.controller.settings_changed.emit.assert_not_called()
+
+    def test_system_default_launcher_failure_reports_committed_change_and_refreshes(self):
+        registry = self.manager.data_home / 'ajanlaskut-icon-themes/launchers.json'
+        # A malformed registry must be reported, not mistaken for no overrides.
+        registry.parent.mkdir(parents=True); registry.write_text('broken json')
+        self.state.configure({'icon_follow_theme': True})
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.manager.apply('frost'); original = self.manager.backup.read_bytes()
+        self.installer.restore_fail = True
+        with self.assertRaisesRegex(OSError, 'Järjestelmän oletuskuvakkeet käytössä, mutta sovelluskuvakkeiden palautus epäonnistui'):
+            self.Controller.use_system_default_icons(self.controller)
+        self.assertEqual(self.manager.current(), 'Yaru')
+        self.assertFalse(State(self.state.path).settings['icon_follow_theme'])
+        self.assertEqual(self.manager.backup.read_bytes(), original)
+        self.assertEqual(self.installer.restore_calls, [self.manager.data_home])
+        self.controller.settings_changed.emit.assert_called_once_with()
+
+    def test_system_default_restores_verified_launcher_overrides_with_real_installer(self):
+        shutil.copyfile(Path(__file__).resolve().parents[1] / 'assets/icon-themes/install.py',
+                        self.bundle / 'install.py')
+        self.manager.installer = None
+        self.state.configure({'icon_follow_theme': True})
+        self.backend.values[INTERFACE][ICON_KEY] = 'Papirus'
+        self.manager.apply('copper'); original_snapshot = self.manager.backup.read_bytes()
+        source = self.root / 'system.desktop'
+        original = b'[Desktop Entry]\nName=Firefox\nExec=/snap/bin/firefox %u\nIcon=/snap/firefox/icon.png\n'
+        source.write_bytes(original)
+        local = self.manager.data_home / 'applications/firefox.desktop'
+        local.parent.mkdir(parents=True)
+        modified = original.replace(b'/snap/firefox/icon.png', b'firefox')
+        local.write_bytes(modified)
+        backup = local.with_suffix('.desktop.before-icon-theme'); backup.write_bytes(original)
+        registry = self.manager.data_home / 'ajanlaskut-icon-themes/launchers.json'
+        atomic_json(registry, {'firefox.desktop': {'source': str(source), 'had_local': False,
+                    'original_hash': hashlib.sha256(original).hexdigest(),
+                    'modified_hash': hashlib.sha256(modified).hexdigest()}})
+        self.Controller.use_system_default_icons(self.controller)
+        self.assertEqual(self.manager.current(), 'Yaru')
+        self.assertFalse(State(self.state.path).settings['icon_follow_theme'])
+        self.assertFalse(local.exists()); self.assertFalse(backup.exists())
+        self.assertEqual(json.loads(registry.read_text()), {})
+        self.assertEqual(source.read_bytes(), original)
+        self.assertEqual(self.manager.backup.read_bytes(), original_snapshot)
+        self.assertEqual(self.wallpaper_backend.calls, [])
 
 
 if __name__ == '__main__': unittest.main()

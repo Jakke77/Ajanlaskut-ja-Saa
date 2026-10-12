@@ -37,6 +37,18 @@
       "created": "2026-10-10",
       "generation": "original SVG vector artwork",
       "prompt": "ubuntu/LUONTIKUVAUS.md"
+    },
+    {
+      "id": "ubuntu-2610-dark-tahtikeha",
+      "title": "Ubuntu 26.10 Dark · Tähtikehä",
+      "theme": "ubuntu2610_dark",
+      "file": "ubuntu-2610-dark/ubuntu-2610-dark-tahtikeha.png",
+      "description": "Ubuntun oranssi tähtikehä tumman munakoison sävyisessä yömaisemassa. Rauhallinen oikea reuna jättää tilaa kalenteri- ja sääwidgeteille.",
+      "width": 1672,
+      "height": 941,
+      "created": "2026-10-12",
+      "generation": "built-in image generation",
+      "prompt": "ubuntu-2610-dark/LUONTIKUVAUS.md"
     }
   ]
 }

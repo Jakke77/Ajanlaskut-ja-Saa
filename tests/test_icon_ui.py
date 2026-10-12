@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QApplication
 from asaa.app import Controller
 from asaa.icon_themes import INTERFACE, ICON_KEY, THEMES, validate_plan
 from asaa.state import State
+from asaa.wallpapers import DESKTOP, SAVER
 from tests.test_wallpapers import MemoryBackend
 
 
@@ -22,9 +23,11 @@ class MemoryIcons:
         self.values={ICON_KEY:'Yaru','gtk-theme':'Yaru','cursor-theme':'Yaru'}
         self.calls=[]
         self.fail=False
+        self.default='Yaru-default'
 
     def desktop_available(self): return self.ready
     def read(self,schema,key): return self.values[key]
+    def default_theme(self): return self.default
     def preflight(self,plan): validate_plan(plan)
     def write(self,schema,values):
         self.preflight({schema:values})
@@ -36,12 +39,15 @@ class MemoryIcons:
 
 
 class MemoryInstaller:
-    def __init__(self): self.themes=[];self.repairs=[];self.restores=[]
+    def __init__(self): self.themes=[];self.repairs=[];self.restores=[];self.fail_restore=False
     def install_theme(self,source,destination): self.themes.append(source.name)
     def fix_app_launchers(self,data_home,all_apps=False):
         self.repairs.append(all_apps)
         return (3,[] if all_apps else ['Other app'])
-    def restore_app_launchers(self,data_home): self.restores.append(data_home);return 3
+    def restore_app_launchers(self,data_home):
+        self.restores.append(data_home)
+        if self.fail_restore: raise OSError('simulated launcher restore failure')
+        return 3
 
 
 class IconUiTests(unittest.TestCase):
@@ -170,6 +176,7 @@ class IconUiTests(unittest.TestCase):
             self.assertFalse(controls.icon_behavior.model().item(controls.icon_behavior.findData(True)).isEnabled())
             self.assertIn('GNOME',controls.icon_support.text())
         self.assertFalse(self.settings.icon_actions.apply_button.isEnabled())
+        self.assertFalse(self.settings.icon_actions.default_button.isEnabled())
         self.assertTrue(self.settings.icon_actions.install_button.isEnabled())
         self.settings.icon_actions.install_button.click()
         self.assertEqual(self.installer.repairs,[False])
@@ -183,7 +190,108 @@ class IconUiTests(unittest.TestCase):
         self.assertEqual(self.state.data,before)
         self.assertEqual(self.icons.values[ICON_KEY],'Yaru')
 
+    def test_system_default_button_needs_no_backup_and_preserves_other_drafts(self):
+        self.icons.values[ICON_KEY]='Papirus'
+        self.controller.configure({'icon_follow_theme':True})
+        self.assertFalse(self.controller.icon_themes.backup.exists())
+        for actions in (self.settings.icon_actions,self.gallery.icon_actions):
+            self.assertTrue(actions.default_button.isEnabled())
+            self.assertFalse(actions.restore_button.isEnabled())
+        before=copy.deepcopy(self.state.data)
+        before['settings']['icon_follow_theme']=False
+        self.choose(self.settings.theme,'frost')
+        self.choose(self.settings.wallpaper_options.target,'both')
+        self.choose(self.gallery.theme_options.behavior,False)
+        self.controller.open_page('settings');self.app.processEvents()
+        QTest.mouseClick(self.settings.icon_actions.default_button,Qt.MouseButton.LeftButton)
+        self.app.processEvents()
+        self.assertEqual(self.icons.values[ICON_KEY],'Yaru-default')
+        self.assertEqual(State(self.state.path).data,before)
+        self.assertFalse(self.state.settings['icon_follow_theme'])
+        self.assertEqual(self.settings.theme.currentData(),'frost')
+        self.assertEqual(self.settings.wallpaper_options.target.currentData(),'both')
+        self.assertFalse(self.gallery.theme_options.behavior.currentData())
+        self.assertFalse(self.settings.wallpaper_options.icon_behavior.currentData())
+        self.assertFalse(self.gallery.theme_options.icon_behavior.currentData())
+        self.assertEqual(self.installer.restores,[])
+        self.assertEqual(self.wallpapers.calls,[])
+        self.assertIn('Yaru-default',self.settings.icon_actions.status.text())
+        for actions in (self.settings.icon_actions,self.gallery.icon_actions):
+            self.assertEqual(actions.current.text(),'Käytössä: Yaru-default')
+
+    def test_system_default_is_distinct_from_previous_and_restores_launchers(self):
+        self.icons.values[ICON_KEY]='Papirus'
+        self.gallery.icon_actions.apply_current_theme()
+        self.controller.configure({'icon_follow_theme':True})
+        backup=self.controller.icon_themes.backup.read_bytes()
+        registry=self.controller.icon_themes.data_home/'ajanlaskut-icon-themes/launchers.json'
+        registry.parent.mkdir(parents=True)
+        registry.write_text('{"example.desktop": {}}')
+        self.gallery.icon_actions.use_system_default();self.app.processEvents()
+        self.assertEqual(self.icons.values[ICON_KEY],'Yaru-default')
+        self.assertFalse(self.state.settings['icon_follow_theme'])
+        self.assertEqual(self.installer.restores,[self.controller.icon_themes.data_home])
+        self.assertEqual(self.controller.icon_themes.backup.read_bytes(),backup)
+        self.assertTrue(self.gallery.icon_actions.restore_button.isEnabled())
+        self.gallery.icon_actions.restore_theme();self.app.processEvents()
+        self.assertEqual(self.icons.values[ICON_KEY],'Papirus')
+
+    def test_default_launcher_restore_failure_reports_committed_default_and_refreshes(self):
+        self.controller.configure({'icon_follow_theme':True})
+        registry=self.controller.icon_themes.data_home/'ajanlaskut-icon-themes/launchers.json'
+        registry.parent.mkdir(parents=True)
+        registry.write_text('{"example.desktop": {}}')
+        self.installer.fail_restore=True
+        self.gallery.icon_actions.use_system_default();self.app.processEvents()
+        self.assertEqual(self.icons.values[ICON_KEY],'Yaru-default')
+        self.assertFalse(self.state.settings['icon_follow_theme'])
+        self.assertIn('sovelluskuvakkeiden palautus epäonnistui',self.gallery.icon_actions.status.text())
+        self.assertIn('simulated launcher restore failure',self.gallery.icon_actions.status.text())
+        for actions in (self.settings.icon_actions,self.gallery.icon_actions):
+            self.assertEqual(actions.current.text(),'Käytössä: Yaru-default')
+        self.assertEqual(self.wallpapers.calls,[])
+
+    def test_new_dark_theme_is_a_draft_until_saved_and_icons_are_optional(self):
+        choice=self.settings.theme.findData('ubuntu2610_dark')
+        self.assertGreaterEqual(choice,0)
+        self.assertEqual(self.settings.theme.itemText(choice),'Ubuntu 26.10 Dark')
+        before=copy.deepcopy(self.state.data)
+        self.choose(self.settings.theme,'ubuntu2610_dark')
+        self.app.processEvents()
+        self.assertEqual(self.state.data,before)
+        self.assertEqual(self.icons.calls,[])
+        self.assertEqual(self.wallpapers.calls,[])
+        self.choose(self.settings.wallpaper_options.behavior,False)
+        self.settings.save();self.app.processEvents()
+        self.assertEqual(State(self.state.path).settings['theme'],'ubuntu2610_dark')
+        self.assertFalse(self.state.settings['icon_follow_theme'])
+        self.assertEqual(self.icons.calls,[])
+        self.assertEqual(self.installer.themes,[])
+        self.assertEqual(self.gallery.current_theme_button.text(),'Aseta Ubuntu 26.10 Dark-teeman tausta')
+        self.assertEqual(self.controller.window.theme_title.text(),'UBUNTU 26.10 DARK')
+
+    def test_dark_theme_manual_icons_and_wallpaper_work_without_follow_policy(self):
+        self.controller.configure({'theme':'ubuntu2610_dark','wallpaper_follow_theme':False})
+        before=copy.deepcopy(self.state.data)
+        lock=copy.deepcopy(self.wallpapers.values[SAVER])
+        self.gallery.icon_actions.apply_current_theme();self.app.processEvents()
+        self.assertEqual(self.icons.values[ICON_KEY],THEMES['ubuntu2610_dark'])
+        self.assertEqual(self.gallery.icon_actions.current.text(),'Käytössä: Ubuntu 26.10 Dark')
+        self.assertEqual(self.settings.icon_actions.current.text(),'Käytössä: Ubuntu 26.10 Dark')
+        self.assertEqual(self.installer.themes,['Ajanlaskut-Ubuntu-2610-Dark'])
+        self.assertIn('Ubuntu 26.10 Dark',self.gallery.icon_actions.status.text())
+        self.gallery.apply_current_theme();self.app.processEvents()
+        picture=self.controller.wallpapers.library.for_theme('ubuntu2610_dark')
+        self.assertEqual(picture.theme,'ubuntu2610_dark')
+        expected=self.controller.wallpapers.library.preserve(picture.path).as_uri()
+        self.assertEqual(self.wallpapers.values[DESKTOP]['picture-uri'],expected)
+        self.assertEqual(self.wallpapers.values[SAVER],lock)
+        self.assertEqual(self.state.data,before)
+        self.gallery.icon_actions.install()
+        self.assertEqual(set(self.installer.themes),set(THEMES.values()))
+
     def test_controls_fit_existing_minimum_window_width(self):
+        self.controller.configure({'theme':'ubuntu2610_dark','wallpaper_follow_theme':False})
         for size in ((1020,720),(1280,860)):
             self.controller.window.resize(*size)
             for key in ('settings','wallpapers'):

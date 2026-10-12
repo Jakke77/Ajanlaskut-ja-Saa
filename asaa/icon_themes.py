@@ -16,7 +16,8 @@ from .state import atomic_json
 
 INTERFACE = 'org.gnome.desktop.interface'
 ICON_KEY = 'icon-theme'
-THEMES = {'copper': 'Ajanlaskut-Kupari', 'frost': 'Ajanlaskut-Halla', 'ubuntu': 'Ajanlaskut-Ubuntu'}
+THEMES = {'copper': 'Ajanlaskut-Kupari', 'frost': 'Ajanlaskut-Halla', 'ubuntu': 'Ajanlaskut-Ubuntu',
+          'ubuntu2610_dark': 'Ajanlaskut-Ubuntu-2610-Dark'}
 
 
 def valid_theme_name(value):
@@ -50,6 +51,12 @@ class GioIconBackend:
         if schema != INTERFACE or key != ICON_KEY:
             raise ValueError('Tuntematon kuvaketeema-asetus.')
         return self.settings.get_string(ICON_KEY)
+
+    def default_theme(self):
+        value = self.settings.get_default_value(ICON_KEY)
+        if value is None:
+            raise ValueError('Järjestelmän oletuskuvaketeemaa ei löydy.')
+        return value.unpack()
 
     def preflight(self, plan):
         validate_plan(plan)
@@ -94,6 +101,20 @@ class IconThemeManager:
         if not self.available(): return 'Ei saatavilla tässä työpöytäympäristössä'
         return self.backend.read(INTERFACE, ICON_KEY)
 
+    def system_default(self):
+        if not self.available():
+            raise ValueError(self.error or 'Kuvaketeeman vaihto tarvitsee GNOME-työpöydän.')
+        value = self.backend.default_theme()
+        validate_plan({INTERFACE: {ICON_KEY: value}})
+        return value
+
+    def default_available(self):
+        try:
+            self.backend.preflight({INTERFACE: {ICON_KEY: self.system_default()}})
+        except (AttributeError, ValueError, RuntimeError, OSError, TypeError):
+            return False
+        return True
+
     def _installer(self):
         if self.installer is None:
             path = self.bundled / 'install.py'
@@ -126,6 +147,10 @@ class IconThemeManager:
         path = self.data_home / 'ajanlaskut-icon-themes/launchers.json'
         try: return path.is_file() and bool(json.loads(path.read_text(encoding='utf-8')))
         except (OSError, ValueError): return False
+
+    def launcher_registry_exists(self):
+        path = self.data_home / 'ajanlaskut-icon-themes/launchers.json'
+        return path.exists() or path.is_symlink()
 
     def restore_launchers(self):
         return self._installer().restore_app_launchers(self.data_home)
@@ -165,10 +190,18 @@ class IconThemeManager:
     def apply(self, theme, commit=None):
         if theme not in THEMES: raise ValueError('Tuntematon kuvaketeema.')
         plan = {INTERFACE: {ICON_KEY: THEMES[theme]}}
+        self._apply_with_backup(plan, commit, theme=theme)
+
+    def apply_default(self, commit=None):
+        plan = {INTERFACE: {ICON_KEY: self.system_default()}}
+        self._apply_with_backup(plan, commit)
+
+    def _apply_with_backup(self, plan, commit=None, theme=None):
+        validate_plan(plan)
         if not self.available():
             raise ValueError(self.error or 'Kuvaketeeman vaihto tarvitsee GNOME-työpöydän.')
         self.backend.preflight(plan)
-        self._install_theme(theme)
+        if theme is not None: self._install_theme(theme)
         # Keep the original desktop theme across subsequent Kupari/Halla changes.
         # Persist before any desktop write, and reject a damaged existing backup.
         created_backup = False

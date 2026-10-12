@@ -31,6 +31,19 @@ class WidgetThemeStateTests(unittest.TestCase):
                 self.assertEqual(widget_theme_selection(self.state.settings, key), 'shared')
                 self.assertEqual(widget_theme(self.state.settings, key, 'civil'), THEMES['ubuntu'])
 
+    def test_dark_ubuntu_can_be_saved_independently_for_shared_and_clock_themes(self):
+        self.state.configure({'theme': 'ubuntu2610_dark', 'time_theme': 'calendar',
+                              'widget_themes': {'weather': 'ubuntu2610_dark', 'combined': 'ubuntu'}})
+        loaded = State(self.path)
+        self.assertEqual(loaded.settings['theme'], 'ubuntu2610_dark')
+        self.assertEqual(widget_theme(loaded.settings, 'weather'), THEMES['ubuntu2610_dark'])
+        self.assertEqual(widget_theme(loaded.settings, 'combined', 'civil'), THEMES['ubuntu'])
+        self.assertEqual(widget_theme(loaded.settings, 'star', 'star'), CALENDAR_THEMES['star'])
+        loaded.configure({'time_theme': 'ubuntu2610_dark'})
+        reopened = State(self.path)
+        self.assertEqual(widget_theme(reopened.settings, 'star', 'star'), THEMES['ubuntu2610_dark'])
+        self.assertEqual(widget_theme(reopened.settings, 'combined', 'civil'), THEMES['ubuntu'])
+
     def test_legacy_missing_clock_theme_keeps_calendar_palettes_without_rewriting(self):
         old = copy.deepcopy(self.state.data)
         old['settings'].pop('time_theme')
@@ -150,10 +163,10 @@ class WidgetThemeResolutionTests(unittest.TestCase):
         self.assertEqual(widget_theme(self.options, 'weather'), THEMES['frost'])
 
     def test_explicit_palettes_stay_fixed_as_global_theme_and_calendar_change(self):
-        for selection in ('copper', 'frost', 'ubuntu'):
+        for selection in THEMES:
             for key in DEFAULTS['widgets']:
                 self.options['widget_themes'] = {key: selection}
-                for global_theme in ('copper', 'frost', 'ubuntu'):
+                for global_theme in THEMES:
                     self.options['theme'] = global_theme
                     for system in SYSTEMS:
                         with self.subTest(widget=key, selection=selection, global_theme=global_theme, system=system):
@@ -172,13 +185,14 @@ class WidgetThemeResolutionTests(unittest.TestCase):
             with self.subTest(widget=key):
                 choices = widget_theme_choices(key)
                 labels = {token: label for label, token in choices}
-                expected = {'shared', 'copper', 'frost', 'ubuntu'}
+                expected = {'shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark'}
                 if key in PROFILE_KEYS:
                     expected.add('calendar')
                     self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
                 else:
                     self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
                 self.assertEqual(set(labels), expected)
+                self.assertEqual(labels['ubuntu2610_dark'], 'Ubuntu 26.10 Dark')
                 self.assertEqual(choices[0], ('Sovelluksen yhteinen teema', 'shared'))
                 choices.clear()
                 self.assertTrue(widget_theme_choices(key))
