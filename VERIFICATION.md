@@ -1,4 +1,28 @@
-# Tarkistus 11.10.2026
+# Tarkistukset
+
+## Ubuntu 26.10 Dark ja järjestelmän oletuskuvakkeet · 12.10.2026 · 1.8.0
+
+- 212 yksikkö- ja käyttöliittymätestiä läpäistiin. Näihin sisältyvät uuden
+  yhteisen teeman, widgettikohtaisten valintojen, vanhan kellovalinnan,
+  vapaaehtoisen kuvakevaihdon ja palautuksen tarkistukset.
+- 12 todellisen Qt-käyttöliittymän testiä tarkistaa myös uuden
+  **Käytä järjestelmän oletuskuvakkeita** -painikkeen molemmilla sivuilla.
+  Oletus luetaan koneen asentamasta GNOME-asetuksesta. Toiminto säilyttää
+  widgettien teeman ja taustakuvan, poistaa kuvakkeiden seurannan ja palauttaa
+  sovelluksen tekemät käynnistinkuvakekorjaukset. Levy- ja työpöytävirheiden
+  palautus sekä käynnistinten palautuksen osittaisen onnistumisen palaute testataan.
+- Neljän kuvaketeeman erillinen asennin läpäisi 50 testiä. Kussakin teemassa
+  on 423 validia SVG:tä. Uuden teeman kaikki 97 erilaista kuvaa renderöitiin,
+  ja esikatselu tarkistettiin. Vanhat kolme kuvaketeemaa säilyvät muuttumattomina.
+- Paletin värilähde on Ubuntun virallinen brändisivu. Valkoinen, lämmin harmaa
+  ja oranssi teksti saavuttavat vähintään 4,5:1-kontrastin mustalla ja tummalla
+  munakoison sävyisellä pinnalla.
+- Taustakuva dekoodattiin kokonaan: 1672 × 941. Sovelluksen ja teema-repon
+  alkuperäiset PNG:t ja luontikuvaukset ovat tavuntarkasti samat. Erillisen
+  teemapaketin 24 widgettikehysluonnosta validoitiin.
+- Paikallisen päivityskanavan Qt-hyväksyntätestille sallitaan nyt kymmenen
+  minuuttia, jotta kaikkien teemojen, fonttien ja kellonäyttöjen renderöinti
+  ehtii valmistua myös hitaassa ympäristössä. Epäonnistunut testi estää julkaisun.
 
 ## Taustakuvatoimintojen palaute 1.6.2
 

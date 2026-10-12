@@ -116,3 +116,15 @@ erikseen. Taustakuvien luontikuvaukset ovat `assets/wallpapers`-kansiossa.
 GNOME-taustakuvasovitin käyttää valinnaista PyGObject/Gio-riippuvuutta ja koneella
 valmiiksi käytössä olevaa Dia Wall 77 -lisäosaa. Lisäosan koodia ei kopioida
 sovellukseen eikä lukituksen turvallisuusasetuksia muuteta.
+
+## Ubuntu 26.10 Dark
+
+Version 1.8.0 itsenäinen faniteema käyttää
+[Ubuntun virallista brändipalettia](https://design.ubuntu.com/brand/colour-palette):
+musta `#000000`, tumma munakoiso `#2C001E`, keskimmäinen munakoiso `#5E2750`,
+oranssi `#E95420`, valkoinen `#FFFFFF` ja lämmin harmaa `#AEA79F`.
+SVG-kuvakkeet ovat tämän projektin alkuperäisiä piirroksia. Sovellusten nimet
+ja tunnukset kuuluvat niiden omistajille; teemassa ei toimiteta muiden
+kuvaketeemojen kopioita. Tähtikehä-taustakuva on luotu sisäänrakennetulla
+kuvanluonnilla. Sen luontikuvaus on `assets/wallpapers/ubuntu-2610-dark`-kansiossa.
+Teema ei ole Canonicalin virallinen Ubuntu 26.10 -kuvakepaketti tai julkaisu­tausta.

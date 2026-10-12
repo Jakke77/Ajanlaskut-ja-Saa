@@ -18,10 +18,13 @@ THEMES = {
     'copper': Theme('#100e15', '#1e1822', '#68483e', '#ef986e', '#f6e5db', '#c2aeb8'),
     'frost': Theme('#10151e', '#192330', '#405b72', '#a3cfe9', '#e9f4fb', '#a3bacb'),
     'ubuntu': Theme('#17121f', '#2b1b33', '#6e3c36', '#e95420', '#fff4ed', '#c6aebd', 'ubuntu'),
+    'ubuntu2610_dark': Theme('#000000', '#2C001E', '#5E2750', '#E95420', '#FFFFFF', '#AEA79F', 'ubuntu'),
 }
-THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu'}
+THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu',
+               'ubuntu2610_dark': 'Ubuntu 26.10 Dark'}
 THEME_LABELS = {'copper': 'Kupari · Pöllönkankaan sää', 'frost': 'Halla · yön sininen',
-                'ubuntu': 'Ubuntu · oranssi ja munakoiso'}
+                'ubuntu': 'Ubuntu · oranssi ja munakoiso',
+                'ubuntu2610_dark': 'Ubuntu 26.10 Dark'}
 
 # Clock-only tokens: never replace the shared palette of the standalone weather graph.
 CALENDAR_THEMES = {

@@ -1,6 +1,6 @@
 # Ajanlaskut ja Sää
 
-**Uusin asennuspaketti: [1.7.1 · kuvakkeet sovelluksen sisältä](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.7.1).**
+**Uusin asennuspaketti: [1.8.0 · Ubuntu 26.10 Dark](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -12,13 +12,36 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Ubuntu 26.10 Dark · versio 1.8.0
+
+Uusi **Ubuntu 26.10 Dark** yhdistää tumman pohjan, munakoison sävyt ja
+Ubuntu-oranssin. Se on tämän sovelluksen oma teema, joka käyttää
+[Ubuntun virallista väripalettia](https://design.ubuntu.com/brand/colour-palette).
+Mukana tulevat yhteensopiva taustakuva ja neljäs kuvaketeema.
+
+1. Valitse **Asetukset → Teema → Ubuntu 26.10 Dark** ja tallenna.
+   **Käytä valittua teemaa kaikissa widgeteissä** ottaa sen käyttöön myös
+   widgeteissä, joille on aiemmin valittu oma teema.
+2. Taustakuva vaihtuu tallennettaessa, jos **Taustakuva teeman vaihtuessa →
+   Vaihda teeman mukana** on käytössä. Sen voi vaihtaa erikseen
+   **Taustakuvat → Aseta Ubuntu 26.10 Dark-teeman tausta** -painikkeesta.
+3. Kuvakkeet ovat vapaaehtoiset: vieritä Asetukset-sivulla
+   **Sovelluskuvakkeet**-osioon. Paina **Asenna ja korjaa sovelluskuvakkeet**
+   ja sitten **Käytä nykyisen teeman kuvakkeita**. Jos haluat kuvakkeiden
+   vaihtuvan jatkossakin yhteisen teeman mukana, valitse **Kuvakkeet teeman
+   vaihtuessa → Vaihda teeman mukana** ja tallenna.
+
+Uusi teema löytyy myös yksittäisen widgetin ja kellon teemavalinnoista.
+Niiden omat valinnat eivät vaihda työpöydän taustakuvaa tai kuvakkeita.
+Päivitys säilyttää nykyisen teeman ja kuvakkeiden vaihtovalinnan.
+
 ## Kuvakkeet yhteisen teeman mukaan · versio 1.7.0
 
 **Asetukset** ja **Taustakuvat** tarjoavat samat työpöydän kuvakevalinnat.
-Kupari-, Halla- ja Ubuntu-kuvaketeemat tulevat sovelluksen mukana; erillistä
-latausta tai teema-repon valintaa ei tarvita.
+Kupari-, Halla-, Ubuntu- ja Ubuntu 26.10 Dark -kuvaketeemat tulevat sovelluksen
+mukana; erillistä latausta tai teema-repon valintaa ei tarvita.
 
-1. Paina **Asenna ja korjaa sovelluskuvakkeet**. Se asentaa kolme teemaa ja
+1. Paina **Asenna ja korjaa sovelluskuvakkeet**. Se asentaa kaikki kuvaketeemat ja
    korjaa tuettujen sovellusten kuvakkeet sovellusvalikossa ja telakassa myös
    silloin, kun Firefox tai Thunderbird on Snapina tai GIMP apt-pakettina.
 2. Paina **Käytä nykyisen teeman kuvakkeita**, kun haluat ottaa sovelluksen
@@ -41,7 +64,16 @@ työkalupainikkeet eivät kuulu työpöydän kuvaketeemaan.
 
 **Palauta edellinen kuvaketeema** palauttaa aiemman työpöydän kuvaketeeman ja
 poistaa kuvakkeiden automaattisen vaihdon käytöstä. **Palauta sovelluskuvakkeet**
-peruu erikseen sovellusvalikon kuvakekorjaukset. Muutokset tehdään vain
+peruu erikseen sovellusvalikon kuvakekorjaukset.
+
+Versiossa 1.8.0 **Käytä järjestelmän oletuskuvakkeita** ottaa käyttöön tämän
+järjestelmän oman oletuskuvaketeeman, palauttaa sovelluksen tekemät
+sovelluskuvakekorjaukset ja poistaa kuvakkeiden automaattisen teemanvaihdon
+käytöstä. Painike toimii myös ilman aiemman teeman varmuuskopiota.
+**Palauta edellinen kuvaketeema** säilyy erillisenä valintana, jos haluat
+palata esimerkiksi itse valitsemaasi kuvaketeemaan.
+
+Muutokset tehdään vain
 nykyiselle käyttäjälle ilman pääkäyttäjän oikeuksia. Kuvakkeiden vaihto tarvitsee
 GNOME-työpöydän; teemat voi asentaa myös muualla.
 
@@ -52,7 +84,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.7.1-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.7.1).
+[Lataa uusin 1.8.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.0).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -94,7 +126,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.7.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.7.1).
+[packages/v1.8.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.0).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0
@@ -102,8 +134,8 @@ Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennu
 ![Ubuntu-kello, Halla-sää ja Kupari-kuukausiwidget; esimerkkisää](previews/widget-theme-desktop.png)
 
 **Työpöytäwidgetit → Teema** tarjoaa jokaiselle kahdeksalle widgetille oman
-**Kupari**, **Halla** tai **Ubuntu** -valinnan. **Sovelluksen yhteinen teema**
-seuraa Asetukset-sivun teemaa. Valinnat otetaan käyttöön painikkeesta
+**Kupari**, **Halla**, **Ubuntu** tai **Ubuntu 26.10 Dark** -valinnan.
+**Sovelluksen yhteinen teema** seuraa Asetukset-sivun teemaa. Valinnat otetaan käyttöön painikkeesta
 **Tallenna widgettien ulkoasu**; pelkkä valikon vaihtaminen on vielä luonnos.
 Esimerkiksi Ubuntu-kello, Halla-säägraafi ja Kupari-kuukausiwidget voivat näkyä
 samaan aikaan. Widgetin oikean painikkeen **Widgetin teema…** avaa saman sivun.
@@ -166,10 +198,10 @@ valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDAT
 - **Sää:** Yr/MET Norway, Foreca, Ilmatieteen laitos ja Windyn kartta;
   12 tai 24 tuntia. Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
 - **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää ja omat teemavalinnat.
-- **Taustakuvat:** Kupari-, Halla- ja Ubuntu-galleria, oma teema-repo ja omat kuvat; eri taustat
+- **Taustakuvat:** neljän teeman galleria, oma teema-repo ja omat kuvat; eri taustat
   työpöydälle ja lukitusnäytölle sekä 1–77 minuutin diaesitys.
-- **Asetukset:** yhteinen teema, fontti, koko, läpinäkyvyys, aikavyöhyke,
-  sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
+- **Asetukset:** yhteinen teema, vapaaehtoiset työpöydän kuvakkeet, fontti, koko,
+  läpinäkyvyys, aikavyöhyke, sääpaikka, hakuväli, paikkojen lukitus ja kirjautumiskäynnistys.
 
 Yhteiset fonttisäädöt ovat **Asetukset → Ulkoasu ja työpöytä**:
 **Widgettien tekstikoko** (80–160 %, oletus 130 %) ja **Yhteinen kellon numerokoko**
@@ -187,7 +219,8 @@ ja gregoriaanisen kellon, Varjosään sekä kuukausiwidgetit. Päivitys säilytt
 widgetvalinnat, kunnes erilliset kellot korvataan yhteisellä kellolla.
 
 Oletusteema **Kupari** pohjautuu Pöllönkankaan sääwidgetin tummaan, kupariseen
-ja läpikuultavaan ilmeeseen. Muut teemat ovat sininen **Halla** ja oranssi **Ubuntu**. Teeman ja fontin
+ja läpikuultavaan ilmeeseen. Muut teemat ovat sininen **Halla**, oranssi **Ubuntu**
+ja tumma **Ubuntu 26.10 Dark**. Teeman ja fontin
 muutos koskee sovellusta ja sääwidgettejä. Kelloilla voi olla omat ajanlaskuteemat
 tai sama yhteinen teema. Koko ja taustan
 peittävyys koskevat widgettejä. Sääpalvelujen semanttiset käyrävärit säilyvät.

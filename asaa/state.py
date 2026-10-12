@@ -82,15 +82,15 @@ class State:
         if data.get('version') != 1: raise ValueError('Tuntematon asetustiedosto')
         settings = data['settings']
         ZoneInfo(settings['zone'])
-        if settings['theme'] not in ('copper', 'frost', 'ubuntu'): raise ValueError('Tuntematon teema')
+        if settings['theme'] not in ('copper', 'frost', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon teema')
         if settings['time_mode'] not in ('fixed', 'cycle', 'random'): raise ValueError('Tuntematon ajanlaskun vaihtotapa')
         if settings['time_system'] not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')
-        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu'): raise ValueError('Tuntematon kelloteema')
+        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon kelloteema')
         widget_themes = settings.get('widget_themes', {})
         if not isinstance(widget_themes, dict): raise ValueError('Virheelliset widgettiteemat')
         for key, selection in widget_themes.items():
             if (key not in DEFAULTS['widgets'] or not isinstance(selection, str)
-                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'calendar')
+                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'calendar')
                 or selection == 'calendar' and key not in PROFILE_KEYS):
                 raise ValueError('Tuntematon widgettiteema')
         widget_text_colors = settings.get('widget_text_colors', {})

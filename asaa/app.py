@@ -171,6 +171,18 @@ class Controller(QObject):
         self.icon_themes.restore(commit=lambda:self.state.commit(candidate))
         self.settings_changed.emit()
 
+    def use_system_default_icons(self):
+        candidate=self.state.configured_data({'icon_follow_theme':False})
+        self.icon_themes.apply_default(commit=lambda:self.state.commit(candidate))
+        try:
+            if self.icon_themes.launcher_registry_exists():
+                self.icon_themes.restore_launchers()
+        except Exception as error:
+            raise OSError('Järjestelmän oletuskuvakkeet käytössä, mutta '
+                          'sovelluskuvakkeiden palautus epäonnistui: '+str(error)) from error
+        finally:
+            self.settings_changed.emit()
+
     def restore_icon_launchers(self):
         self.icon_themes.restore_launchers()
         self.settings_changed.emit()

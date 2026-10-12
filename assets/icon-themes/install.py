@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install the three icon themes for the current user, without sudo."""
+"""Install the icon themes for the current user, without sudo."""
 import argparse
 import hashlib
 import json
@@ -11,7 +11,12 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parent
-THEMES = {'copper': 'Ajanlaskut-Kupari', 'frost': 'Ajanlaskut-Halla', 'ubuntu': 'Ajanlaskut-Ubuntu'}
+THEMES = {
+    'copper': 'Ajanlaskut-Kupari',
+    'frost': 'Ajanlaskut-Halla',
+    'ubuntu': 'Ajanlaskut-Ubuntu',
+    'ubuntu2610_dark': 'Ajanlaskut-Ubuntu-2610-Dark',
+}
 MARKER = '.ajanlaskut-icons'
 INSTALL_MANIFEST = '.ajanlaskut-installed.json'
 
@@ -82,7 +87,7 @@ def match_widget(data_home):
         key = json.loads(path.read_text(encoding='utf-8'))['settings']['theme']
     except (OSError, ValueError, KeyError, TypeError) as error:
         raise ValueError(f'Widgetin teemaa ei voitu lukea tiedostosta {path}') from error
-    if key not in THEMES:
+    if not isinstance(key, str) or key not in THEMES:
         raise ValueError(f'Widgetin teema ei ole tuettu: {key!r}')
     return key
 
@@ -343,7 +348,7 @@ def launcher_override(data_home):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Asenna Kupari-, Halla- ja Ubuntu-kuvaketeemat käyttäjälle ilman sudoa.')
+    parser = argparse.ArgumentParser(description='Asenna Ajanlaskut ja Sää -kuvaketeemat käyttäjälle ilman sudoa.')
     choice = parser.add_mutually_exclusive_group()
     choice.add_argument('--theme', choices=THEMES, default='copper', help='käyttöön otettava teema (oletus: copper)')
     choice.add_argument('--match-widget', action='store_true', help='valitse ohjelman nykyinen yhteinen teema asetustiedostosta')

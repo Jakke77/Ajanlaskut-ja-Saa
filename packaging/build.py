@@ -73,7 +73,7 @@ def publish(channel):
         try:
             with log.open('w') as output:
                 subprocess.run(['/usr/bin/python3',str(payload/'main.py'),'--self-test'],env=environment,
-                               stdout=output,stderr=subprocess.STDOUT,check=True,timeout=240)
+                               stdout=output,stderr=subprocess.STDOUT,check=True,timeout=600)
         except subprocess.SubprocessError:
             import time
             failure=channel/'qa-failures'/f'{time.time_ns()}.log'

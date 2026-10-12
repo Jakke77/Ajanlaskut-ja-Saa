@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QWidget, QComboBox, QFormLayout, QLabel,
     QVBoxLayout, QHBoxLayout, QPushButton, QCheckBox)
 from .theme import THEME_NAMES
+from .icon_themes import THEMES as ICON_THEMES
 
 
 class ThemeWallpaperOptions(QWidget):
@@ -86,7 +87,7 @@ class IconThemeActions(QWidget):
         super().__init__();self.controller=controller
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(9)
         heading=QLabel('SOVELLUSKUVAKKEET');heading.setObjectName('eyebrow');layout.addWidget(heading)
-        hint=QLabel('Kupari-, Halla- ja Ubuntu-kuvakkeet työpöydälle ja sovellusvalikkoon. '
+        hint=QLabel('Sovelluksen omat kuvaketeemat työpöydälle ja sovellusvalikkoon. '
             'Nykyisen teeman kuvakkeet voi ottaa käyttöön myös ilman automaattista vaihtoa.')
         hint.setObjectName('muted');hint.setWordWrap(True);layout.addWidget(hint)
         self.current=QLabel();self.current.setObjectName('muted');self.current.setWordWrap(True)
@@ -99,11 +100,16 @@ class IconThemeActions(QWidget):
             'oman tunnuksensa sijaan. Valinta koskee Asenna ja korjaa -painiketta.')
         layout.addWidget(self.all_apps)
         self.install_button=QPushButton('Asenna ja korjaa sovelluskuvakkeet')
-        self.install_button.setToolTip('Asentaa kaikki kolme kuvaketeemaa ja korjaa myös '
+        self.install_button.setToolTip('Asentaa kaikki sovelluksen kuvaketeemat ja korjaa myös '
             'Firefoxin, Thunderbirdin ja GIMPin kaltaisten sovellusten kuvakkeet.')
         self.install_button.clicked.connect(self.install);layout.addWidget(self.install_button)
         self.status=QLabel();self.status.setObjectName('status');self.status.setWordWrap(True)
         self.status.setAccessibleName('Kuvaketoiminnon palaute');layout.addWidget(self.status)
+        self.default_button=QPushButton('Käytä järjestelmän oletuskuvakkeita')
+        self.default_button.setToolTip('Ottaa käyttöön tämän järjestelmän oletuskuvaketeeman, '
+            'palauttaa sovelluksen muuttamat sovelluskuvakkeet ja poistaa kuvakkeiden '
+            'automaattisen teemanvaihdon käytöstä.')
+        self.default_button.clicked.connect(self.use_system_default);layout.addWidget(self.default_button)
         restore=QHBoxLayout()
         self.restore_button=QPushButton('Palauta edellinen kuvaketeema')
         self.restore_button.setToolTip('Palauttaa aiemman työpöydän kuvaketeeman ja poistaa '
@@ -121,10 +127,11 @@ class IconThemeActions(QWidget):
         manager=self.controller.icon_themes
         available=manager.available()
         self.apply_button.setEnabled(available)
+        self.default_button.setEnabled(manager.default_available())
         self.restore_button.setEnabled(available and manager.backup.is_file())
         self.restore_launchers_button.setEnabled(manager.launcher_backup_exists())
         selected=manager.current() if available else ''
-        names={'Ajanlaskut-'+name:name for name in THEME_NAMES.values()}
+        names={folder:THEME_NAMES[key] for key,folder in ICON_THEMES.items()}
         self.current.setText('Käytössä: '+names.get(selected,selected or 'nykyiset työpöydän kuvakkeet')
             if available else 'Kuvakkeiden vaihto tarvitsee GNOME-työpöydän. Teemat voi silti asentaa.')
 
@@ -150,6 +157,11 @@ class IconThemeActions(QWidget):
     def restore_theme(self):
         self.perform(self.controller.restore_icon_theme,lambda _:
             'Edellinen kuvaketeema palautettu. Kuvakkeiden automaattinen vaihto poistettu käytöstä.')
+
+    def use_system_default(self):
+        self.perform(self.controller.use_system_default_icons,lambda _:
+            'Järjestelmän oletuskuvakkeet käytössä: '+self.controller.icon_themes.current()+
+            '. Kuvakkeiden automaattinen vaihto poistettu käytöstä.')
 
     def restore_launchers(self):
         self.perform(self.controller.restore_icon_launchers,lambda _:'Sovellusten aiemmat kuvakevalinnat palautettu.')
