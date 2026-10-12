@@ -1,16 +1,34 @@
-# Ajanlaskut ja Sää 1.6.2 — valmis deb-paketti
+# Ajanlaskut ja Sää 1.7.1 · kuvakkeet sovelluksen sisältä
 
-[Lataa ajanlaskut-ja-saa_1.6.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.2/ajanlaskut-ja-saa_1.6.2_all.deb)
-
-Avaa latauslinkki GitHubiin kirjautuneena. Tiedoston **Download raw file** lataa myös paketin.
+[Lataa ajanlaskut-ja-saa_1.7.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.7.1/ajanlaskut-ja-saa_1.7.1_all.deb).
+Yksityinen repo edellyttää GitHubiin kirjautumista. Tiedoston **Download raw file** lataa paketin.
+Lataa myös [SHA256SUMS](SHA256SUMS) halutessasi tarkistamista varten.
 
 Asenna latauskansiosta:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.6.2_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.7.1_all.deb
 ```
 
-Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta, päivitä myös se uuden debin asentamisen jälkeen. Aja ilman sudoa:
+**Valitse vanhasta ohjelmasta Lopeta sovellus.** Ikkunan × voi vain piilottaa sen.
+Käynnistä uusi järjestelmäasennus komennolla `/usr/bin/ajanlaskut-ja-saa`.
+Ikkunan otsikossa ja alareunassa näkyy nyt **1.7.1**.
+
+## Kuvaketoiminnot
+
+Avaa **Asetukset → vieritä alas → Sovelluskuvakkeet** tai vastaava kohta **Taustakuvat**-sivulta.
+
+1. **Asenna ja korjaa sovelluskuvakkeet** asentaa kolme teemaa ja korjaa myös Firefoxin ja Thunderbirdin Snap-käynnistimet sekä GIMPin apt-kuvan.
+2. **Käytä nykyisen teeman kuvakkeita** vaihtaa kuvakkeet heti.
+3. **Kuvakkeet teeman vaihtuessa → Vaihda teeman mukana** ja tallennus ottaa vapaaehtoisen automaattisen vaihdon käyttöön.
+
+Teemapaketit sisältyvät sovellukseen. Kuvakevaihto ei tarvitse verkkolatausta.
+Oletuksena nykyiset kuvakkeet säilyvät. Palautuspainikkeet palauttavat aiemman teeman ja käynnistinkuvakkeet.
+
+## Jos käytät codex-ajanlasku-käyttäjäasennusta
+
+Deb päivittää järjestelmäasennuksen. Käyttäjäasennus pitää päivittää erikseen.
+Aja debin asennuksen jälkeen ilman sudoa:
 
 ```bash
 (
@@ -20,42 +38,26 @@ Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta, päivitä myös se 
     --publish-channel "$ajanlasku_kanava" &&
   /usr/bin/python3 "$ajanlasku_kanava/update-upgrade.py" setup &&
   export PATH="$HOME/.local/bin:$PATH" &&
-  codex-ajanlasku update &&
-  codex-ajanlasku upgrade &&
-  codex-ajanlasku status
+  codex-ajanlasku update && codex-ajanlasku upgrade && codex-ajanlasku status
 )
 ```
 
-Käytä samaa päivityskansiota, jonka `codex-ajanlasku status` ilmoittaa.
+Käytä samaa päivityskansiota, jonka nykyinen `codex-ajanlasku status` ilmoittaa.
+Kun status näyttää **1.7.1**, lopeta vanha ohjelma valikosta ja käynnistä `codex-ajanlasku run`.
+Molemmat asennukset käyttävät samoja kalenterimerkintöjä. Päivitys ei tyhjennä niitä.
 
-**Valitse vanhasta ohjelmasta Lopeta sovellus** ja käynnistä `codex-ajanlasku run`. Ikkunan × voi vain piilottaa vanhan ohjelman. Jos käytät pelkkää järjestelmäasennusta, käynnistys on `/usr/bin/ajanlaskut-ja-saa`. Molemmat asennustavat käyttävät samoja asetuksia ja merkintöjä.
-
-Paketti tarvitsee Python 3.10:n sekä PyQt6:n ja sen multimediaosan vähintään 6.8. APT tarkistaa riippuvuudet.
-
-## Korjaus 1.6.2:ssa
-
-Taustakuvan toimintojen onnistumis- ja virheviestit näkyvät painikkeiden vieressä. Ne jäivät aiemmin sivun alareunaan ja näyttivät siltä, ettei painaminen tehnyt mitään.
-
-**Aseta Ubuntu-teeman tausta** (tai Kupari/Halla) asettaa sovelluksen nykyisen teeman kuvan. **Työpöydän taustaksi** asettaa galleriassa valitun kuvan.
-
-Erillinen lukitusnäytön kuva ja vaihtuvat kuvat vaativat käytössä olevan **Dia Wall 77** -lisäosan. Ilman sitä GNOMEn lukitusnäyttö seuraa työpöydän taustaa. Puuttuva tuki kerrotaan valikoissa.
-
-Mukana ovat myös 1.6.1:n digi-, analogi- ja yhdistelmäkellot, omat diginumeroiden koot ja värit sekä tekstivärit kaikille kahdeksalle widgetille.
+Myös zipistä käynnistetty `python3 main.py` voi avata jo käynnissä olevan vanhan ohjelman.
+Sulje siksi vanha kokonaan ennen lähdekoodin kokeilua.
+[1.7.1-lähdepaketti](Ajanlaskut-ja-Saa-1.7.1-lahdekoodi.zip) sisältää Python-koodin;
+repon oletushaaran ZIP ei ole sama tiedosto.
 
 ## Tarkistus
-
-159 yksikkötestiä ja eristetyt Qt-käyttöliittymätestit läpäistiin myös puretusta julkaisun lähdepaketista.
-Onnistumis- ja virhepalaute pysyy näkyvissä 1440×800-ikkunassa ilman lisävieritystä.
-Oikea päivitys 1.6.1 → 1.6.2 → palautus 1.6.1 → 1.6.2 säilytti asetustiedoston tavut, värit, merkinnät ja muistutukset.
-
-Lataa myös SHA256SUMS ja tarkista samasta latauskansiosta:
 
 ```bash
 sha256sum -c SHA256SUMS
 ```
 
-SHA256: `e6117e4da3f90f886c52312fc9d0cd9ac88af6e23b1a06dc422251de706951dd`
+191 testiä läpäisi. Puretusta deb-paketista tarkistettiin myös versionumero, kuvakepaneelit molemmilla sivuilla ja käynnistyksen säilyttävä toiminta.
+Katso [QA.log](QA.log). Paketti vaatii Python 3.10:n ja PyQt6:n vähintään 6.8.
 
-[Lähdekoodi ja käyttöohje](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/e58a508a02b2b3f4844fa226dcb8e128956a82bf)
-
-Tämä haara sisältää vain asennuspaketin, tarkisteen ja ohjeen.
+[Lähdekoodi ja täydet päivitysohjeet](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/codex/icon-theme-sync).
