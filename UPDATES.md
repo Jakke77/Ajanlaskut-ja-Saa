@@ -46,40 +46,53 @@ varmuuskopiolla tätä varten.
 
 ## Valmiin deb-paketin asentaminen
 
-Lataa [ajanlaskut-ja-saa_1.6.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.6.2/ajanlaskut-ja-saa_1.6.2_all.deb)
+Lataa [ajanlaskut-ja-saa_1.7.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.7.1/ajanlaskut-ja-saa_1.7.1_all.deb)
 ja halutessasi tarkista sen SHA256SUMS samasta
-[packages/v1.6.2-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.6.2).
+[packages/v1.7.1-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.7.1).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Avaa pääte latauskansioon:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.6.2_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.7.1_all.deb
 ```
 
 Tämä päivittää **järjestelmäasennuksen**, joka käynnistyy komennolla
 `/usr/bin/ajanlaskut-ja-saa`. Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta,
 päivitä myös se alla olevalla [deb-asennuksen käyttöönottoketjulla](#komennon-käyttöönotto-deb-asennuksesta).
-Ketju rakentaa nyt 1.6.2-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
+Ketju rakentaa nyt 1.7.1-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
 Sen jälkeen käytä `codex-ajanlasku run` -komentoa. Asennukset käyttävät samaa
 asetustiedostoa, joten merkintöjä ei tarvitse siirtää.
 
 Valitse ennen uuden version käynnistystä vanhasta ohjelmasta **Lopeta sovellus**.
 Ubuntu tarvitsee paketin ilmoittamat PyQt6-riippuvuudet, vähintään version 6.8.
 
+**Jos kuvakevalintoja ei näy:** versiot 1.6.x eivät sisällä niitä. Tarkista ensin
+`/usr/bin/ajanlaskut-ja-saa --version` ja käyttäjäasennukselle
+`codex-ajanlasku status` sekä `codex-ajanlasku run --version`.
+Pelkkä deb-asennus ei vaihda `codex-ajanlasku`-käyttäjäasennuksen versiota;
+aja myös alla oleva käyttöönottoketju, jos käynnistät sen kautta.
+Sulje vanha ohjelma **Lopeta sovellus** -komennolla ja käynnistä sen jälkeen
+uusi. Myös zipistä ajettu `python3 main.py` voi ohjata käynnistyksen jo avoinna
+olevaan vanhaan ohjelmaan, koska molemmat käyttävät samaa asetustiedostoa.
+Uuden ohjelman otsikossa lukee **Ajanlaskut ja Sää 1.7.1**.
+Kuvaketoiminnot ovat **Asetukset → vieritä alas → Sovelluskuvakkeet**.
+
 ## Paikallinen päivityskansio
 
 ### Uuden GitHub-version tuominen nykyiseen käyttäjäasennukseen
 
 GitHubiin yhdistetty muutos tulee koneelle, kun uusi lähdepaketti julkaistaan
-omaan päivityskansioon. Lataa repon **Code → Download ZIP** GitHubiin
-kirjautuneena. Avaa pääte latauskansioon ja suorita:
+omaan päivityskansioon. Lataa nimenomaan
+[1.7.1-lähdepaketti](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.7.1/Ajanlaskut-ja-Saa-1.7.1-lahdekoodi.zip)
+GitHubiin kirjautuneena. Repon oletushaaran ZIP sisältää julkaistuja asennuspaketteja;
+se ei ole sama tiedosto kuin lähdepaketti. Avaa pääte latauskansioon ja suorita:
 
 ```bash
 (
   umask 022
   ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
   ajanlasku_lahde="$(mktemp -d)" &&
-  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-main.zip "$ajanlasku_lahde" &&
-  /usr/bin/python3 "$ajanlasku_lahde/Ajanlaskut-ja-Saa-main/packaging/build.py" \
+  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-1.7.1-lahdekoodi.zip "$ajanlasku_lahde" &&
+  /usr/bin/python3 "$ajanlasku_lahde/Ajanlaskut-ja-Saa/packaging/build.py" \
     --publish-channel "$ajanlasku_kanava" &&
   "$HOME/.local/bin/codex-ajanlasku" update &&
   "$HOME/.local/bin/codex-ajanlasku" upgrade &&
@@ -89,7 +102,7 @@ kirjautuneena. Avaa pääte latauskansioon ja suorita:
 
 Tämä olettaa, että nykyinen `codex-ajanlasku` on rekisteröity yllä olevaan
 päivityskansioon. `status` näyttää käytössä olevan kansion. Vaihda tarvittaessa
-`ajanlasku_kanava` vastaamaan sitä. Komento käyttää ladatun päähaaran versiota;
+`ajanlasku_kanava` vastaamaan sitä. Komento käyttää ladatun lähdepaketin versiota;
 vanhasta `/usr/share/ajanlaskut-ja-saa`-kansiosta rakentaminen julkaisee edelleen
 siellä olevan vanhan version.
 

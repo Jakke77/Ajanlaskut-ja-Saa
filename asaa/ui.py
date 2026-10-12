@@ -13,6 +13,7 @@ from .models import shadow, star
 from .theme import THEMES, THEME_LABELS, paint_panel
 from .state import DEFAULTS
 from . import almanac
+from . import VERSION
 from .widgets import WIDGET_LABELS
 from .widget_themes import widget_theme, widget_theme_choices, widget_theme_selection
 from .color_control import ColorControl
@@ -495,7 +496,7 @@ class SettingsPage(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self,controller):
         super().__init__();self.controller=controller
-        self.setWindowTitle('Ajanlaskut ja Sää');self.setWindowIcon(controller.icon)
+        self.setWindowTitle('Ajanlaskut ja Sää '+VERSION);self.setWindowIcon(controller.icon)
         self.resize(1280,960);self.setMinimumSize(1020,720)
         root=QWidget();self.setCentralWidget(root);outer=QHBoxLayout(root);outer.setContentsMargins(0,0,0,0);outer.setSpacing(0)
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(218)
@@ -524,7 +525,7 @@ class MainWindow(QMainWindow):
         self.pages.setCurrentIndex(self.page_indices[key]);self.navigation[key].setChecked(True)
         if key=='weather':self.page_widgets[key].sync()
     def tick(self):
-        self.footer.setText(f'Ajanlaskut ja Sää · {self.controller.calendars.now():%d.%m.%Y %H:%M} · hakuväli {self.controller.options["refresh_minutes"]} min')
+        self.footer.setText(f'Ajanlaskut ja Sää {VERSION} · {self.controller.calendars.now():%d.%m.%Y %H:%M} · hakuväli {self.controller.options["refresh_minutes"]} min')
     def sync_theme(self):
         self.theme_title.setText(THEME_LABELS[self.controller.options['theme']].upper())
     def closeEvent(self,event):
