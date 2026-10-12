@@ -272,3 +272,20 @@ Kuvat `overview.png`, `calendar.png`, `weather.png`, `widgets.png`, `settings.pn
 `live-overview.png` on sovelluksen omasta ikkuna-renderöinnistä oikeilla ennusteilla;
 se ei ole koko työpöydän kuvakaappaus. GNOMEn ikkunan sijoittelua/raahausta ja
 laitteen sijaintilupaa ei testattu natiivin käyttöliittymän automaatiolla.
+# Kuvaketeemojen sovellusintegraatio · 1.7.0
+
+Kuvakkeet voi ottaa käyttöön Asetuksista tai Taustakuvat-sivulta. Automaattinen
+vaihto on vapaaehtoinen ja oletuksena pois. Kupari-, Halla- ja Ubuntu-kuvakkeet
+ovat paketissa; käynnistys, kellon kierto ja yksittäisen widgetin teemamuutos
+eivät muuta työpöydän kuvakkeita. Sovelluskäynnistimien korjaus on erillinen toiminto.
+
+Kuvaketeemojen backend- ja Qt-testit tarkistavat säilyttävän oletuksen, sivujen
+luonnokset, Snap/apt-korjauksen rajapinnan sekä asetusten, taustakuvan ja kuvakkeiden
+palautuksen virhetilanteessa. Palautus muistaa kulloisenkin käyttöönottokierroksen
+alkuperäisen työpöytäteeman. Todellista Gio-asetuskirjoitusta on tarkistettu
+`GSETTINGS_BACKEND=memory`-tilassa: vain `icon-theme` muuttuu, käyttäjän dconf säilyy.
+
+Kuvakerepon 40 testiä, kaikkien 104 kuvakemallin renderöinti kolmessa paletissa
+ja GTK-välimuistit tarkistettiin erikseen. Päivitys aiemmasta toimitetusta
+kuvakepaketista säilyttää ylimääräiset tiedostot ja estää omien muokkausten korvaamisen.
+Varsinainen sovellusvalikon ja telakan ulkoasu on vielä tarkistettava Ubuntu-istunnossa.

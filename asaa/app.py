@@ -17,6 +17,7 @@ from .widget_themes import widget_theme
 from .services import SharedWeather, DailyWeather
 from .widgets import DesktopSurface, WIDGET_LABELS
 from .wallpapers import WallpaperManager
+from .icon_themes import IconThemeManager
 from .clock_config import ClockRotation, SYSTEMS, PROFILE_KEYS
 from .windowing import WindowLayers
 
@@ -36,7 +37,7 @@ class Controller(QObject):
     clock_changed=pyqtSignal()
     settings_changed=pyqtSignal()
     notes_changed=pyqtSignal()
-    def __init__(self,app,state,network=True,wallpaper_backend=None):
+    def __init__(self,app,state,network=True,wallpaper_backend=None,icon_backend=None):
         super().__init__();self.app,self.state=app,state;self.stopping=False
         self.calendars=Calendars(state.settings['zone'],state.settings['star_epoch'])
         self.time_rotation=ClockRotation(state.settings)
@@ -44,6 +45,7 @@ class Controller(QObject):
         self.widgets={};self.window=None;self.tray=None;self.server=None;self.sound=None
         self.layers=WindowLayers(self)
         self.wallpapers=WallpaperManager(ROOT/'assets/wallpapers',state.path.parent,wallpaper_backend)
+        self.icon_themes=IconThemeManager(ROOT/'assets/icon-themes',state.path.parent,icon_backend)
         apply_theme(app,self.options)
         self.weather=SharedWeather(self,network=network)
         self.daily=DailyWeather(self,network=network)
@@ -112,12 +114,18 @@ class Controller(QObject):
                 if changed_start:set_autostart(previous)
                 raise
         options=candidate['settings']
-        # No startup, font-only, rotation or same-theme writes. A deliberate
-        # shared-theme change is the only automatic wallpaper trigger.
-        if options['theme']!=self.options['theme'] and options['wallpaper_follow_theme']:
+        # Nest the two reversible desktop operations around the durable app
+        # commit, so a failure restores the icons, background and settings.
+        shared_theme_changed=options['theme']!=before['theme']
+        def commit_icons():
+            if shared_theme_changed and options['icon_follow_theme']:
+                self.icon_themes.apply(options['theme'],commit=commit)
+            else:commit()
+        # No startup, fonts, per-widget changes or rotation trigger a write.
+        if shared_theme_changed and options['wallpaper_follow_theme']:
             picture=self.wallpapers.library.for_theme(options['theme'])
-            self.wallpapers.apply([picture.path],options['wallpaper_theme_target'],commit=commit)
-        else:commit()
+            self.wallpapers.apply([picture.path],options['wallpaper_theme_target'],commit=commit_icons)
+        else:commit_icons()
         self.time_rotation.configure(self.options)
         changed_keys={key for key in changes if options.get(key)!=before.get(key)}
         if changed_keys <= {'theme', 'widget_themes', 'time_theme', 'widget_text_colors'}:
@@ -130,7 +138,7 @@ class Controller(QObject):
         clock_only={'time_mode','time_system','time_systems','time_interval','time_theme','widget_themes','clock_profiles','clock_weather',
                     'clock_displays','widget_clock_scale','widget_text_colors',
                     'calendar_extras_visible','calendar_extras','calendar_extras_scope','calendar_extra_cell',
-                    'wallpaper_follow_theme','wallpaper_theme_target'}
+                    'wallpaper_follow_theme','wallpaper_theme_target','icon_follow_theme'}
         if changed_keys <= clock_only:
             if widget_theme(before,'weather') != widget_theme(options,'weather'):
                 self.weather.apply_widget_theme()
@@ -147,6 +155,24 @@ class Controller(QObject):
         changes={'wallpaper_mode':mode,'wallpaper_interval':interval,'wallpaper_shuffle':shuffle}
         candidate=self.state.configured_data(changes)
         self.wallpapers.apply(paths,target,mode,interval,shuffle,commit=lambda:self.state.commit(candidate))
+        self.settings_changed.emit()
+
+    def set_icon_theme(self):
+        self.icon_themes.apply(self.options['theme'])
+        self.settings_changed.emit()
+
+    def install_icon_themes(self,all_apps=False):
+        result=self.icon_themes.install(all_apps=all_apps)
+        self.settings_changed.emit()
+        return result
+
+    def restore_icon_theme(self):
+        candidate=self.state.configured_data({'icon_follow_theme':False})
+        self.icon_themes.restore(commit=lambda:self.state.commit(candidate))
+        self.settings_changed.emit()
+
+    def restore_icon_launchers(self):
+        self.icon_themes.restore_launchers()
         self.settings_changed.emit()
 
     def open_page(self,key):

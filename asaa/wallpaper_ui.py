@@ -53,14 +53,14 @@ class WallpapersPage(QWidget):
         self.description = label('', 'muted', True); detail_layout.addWidget(self.description)
         row.addWidget(details, 2); layout.addLayout(row)
         frame, content = card()
-        from .wallpaper_options import ThemeWallpaperOptions
+        from .wallpaper_options import ThemeWallpaperOptions,IconThemeActions
         self.theme_options=ThemeWallpaperOptions(controller)
         content.addWidget(self.theme_options)
         self.status = label('', 'status', True)
         self.status.setAccessibleName('Taustakuvatoiminnon palaute')
         content.addWidget(self.status)
         policy_actions=QHBoxLayout()
-        self.save_theme_button=button('Tallenna teemanvaihdon valinta',self.save_theme_policy)
+        self.save_theme_button=button('Tallenna teemanvaihdon valinnat',self.save_theme_policy)
         self.current_theme_button=button('',self.apply_current_theme)
         self.current_theme_button.setToolTip('Asettaa sovelluksen nykyisen teeman oletustaustan. '
             'Galleriassa valittu kuva asetetaan Työpöydän taustaksi -painikkeella.')
@@ -92,6 +92,8 @@ class WallpapersPage(QWidget):
         self.restore_button = button('Palauta edelliset taustat', self.restore)
         content.addWidget(self.restore_button)
         layout.addWidget(frame)
+        icons,icon_content=card();self.icon_actions=IconThemeActions(controller)
+        icon_content.addWidget(self.icon_actions);layout.addWidget(icons)
         bottom = QHBoxLayout()
         bottom.addWidget(button('Avaa teemakansio', self.open_folder))
         bottom.addWidget(button('Käytä vain sovelluksen galleriaa', self.clear_folder))
@@ -212,9 +214,7 @@ class WallpapersPage(QWidget):
     def save_theme_policy(self):
         try:
             self.controller.configure(self.theme_options.changes())
-            self.status.setText('Tallennettu — tausta seuraa seuraavaa teemanvaihtoa.'
-                if self.controller.options['wallpaper_follow_theme'] else
-                'Tallennettu — valittu tausta säilyy, vaikka teema vaihtuu.')
+            self.status.setText('Tallennettu — taustakuvan ja kuvakkeiden valinnat koskevat seuraavaa teemanvaihtoa.')
         except (OSError,ValueError,KeyError,TypeError) as error:self.status.setText(str(error))
 
     def apply_current_theme(self):

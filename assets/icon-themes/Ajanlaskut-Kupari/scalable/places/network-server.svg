@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img"><title>network</title><defs>
+      <linearGradient id="panel" x2="0.8" y2="1"><stop stop-color="#1e1822"/><stop offset="1" stop-color="#100e15"/></linearGradient>
+      <linearGradient id="metal" x2="0.65" y2="1"><stop stop-color="#f6e5db"/><stop offset=".38" stop-color="#ef986e"/><stop offset="1" stop-color="#68483e"/></linearGradient>
+      <linearGradient id="folder" x2="0.25" y2="1"><stop stop-color="#ef986e"/><stop offset="1" stop-color="#68483e"/></linearGradient>
+      <clipPath id="clip"><rect x="5" y="5" width="54" height="54" rx="15"/></clipPath>
+    </defs><path d="M5 21v-4a5 5 0 0 1 5-5h15l6 6h23a5 5 0 0 1 5 5v29H5Z" fill="#68483e"/>
+          <path d="M5 26a5 5 0 0 1 5-5h44a5 5 0 0 1 5 5v24a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5Z" fill="url(#folder)" stroke="#ef986e" stroke-width="1"/>
+          <path d="M10 24h44" fill="none" stroke="#f6e5db" stroke-opacity=".3" stroke-width="1"/>
+          <path d="M10 52h44" fill="none" stroke="#100e15" stroke-opacity=".35" stroke-width="1"/><g transform="translate(12 16) scale(.62)" fill="none" stroke="#f6e5db" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="7"/><rect x="10" y="42" width="16" height="11" rx="2"/><rect x="38" y="42" width="16" height="11" rx="2"/><path d="M32 25v9M18 42v-8h28v8"/></g></svg>

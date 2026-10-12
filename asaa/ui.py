@@ -13,6 +13,7 @@ from .models import shadow, star
 from .theme import THEMES, THEME_LABELS, paint_panel
 from .state import DEFAULTS
 from . import almanac
+from . import VERSION
 from .widgets import WIDGET_LABELS
 from .widget_themes import widget_theme, widget_theme_choices, widget_theme_selection
 from .color_control import ColorControl
@@ -415,7 +416,7 @@ class SettingsPage(QWidget):
         for key,title in THEME_LABELS.items():self.theme.addItem(title,key)
         self.all_widgets_theme=QCheckBox('Käytä valittua teemaa kaikissa widgeteissä')
         self.all_widgets_theme.setToolTip('Tallennettaessa widgettien omat teemavalinnat korvataan yhteisellä teemalla.')
-        from .wallpaper_options import ThemeWallpaperOptions
+        from .wallpaper_options import ThemeWallpaperOptions,IconThemeActions
         self.wallpaper_options=ThemeWallpaperOptions(controller)
         self.font=QFontComboBox();self.scale=QSpinBox();self.scale.setRange(60,150);self.scale.setSuffix(' %')
         self.scale.setToolTip('Oletuskoko widgeteille, joille ei ole vedetty omaa kokoa. Palauta yksittäisen widgetin oletuskoko sen oikean painikkeen valikosta.')
@@ -438,6 +439,8 @@ class SettingsPage(QWidget):
         self.sound=QCheckBox('Soita huhuilu muistutuksen yhteydessä');self.autostart=QCheckBox('Avaa valitut widgetit kirjautuessa')
         for item in [self.seconds,self.locked,self.top,self.clock_weather,self.sound,self.autostart]:form.addRow('',item)
         form_box.addLayout(form);layout.addWidget(appearance)
+        icons,icon_box=card();self.icon_actions=IconThemeActions(controller)
+        icon_box.addWidget(self.icon_actions);layout.addWidget(icons)
         layout.addWidget(button('Taustakuvat · työpöytä ja lukitusnäyttö',lambda:controller.open_page('wallpapers')))
         layout.addWidget(button('Ajanlaskut ja kellojen näkyvä sisältö',lambda:controller.open_page('clocks')))
         layout.addWidget(button('Widgettien omat teemavalinnat',lambda:controller.open_page('widgets')))
@@ -471,6 +474,7 @@ class SettingsPage(QWidget):
         self.seconds.setChecked(True);self.locked.setChecked(False);self.top.setChecked(False)
         self.all_widgets_theme.setChecked(False)
         self.wallpaper_options.behavior.setCurrentIndex(0);self.wallpaper_options.target.setCurrentIndex(0)
+        self.wallpaper_options.icon_behavior.setCurrentIndex(self.wallpaper_options.icon_behavior.findData(False))
     def save(self):
         changes={'theme':self.theme.currentData(),'font':self.font.currentFont().family(),'scale':self.scale.value(),'opacity':self.opacity.value(),
             'widget_text_scale':self.text_scale.value(),'widget_clock_scale':self.clock_scale.value(),
@@ -492,7 +496,7 @@ class SettingsPage(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self,controller):
         super().__init__();self.controller=controller
-        self.setWindowTitle('Ajanlaskut ja Sää');self.setWindowIcon(controller.icon)
+        self.setWindowTitle('Ajanlaskut ja Sää '+VERSION);self.setWindowIcon(controller.icon)
         self.resize(1280,960);self.setMinimumSize(1020,720)
         root=QWidget();self.setCentralWidget(root);outer=QHBoxLayout(root);outer.setContentsMargins(0,0,0,0);outer.setSpacing(0)
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(218)
@@ -521,7 +525,7 @@ class MainWindow(QMainWindow):
         self.pages.setCurrentIndex(self.page_indices[key]);self.navigation[key].setChecked(True)
         if key=='weather':self.page_widgets[key].sync()
     def tick(self):
-        self.footer.setText(f'Ajanlaskut ja Sää · {self.controller.calendars.now():%d.%m.%Y %H:%M} · hakuväli {self.controller.options["refresh_minutes"]} min')
+        self.footer.setText(f'Ajanlaskut ja Sää {VERSION} · {self.controller.calendars.now():%d.%m.%Y %H:%M} · hakuväli {self.controller.options["refresh_minutes"]} min')
     def sync_theme(self):
         self.theme_title.setText(THEME_LABELS[self.controller.options['theme']].upper())
     def closeEvent(self,event):

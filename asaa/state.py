@@ -17,6 +17,7 @@ DEFAULTS = {
     'wallpaper_directory': '', 'wallpaper_mode': 'single',
     'wallpaper_interval': 77, 'wallpaper_shuffle': True,
     'wallpaper_follow_theme': True, 'wallpaper_theme_target': 'desktop',
+    'icon_follow_theme': False,
     'time_mode': 'cycle', 'time_system': 'shadow', 'time_systems': list(SYSTEMS),
     'time_interval': 77, 'time_theme': 'shared', 'clock_profiles': copy.deepcopy(DEFAULT_PROFILES),
     'widget_themes': {}, 'widget_text_colors': {}, 'clock_displays': {},
@@ -134,7 +135,7 @@ class State:
             raise ValueError('Virheellinen teemakansio')
         for key, lo, hi in [('scale', 60, 150), ('widget_text_scale', 80, 160), ('widget_clock_scale', 80, 140), ('opacity', 0, 100), ('refresh_minutes', 15, 180), ('windy_zoom', 3, 12), ('wallpaper_interval', 1, 77), ('time_interval', 1, 3600)]:
             if type(settings[key]) is not int or not lo <= settings[key] <= hi: raise ValueError('Virheellinen asetus: ' + key)
-        for key in ('seconds', 'locked', 'on_top', 'clock_weather', 'sound', 'autostart', 'wallpaper_shuffle', 'wallpaper_follow_theme', 'calendar_extras_visible'):
+        for key in ('seconds', 'locked', 'on_top', 'clock_weather', 'sound', 'autostart', 'wallpaper_shuffle', 'wallpaper_follow_theme', 'icon_follow_theme', 'calendar_extras_visible'):
             if type(settings[key]) is not bool: raise ValueError('Virheellinen asetus: ' + key)
         if settings['provider'] not in ('yr', 'foreca', 'fmi', 'windy'): raise ValueError('Tuntematon sääpalvelu')
         if settings['star_side'] not in ('left', 'right', 'month'): raise ValueError('Virheellinen varjon puoli')
