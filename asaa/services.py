@@ -37,6 +37,8 @@ class SettingsBridge:
 
 class SharedWeather(WeatherWidget):
     """Original weather graph hosted by the new application's controller."""
+    windy_reload_requested = pyqtSignal()
+
     def __init__(self, controller, network=True):
         self.controller = controller
         self._last_fetch = None
@@ -93,10 +95,15 @@ class SharedWeather(WeatherWidget):
             self.refresh(automatic=True)
 
     def refresh(self, automatic=False):
-        if not self.network_enabled: return
+        if not self.network_enabled or self.stopping: return
+        # Both visible maps can recover while the separate forecast fetch is
+        # still running. A timer tick must not repeatedly replace a live map.
+        if self.selected == 'windy' and not automatic:
+            self.windy_reload_requested.emit()
+            self.load_windy(force=True)
         if self.worker and self.worker.isRunning(): return
         self._last_fetch = datetime.now(UTC)
-        super().refresh(automatic)
+        super().refresh(automatic or self.selected == 'windy')
 
     def open_expanded(self): self.controller.open_page('weather')
     def open_settings(self): self.controller.open_page('settings')

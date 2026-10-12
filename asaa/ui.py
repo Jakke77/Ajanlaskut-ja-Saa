@@ -304,6 +304,7 @@ class WeatherPage(QWidget):
         self.provider.currentIndexChanged.connect(self.select_provider)
         self.count.currentIndexChanged.connect(self.change_count)
         controller.weather.changed.connect(self.sync);controller.daily.changed.connect(self.sync)
+        controller.weather.windy_reload_requested.connect(self.reload_windy)
         self.sync()
     def select_provider(self):self.controller.weather.select_provider(self.provider.currentData());self.sync()
     def change_count(self):self.forecast.count=self.count.currentData();self.forecast.update()
@@ -312,11 +313,17 @@ class WeatherPage(QWidget):
         self.title.setText(owner.place.name)
         self.provider.blockSignals(True);self.provider.setCurrentIndex(self.provider.findData(owner.selected));self.provider.blockSignals(False)
         if owner.selected=='windy' and self.isVisible():
-            if self.windy is None:
-                self.windy=WindyView(network=owner.network_enabled);self.stack.addWidget(self.windy)
-            self.windy.load(owner.place,owner.options['windy_zoom'],owner.options['windy_layer']);self.stack.setCurrentWidget(self.windy)
+            self.show_windy()
         else:self.stack.setCurrentWidget(self.forecast)
         self.summary.setText('Varjosää · wttr.in\n'+'\n'.join(self.controller.daily.lines())+'\n\nHaetaan '+str(self.controller.options['refresh_minutes'])+' minuutin välein. Lämpö on ennuste; sade on tunnin kertymä.')
+    def show_windy(self,*,force=False):
+        owner=self.controller.weather
+        if owner.selected!='windy' or not self.isVisible():return
+        if self.windy is None:
+            self.windy=WindyView(network=owner.network_enabled);self.stack.addWidget(self.windy)
+        self.stack.setCurrentWidget(self.windy)
+        self.windy.load(owner.place,owner.options['windy_zoom'],owner.options['windy_layer'],force=force)
+    def reload_windy(self):self.show_windy(force=True)
     def showEvent(self,event):super().showEvent(event);self.sync()
 
 class WidgetsPage(QWidget):

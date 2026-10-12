@@ -1,5 +1,27 @@
 # Tarkistukset
 
+## Windyn käynnistyslataus ja uudelleenyritys · 12.10.2026 · 1.8.1
+
+- 241 testiä läpäistiin. Uudet 29 Qt-testiä kattavat näkyvyyden jälkeen
+  tapahtuvan latauksen, saman epäonnistuneen URL:n nimenomaisen uudelleenyrityksen,
+  onnistuneen latauksen säilyttämisen ja turvallisen sulkemisen.
+- Kaksi erillistä ohjainta käynnistetään samasta tallennetusta Windy-tilasta
+  sekä näkyvällä että piilotetulla sääwidgetillä. Pääikkunan kartta saa oikean
+  paikan, zoomin ja kerroksen ilman erillisen sääikkunan avaamista.
+- Päivitä välittyy molemmille näkyville kartoille myös ennustehaun ollessa
+  kesken. Automaattinen päivitys, fontin vaihto ja piilotetun näkymän
+  synkronointi eivät pakota kartan latausta. Latausvirhe pysyy näkyvissä,
+  kunnes käyttäjä yrittää uudelleen tai avaa karttanäkymän uudelleen.
+- Karttanäkymässä ovat Yritä uudelleen ja Avaa Windy selaimessa. Selain
+  avataan vain käyttäjän toiminnosta ja samalla karttarajauksella.
+- Todellinen Qt WebEngine avasi paikallisen HTML-testisivun vasta näkyvyyden
+  ja layoutin jälkeen; selaimen näkymällä oli positiiviset mitat. Tämä
+  tarkistus ei ole Windyn karttatiilien tai WebGL:n verkkotesti. Virallinen
+  embed-sivu vastasi myös HTTPS-pyyntöön HTTP 200:lla.
+- Kartan lataustilaa ei tallenneta käyttäjän asetuksiin. WebEnginen
+  yksityinen profiili, latausten ja lupapyyntöjen estot sekä TLS-tarkistus
+  säilyvät. Käyttäjän oikeaa GNOME-istuntoa tai kalenterimerkintöjä ei muuteta.
+
 ## Ubuntu 26.10 Dark ja järjestelmän oletuskuvakkeet · 12.10.2026 · 1.8.0
 
 - 212 yksikkö- ja käyttöliittymätestiä läpäistiin. Näihin sisältyvät uuden
