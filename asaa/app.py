@@ -20,6 +20,8 @@ from .wallpapers import WallpaperManager
 from .icon_themes import IconThemeManager
 from .clock_config import ClockRotation, SYSTEMS, PROFILE_KEYS
 from .windowing import WindowLayers
+from . import VERSION
+from .about import AboutDialog
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -62,6 +64,7 @@ class Controller(QObject):
             menu.addAction('Ajanlaskuwidgetit',lambda:self.open_page('clocks'))
             menu.addAction('Taustakuvat',lambda:self.open_page('wallpapers'))
             menu.addAction('Yhteiset asetukset',lambda:self.open_page('settings'))
+            menu.addAction('Tietoa sovelluksesta',self.show_about)
             menu.addSeparator();menu.addAction('Lopeta sovellus',self.quit)
             self.tray.setContextMenu(menu);self.tray.activated.connect(lambda why:self.open_page('overview') if why==QSystemTrayIcon.ActivationReason.Trigger else None)
             self.tray.show()
@@ -69,6 +72,11 @@ class Controller(QObject):
 
     @property
     def options(self):return self.state.settings
+
+    def show_about(self):
+        dialog=AboutDialog(VERSION,ROOT,self.window)
+        try:dialog.exec()
+        finally:dialog.deleteLater()
 
     def restore_widgets(self):
         for key,enabled in self.options['widgets'].items():
@@ -293,6 +301,7 @@ class Controller(QObject):
 
 def run(args):
     QCoreApplication.setApplicationName('AjanlaskutJaSaa');QCoreApplication.setOrganizationName('Jakke77')
+    QCoreApplication.setApplicationVersion(VERSION)
     QApplication.setDesktopFileName('ajanlaskut-ja-saa')
     app=QApplication([sys.argv[0]])
     app.setApplicationDisplayName('Ajanlaskut ja Sää');app.setStyle('Fusion');app.setQuitOnLastWindowClosed(False)

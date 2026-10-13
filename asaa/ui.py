@@ -465,6 +465,8 @@ class SettingsPage(QWidget):
         row=QHBoxLayout();row.addWidget(button('Palauta ulkoasun oletukset',self.reset));row.addStretch(1)
         row.addWidget(button('Tallenna asetukset',self.save,True));layout.addLayout(row)
         layout.addWidget(label('Varjoaika ja Tähtiaika ovat kuvitteellisia; niiden kuuvaiheiden nimet ovat symbolisia. Gregoriaaninen ja valinnaiset rinnakkaiskalenterit ovat oikeita kalentereita. Merkinnät ja asetukset tallentuvat tälle koneelle.','muted',True))
+        self.about_button=button('Tietoa sovelluksesta',controller.show_about)
+        layout.addWidget(self.about_button)
         self.load()
     def load(self):
         options=self.controller.options
@@ -505,6 +507,9 @@ class MainWindow(QMainWindow):
         super().__init__();self.controller=controller
         self.setWindowTitle('Ajanlaskut ja Sää '+VERSION);self.setWindowIcon(controller.icon)
         self.resize(1280,960);self.setMinimumSize(1020,720)
+        self.menuBar().setNativeMenuBar(False)
+        self.help_menu=self.menuBar().addMenu('Ohje')
+        self.about_action=self.help_menu.addAction('Tietoa sovelluksesta',controller.show_about)
         root=QWidget();self.setCentralWidget(root);outer=QHBoxLayout(root);outer.setContentsMargins(0,0,0,0);outer.setSpacing(0)
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(218)
         side=QVBoxLayout(sidebar);side.setContentsMargins(18,24,18,20);side.setSpacing(9)
