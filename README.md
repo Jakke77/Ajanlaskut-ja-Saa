@@ -1,18 +1,26 @@
-# Ajanlaskut ja Sää 1.8.1 · Windy-kartan latauskorjaus
+# Ajanlaskut ja Sää 1.8.2 · Tietoa sovelluksesta
 
-[Lataa ajanlaskut-ja-saa_1.8.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.1/ajanlaskut-ja-saa_1.8.1_all.deb).
+[Lataa ajanlaskut-ja-saa_1.8.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.2/ajanlaskut-ja-saa_1.8.2_all.deb).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Tiedoston **Download raw file** lataa paketin.
 Lataa myös [SHA256SUMS](SHA256SUMS) halutessasi tarkistamista varten.
 
 Asenna latauskansiosta:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.8.1_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.8.2_all.deb
 ```
 
 **Valitse vanhasta ohjelmasta Lopeta sovellus.** Ikkunan × voi vain piilottaa sen.
 Käynnistä uusi järjestelmäasennus komennolla `/usr/bin/ajanlaskut-ja-saa`.
-Ikkunan otsikossa ja alareunassa näkyy nyt **1.8.1**.
+Ikkunan otsikossa ja alareunassa näkyy nyt **1.8.2**.
+
+## Tietoa sovelluksesta
+
+**Ohje → Tietoa sovelluksesta** näyttää käynnissä olevan version ja sen asennuskansion.
+Sama toiminto löytyy Asetuksista, sääwidgetin valikosta ja ilmoitusalueelta.
+Versio ja asennuskansio ovat kopioitavissa.
+
+![Tietoa sovelluksesta Ubuntu 26.10 Dark -teemassa](tietoa-sovelluksesta.png)
 
 ## Windy-kartan latauskorjaus
 
@@ -47,31 +55,42 @@ Oletuksena nykyiset kuvakkeet säilyvät. Palautuspainikkeet palauttavat aiemman
 
 ## Jos käytät codex-ajanlasku-käyttäjäasennusta
 
-Deb päivittää järjestelmäasennuksen. Käyttäjäasennus pitää päivittää erikseen.
-Aja debin asennuksen jälkeen ilman sudoa:
+
+Jos `/usr/bin/ajanlaskut-ja-saa --version` näyttää esimerkiksi **1.8.1** mutta
+`codex-ajanlasku run --version` näyttää **1.6.0**, deb on päivittänyt vain
+järjestelmäasennuksen. Ubuntu 26.10 Dark puuttuu vanhasta käyttäjäasennuksesta.
+Versio 1.8.2 lisää **Ohje → Tietoa sovelluksesta** -toiminnon, josta näet
+käynnissä olevan ohjelman version ja asennuskansion.
+
+Saat jo asennetun järjestelmäversion näkyviin näin:
+
+1. Valitse nykyisestä ohjelmasta **Lopeta sovellus**. Ikkunan × voi vain piilottaa sen.
+2. Aja `/usr/bin/ajanlaskut-ja-saa --page settings`.
+3. Valitse **Asetukset → Ulkoasu ja työpöytä → Teema → Ubuntu 26.10 Dark** ja tallenna.
+
+Päivitä myös käyttäjäasennus järjestelmään asennetusta versiosta alla olevalla
+ketjulla. Se lukee nykyisen `codex-ajanlasku`-komennon päivityskansion, joten
+myös oma erikseen valittu kansio säilyy. Aja ilman sudoa:
 
 ```bash
 (
+  set -eu
   umask 022
-  ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
+  ajanlasku_kanava="$(codex-ajanlasku status | /usr/bin/python3 -c 'import sys; p="Päivityskansio: "; c=next((r[len(p):].rstrip("\n") for r in sys.stdin if r.startswith(p)), ""); print(c) if c.startswith("/") else sys.exit("Päivityskansiota ei löytynyt. Tarkista codex-ajanlasku status.")')"
   /usr/bin/python3 /usr/share/ajanlaskut-ja-saa/packaging/build.py \
     --publish-channel "$ajanlasku_kanava" &&
   /usr/bin/python3 "$ajanlasku_kanava/update-upgrade.py" setup &&
-  export PATH="$HOME/.local/bin:$PATH" &&
-  codex-ajanlasku update && codex-ajanlasku upgrade && codex-ajanlasku status
+  "$HOME/.local/bin/codex-ajanlasku" update &&
+  "$HOME/.local/bin/codex-ajanlasku" upgrade &&
+  "$HOME/.local/bin/codex-ajanlasku" run --version
 )
 ```
 
-Julkaisun laaja Qt-piirrostesti voi kestää useita minuutteja.
-
-Käytä samaa päivityskansiota, jonka nykyinen `codex-ajanlasku status` ilmoittaa.
-Kun status näyttää **1.8.1**, lopeta vanha ohjelma valikosta ja käynnistä `codex-ajanlasku run`.
-Molemmat asennukset käyttävät samoja kalenterimerkintöjä. Päivitys ei tyhjennä niitä.
-
-Myös zipistä käynnistetty `python3 main.py` voi avata jo käynnissä olevan vanhan ohjelman.
-Sulje siksi vanha kokonaan ennen lähdekoodin kokeilua.
-[1.8.1-lähdepaketti](Ajanlaskut-ja-Saa-1.8.1-lahdekoodi.zip) sisältää Python-koodin;
-repon oletushaaran ZIP ei ole sama tiedosto.
+Ketjun ensimmäinen rakentamisvaihe testaa paketin ja voi kestää useita minuutteja.
+Jos jokin vaihe epäonnistuu, ketju pysähtyy. Kun lopun versionumero vastaa
+järjestelmäasennusta, lopeta vanha ohjelma kokonaan ja avaa
+`"$HOME/.local/bin/codex-ajanlasku" run --page settings`.
+Kalenterimerkinnät säilyvät; älä poista asetuskansiota.
 
 ## Tarkistus
 
@@ -79,7 +98,8 @@ repon oletushaaran ZIP ei ole sama tiedosto.
 sha256sum -c SHA256SUMS
 ```
 
-241 testiä läpäisi. Näistä 29 uutta Qt-testiä kattaa tallennetun Windy-valinnan kaksi käynnistystä, näkyvät ja piilotetut kartat, uudelleenyritykset, kesken olevan ennustehaun sekä sulkemisen. Lopullisesta debistä ajettiin samat 29 Windy-testiä ja tarkistettiin versio 1.8.1. Todellisen WebEnginen paikallinen testisivu varmisti näkyvän näkymän alustuksen; se ei ole Windyn karttatiilien/WebGL:n verkkotesti.
-Katso [QA.log](QA.log). Paketti vaatii Python 3.10:n ja PyQt6:n vähintään 6.8.
+244 testiä läpäisi. Lopullisesta debistä tarkistettiin versionumero, Tietoa-toiminto sekä Dark-teemavalikko (kuusi Qt-testiä).
+Eristetyssä testikansiossa alkuperäinen Git-version 1.6.0 käyttäjäasennus päivitettiin 1.8.2:een samassa omassa päivityskansiossa. Käynnistimet seurasivat uutta versiota, aiempi versio jäi palautettavaksi ja merkinnät sekä asetukset säilyivät tavuntarkasti.
+Katso [QA.log](QA.log) ja [käyttäjäasennuksen päivitystesti](upgrade-user-install.log). Paketti vaatii Python 3.10:n ja PyQt6:n vähintään 6.8.
 
-[Lähdekoodi ja täydet päivitysohjeet](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/codex/fix-windy-restart).
+[Lähdekoodi ja täydet päivitysohjeet](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/codex/about-application).

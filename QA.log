@@ -1,3 +1,12 @@
+test_help_and_settings_open_about_without_saving_drafts (test_about.AboutTests.test_help_and_settings_open_about_without_saving_drafts) ... This plugin does not support raise()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_loaded_version_does_not_change_when_module_metadata_changes (test_about.AboutTests.test_loaded_version_does_not_change_when_module_metadata_changes) ... This plugin does not support propagateSizeHints()
+ok
+test_weather_and_tray_identify_the_same_running_installation (test_about.AboutTests.test_weather_and_tray_identify_the_same_running_installation) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
 test_choice_tokens_and_labels_are_the_display_contract (test_clock_display.ClockDisplayResolutionTests.test_choice_tokens_and_labels_are_the_display_contract) ... ok
 test_digit_color_follows_effective_theme_unless_that_clock_has_an_override (test_clock_display.ClockDisplayResolutionTests.test_digit_color_follows_effective_theme_unless_that_clock_has_an_override) ... ok
 test_explicit_modes_are_independent_of_theme_and_calendar (test_clock_display.ClockDisplayResolutionTests.test_explicit_modes_are_independent_of_theme_and_calendar) ... ok
@@ -153,7 +162,7 @@ test_downgrade_and_same_version_replacement_are_rejected (test_updates.UpdateTes
 test_existing_launcher_backed_up_and_autostart_stays_disabled (test_updates.UpdateTests.test_existing_launcher_backed_up_and_autostart_stays_disabled) ... ok
 test_existing_release_metadata_must_match_candidate (test_updates.UpdateTests.test_existing_release_metadata_must_match_candidate) ... ok
 test_failed_checksum_never_changes_current (test_updates.UpdateTests.test_failed_checksum_never_changes_current) ... ok
-test_failed_publication_leaves_previous_channel_and_helper (test_updates.UpdateTests.test_failed_publication_leaves_previous_channel_and_helper) ... Julkaisu keskeytettiin. Testiloki: /tmp/ajanlaskut-updater-test-3uj1r1fq/kanava/qa-failures/1791820567163149471.log
+test_failed_publication_leaves_previous_channel_and_helper (test_updates.UpdateTests.test_failed_publication_leaves_previous_channel_and_helper) ... Julkaisu keskeytettiin. Testiloki: /tmp/ajanlaskut-updater-test-9jimsfwu/kanava/qa-failures/1791900645579676319.log
 ok
 test_install_and_idempotent_upgrade (test_updates.UpdateTests.test_install_and_idempotent_upgrade) ... ok
 test_managed_startup_uses_stable_current_path (test_updates.UpdateTests.test_managed_startup_uses_stable_current_path) ... ok
@@ -307,101 +316,93 @@ test_stop_during_load_ignores_completion_and_is_idempotent (test_windy_view.Wind
 ok
 
 ----------------------------------------------------------------------
-Ran 241 tests in 18.337s
+Ran 244 tests in 17.745s
 
 OK
-Asennettu: /tmp/ajanlaskut-icons-test-h7wwanf2/xdg/icons/Ajanlaskut-Kupari
+Asennettu: /tmp/ajanlaskut-icons-test-1ov2vn64/xdg/icons/Ajanlaskut-Kupari
 Palautettu: firefox.desktop
 
-Final deb payload: 29 Windy lifecycle/startup tests and version 1.8.1 verified.
-test_automatic_tick_and_font_change_retain_successful_maps (tests.test_windy_startup.WindyStartupTests.test_automatic_tick_and_font_change_retain_successful_maps) ... This plugin does not support raise()
+Final deb payload: About and Dark selector checks.
+test_help_and_settings_open_about_without_saving_drafts (tests.test_about.AboutTests.test_help_and_settings_open_about_without_saving_drafts) ... This plugin does not support raise()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
 ok
-test_explicit_refresh_does_not_create_a_hidden_desktop_map (tests.test_windy_startup.WindyStartupTests.test_explicit_refresh_does_not_create_a_hidden_desktop_map) ... This plugin does not support raise()
+test_loaded_version_does_not_change_when_module_metadata_changes (tests.test_about.AboutTests.test_loaded_version_does_not_change_when_module_metadata_changes) ... This plugin does not support propagateSizeHints()
 ok
-test_explicit_refresh_has_no_duplicate_base_map_reload (tests.test_windy_startup.WindyStartupTests.test_explicit_refresh_has_no_duplicate_base_map_reload) ... This plugin does not support raise()
+test_weather_and_tray_identify_the_same_running_installation (tests.test_about.AboutTests.test_weather_and_tray_identify_the_same_running_installation) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
 ok
-test_main_refresh_forces_both_visible_maps_during_forecast_fetch (tests.test_windy_startup.WindyStartupTests.test_main_refresh_forces_both_visible_maps_during_forecast_fetch) ... This plugin does not support raise()
-ok
-test_network_disabled_and_shutdown_skip_explicit_map_requests (tests.test_windy_startup.WindyStartupTests.test_network_disabled_and_shutdown_skip_explicit_map_requests) ... This plugin does not support raise()
-ok
-test_place_and_settings_sync_preserve_selected_map_and_provider_exit (tests.test_windy_startup.WindyStartupTests.test_place_and_settings_sync_preserve_selected_map_and_provider_exit) ... This plugin does not support raise()
-ok
-test_refresh_leaves_hidden_main_map_untouched (tests.test_windy_startup.WindyStartupTests.test_refresh_leaves_hidden_main_map_untouched) ... This plugin does not support raise()
-This plugin does not support raise()
-ok
-test_saved_windy_selection_loads_after_two_starts_without_expansion (tests.test_windy_startup.WindyStartupTests.test_saved_windy_selection_loads_after_two_starts_without_expansion) ... This plugin does not support raise()
+test_new_dark_theme_is_a_draft_until_saved_and_icons_are_optional (tests.test_icon_ui.IconUiTests.test_new_dark_theme_is_a_draft_until_saved_and_icons_are_optional) ... ok
+test_dark_theme_manual_icons_and_wallpaper_work_without_follow_policy (tests.test_icon_ui.IconUiTests.test_dark_theme_manual_icons_and_wallpaper_work_without_follow_policy) ... ok
+test_controls_fit_existing_minimum_window_width (tests.test_icon_ui.IconUiTests.test_controls_fit_existing_minimum_window_width) ... This plugin does not support raise()
 This plugin does not support raise()
 This plugin does not support raise()
 This plugin does not support raise()
-ok
-test_active_load_finishes_before_loading_latest_settings (tests.test_windy_view.WindyViewTests.test_active_load_finishes_before_loading_latest_settings) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_browser_action_uses_latest_url_and_never_opens_automatically (tests.test_windy_view.WindyViewTests.test_browser_action_uses_latest_url_and_never_opens_automatically) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_disabled_network_does_not_create_webengine (tests.test_windy_view.WindyViewTests.test_disabled_network_does_not_create_webengine) ... This plugin does not support propagateSizeHints()
-ok
-test_failed_url_can_be_explicitly_requested_again (tests.test_windy_view.WindyViewTests.test_failed_url_can_be_explicitly_requested_again) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_failed_url_does_not_block_new_place_or_layer (tests.test_windy_view.WindyViewTests.test_failed_url_does_not_block_new_place_or_layer) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_finishing_hidden_view_does_not_load_pending_url_until_shown (tests.test_windy_view.WindyViewTests.test_finishing_hidden_view_does_not_load_pending_url_until_shown) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_first_request_waits_until_visible_and_layout_has_run (tests.test_windy_view.WindyViewTests.test_first_request_waits_until_visible_and_layout_has_run) ... This plugin does not support propagateSizeHints()
-ok
-test_force_during_load_is_coalesced_and_starts_after_completion (tests.test_windy_view.WindyViewTests.test_force_during_load_is_coalesced_and_starts_after_completion) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_force_reloads_successful_url_with_same_profile (tests.test_windy_view.WindyViewTests.test_force_reloads_successful_url_with_same_profile) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_hidden_changes_load_only_the_latest_place_zoom_and_layer (tests.test_windy_view.WindyViewTests.test_hidden_changes_load_only_the_latest_place_zoom_and_layer) ... This plugin does not support propagateSizeHints()
-ok
-test_hidden_parent_also_defers_initial_request (tests.test_windy_view.WindyViewTests.test_hidden_parent_also_defers_initial_request) ... ok
-test_hiding_before_queued_load_cancels_timer_until_next_show (tests.test_windy_view.WindyViewTests.test_hiding_before_queued_load_cancels_timer_until_next_show) ... This plugin does not support propagateSizeHints()
-ok
-test_missing_webengine_has_informative_browser_fallback (tests.test_windy_view.WindyViewTests.test_missing_webengine_has_informative_browser_fallback) ... This plugin does not support propagateSizeHints()
-ok
-test_passive_failed_url_refresh_preserves_error_without_network_retry (tests.test_windy_view.WindyViewTests.test_passive_failed_url_refresh_preserves_error_without_network_retry) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_private_profile_keeps_permission_and_download_denials (tests.test_windy_view.WindyViewTests.test_private_profile_keeps_permission_and_download_denials) ... ok
-test_retry_button_reuses_existing_profile (tests.test_windy_view.WindyViewTests.test_retry_button_reuses_existing_profile) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_return_to_inflight_url_cancels_older_pending_change (tests.test_windy_view.WindyViewTests.test_return_to_inflight_url_cancels_older_pending_change) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_same_active_or_successful_url_does_not_repeat_requests (tests.test_windy_view.WindyViewTests.test_same_active_or_successful_url_does_not_repeat_requests) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_showing_failed_view_retries_after_layout (tests.test_windy_view.WindyViewTests.test_showing_failed_view_retries_after_layout) ... This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-This plugin does not support propagateSizeHints()
-ok
-test_stop_cancels_queued_load_and_ignores_late_requests (tests.test_windy_view.WindyViewTests.test_stop_cancels_queued_load_and_ignores_late_requests) ... This plugin does not support propagateSizeHints()
-ok
-test_stop_during_load_ignores_completion_and_is_idempotent (tests.test_windy_view.WindyViewTests.test_stop_during_load_ignores_completion_and_is_idempotent) ... This plugin does not support propagateSizeHints()
 ok
 
 ----------------------------------------------------------------------
-Ran 29 tests in 7.458s
+Ran 6 tests in 4.691s
 
 OK
 
-Actual Qt WebEngine local-page probe passed after visible layout (viewport720x211). This is not a live Windy tile/WebGL test. Official Windy embed HTTP response:200; TLS verification retained.
+Isolated real-version legacy-updater integration.
+Isolated actual-source updater integration, account uid=1000
+PASS: Old archive contains unmodified Git ancestor 302a91a VERSION=1.6.0
+Test fixture index 1.6.0 (qa=passed is solely the test-fixture gate, not production QA evidence)
+PASS: Old release passes actual SHA256/archive gate
+PASS: Unmodified 1.6.0 source installs with real GI/PyQt dependencies
+PASS: Setup writes only explicit isolated bin directory
+PASS: Helper embeds the same existing custom channel
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku status
+Käyttäjäasennus: 1.6.0
+Päivityskansio: /tmp/ajanlaskut-user-upgrade-f0o4kwqj/oma paivityskanava
+Viimeksi tarkistettu julkaisu: 1.6.0
+PASS: Helper status reports old installed receipt 1.6.0
+PASS: Status exposes the exact custom channel to reuse
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku run --version
+Ajanlaskut ja Sää 1.6.0
+PASS: Actual old codex helper run --version reproduces user 1.6.0
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/ajanlaskut-ja-saa --version
+Ajanlaskut ja Sää 1.6.0
+PASS: User launcher still points at old release despite separate newer system package
+$ /workspace/shared/ajanlaskut-app-venv/bin/python /tmp/ajanlaskut-user-upgrade-f0o4kwqj/native-1.8.1/main.py --version
+Ajanlaskut ja Sää 1.8.1
+PASS: Actual separate 1.8.1 package payload reproduces native-new/user-old mismatch
+PASS: Old install and both --version checks preserve seeded user state bytes
+PREPARED: waiting for production-built 1.8.2 source archive; root=/tmp/ajanlaskut-user-upgrade-f0o4kwqj
+PASS: New archive is built before upgrade validation
+PASS: Pre-upgrade receipt remains old version
+PASS: Pre-upgrade current pointer remains original release
+Test fixture index 1.8.2 (qa=passed is solely the test-fixture gate, not production QA evidence)
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku update
+Paikallinen päivitysluettelo tarkistettu. Saatavilla: 1.8.2
+PASS: Existing helper update discovers new release in the same custom channel
+PASS: Update alone leaves running user version 1.6.0 unchanged
+PASS: Actual updater upgrade validates dependencies and activates 1.8.2
+PASS: Receipt is now 1.8.2
+PASS: Receipt keeps the existing custom channel
+PASS: Current pointer switched atomically to new release
+PASS: Original 1.6.0 remains available for rollback
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku run --version
+Ajanlaskut ja Sää 1.8.2
+PASS: Existing codex helper now runs 1.8.2
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/ajanlaskut-ja-saa --version
+Ajanlaskut ja Sää 1.8.2
+PASS: User executable now runs 1.8.2
+PASS: Desktop entry points at isolated user executable/current release
+PASS: Desktop icon follows current release
+PASS: Existing autostart launch path follows the new release
+PASS: Disabled autostart remains disabled
+PASS: Seeded notes, reminders, and settings bytes are preserved exactly
+$ /workspace/shared/ajanlaskut-app-venv/bin/python -I -c import sys;sys.path.insert(0,sys.argv[1]);from asaa.state import State;s=State(sys.argv[2]);assert s.data["notes"]["2026-10-13"].startswith("Oma tärkeä");assert s.data["reminders"][0]["id"]=="isolated-reminder";assert s.data["reminders"][0]["delivered"] is False;assert s.data["settings"]["theme"]=="ubuntu";print("New State loads preserved notes, reminder, and prior Ubuntu selection") /tmp/ajanlaskut-user-upgrade-f0o4kwqj/data/ajanlaskut-ja-saa/program/current /tmp/ajanlaskut-user-upgrade-f0o4kwqj/data/ajanlaskut-ja-saa/state.json
+New State loads preserved notes, reminder, and prior Ubuntu selection
+PASS: New State validation leaves user data bytes unchanged
+PASS: Both installs retain matching state backups outside release code
+PASS: Repeat upgrade is harmless and reports current version
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku status
+Käyttäjäasennus: 1.8.2
+Päivityskansio: /tmp/ajanlaskut-user-upgrade-f0o4kwqj/oma paivityskanava
+Viimeksi tarkistettu julkaisu: 1.8.2
+PASS: Final helper status confirms updated receipt plus original channel
+SUCCESS: real 1.6.0 -> 1.8.2 upgrade; no GUI/network, real account home, XDG data, or config touched
+PASS: exact UPDATES.md status-prefix parser executed against original 1.6 helper and preserves the custom channel including whitespace.

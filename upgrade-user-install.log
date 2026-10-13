@@ -1,0 +1,60 @@
+Isolated actual-source updater integration, account uid=1000
+PASS: Old archive contains unmodified Git ancestor 302a91a VERSION=1.6.0
+Test fixture index 1.6.0 (qa=passed is solely the test-fixture gate, not production QA evidence)
+PASS: Old release passes actual SHA256/archive gate
+PASS: Unmodified 1.6.0 source installs with real GI/PyQt dependencies
+PASS: Setup writes only explicit isolated bin directory
+PASS: Helper embeds the same existing custom channel
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku status
+Käyttäjäasennus: 1.6.0
+Päivityskansio: /tmp/ajanlaskut-user-upgrade-f0o4kwqj/oma paivityskanava
+Viimeksi tarkistettu julkaisu: 1.6.0
+PASS: Helper status reports old installed receipt 1.6.0
+PASS: Status exposes the exact custom channel to reuse
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku run --version
+Ajanlaskut ja Sää 1.6.0
+PASS: Actual old codex helper run --version reproduces user 1.6.0
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/ajanlaskut-ja-saa --version
+Ajanlaskut ja Sää 1.6.0
+PASS: User launcher still points at old release despite separate newer system package
+$ /workspace/shared/ajanlaskut-app-venv/bin/python /tmp/ajanlaskut-user-upgrade-f0o4kwqj/native-1.8.1/main.py --version
+Ajanlaskut ja Sää 1.8.1
+PASS: Actual separate 1.8.1 package payload reproduces native-new/user-old mismatch
+PASS: Old install and both --version checks preserve seeded user state bytes
+PREPARED: waiting for production-built 1.8.2 source archive; root=/tmp/ajanlaskut-user-upgrade-f0o4kwqj
+PASS: New archive is built before upgrade validation
+PASS: Pre-upgrade receipt remains old version
+PASS: Pre-upgrade current pointer remains original release
+Test fixture index 1.8.2 (qa=passed is solely the test-fixture gate, not production QA evidence)
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku update
+Paikallinen päivitysluettelo tarkistettu. Saatavilla: 1.8.2
+PASS: Existing helper update discovers new release in the same custom channel
+PASS: Update alone leaves running user version 1.6.0 unchanged
+PASS: Actual updater upgrade validates dependencies and activates 1.8.2
+PASS: Receipt is now 1.8.2
+PASS: Receipt keeps the existing custom channel
+PASS: Current pointer switched atomically to new release
+PASS: Original 1.6.0 remains available for rollback
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku run --version
+Ajanlaskut ja Sää 1.8.2
+PASS: Existing codex helper now runs 1.8.2
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/ajanlaskut-ja-saa --version
+Ajanlaskut ja Sää 1.8.2
+PASS: User executable now runs 1.8.2
+PASS: Desktop entry points at isolated user executable/current release
+PASS: Desktop icon follows current release
+PASS: Existing autostart launch path follows the new release
+PASS: Disabled autostart remains disabled
+PASS: Seeded notes, reminders, and settings bytes are preserved exactly
+$ /workspace/shared/ajanlaskut-app-venv/bin/python -I -c import sys;sys.path.insert(0,sys.argv[1]);from asaa.state import State;s=State(sys.argv[2]);assert s.data["notes"]["2026-10-13"].startswith("Oma tärkeä");assert s.data["reminders"][0]["id"]=="isolated-reminder";assert s.data["reminders"][0]["delivered"] is False;assert s.data["settings"]["theme"]=="ubuntu";print("New State loads preserved notes, reminder, and prior Ubuntu selection") /tmp/ajanlaskut-user-upgrade-f0o4kwqj/data/ajanlaskut-ja-saa/program/current /tmp/ajanlaskut-user-upgrade-f0o4kwqj/data/ajanlaskut-ja-saa/state.json
+New State loads preserved notes, reminder, and prior Ubuntu selection
+PASS: New State validation leaves user data bytes unchanged
+PASS: Both installs retain matching state backups outside release code
+PASS: Repeat upgrade is harmless and reports current version
+$ /tmp/ajanlaskut-user-upgrade-f0o4kwqj/bin/codex-ajanlasku status
+Käyttäjäasennus: 1.8.2
+Päivityskansio: /tmp/ajanlaskut-user-upgrade-f0o4kwqj/oma paivityskanava
+Viimeksi tarkistettu julkaisu: 1.8.2
+PASS: Final helper status confirms updated receipt plus original channel
+SUCCESS: real 1.6.0 -> 1.8.2 upgrade; no GUI/network, real account home, XDG data, or config touched
+PASS: exact UPDATES.md status-prefix parser executed against original 1.6 helper and preserves the custom channel including whitespace.
