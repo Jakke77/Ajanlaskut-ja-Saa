@@ -116,6 +116,7 @@ class SharedWeather(WeatherWidget):
         menu.addAction('Päivitä ennuste', self.refresh)
         menu.addAction('Widgetin teema…', lambda: self.controller.open_page('widgets'))
         menu.addAction('Yhteiset asetukset', self.open_settings)
+        menu.addAction('Tietoa sovelluksesta', self.controller.show_about)
         menu.addAction('Taustakuvat · työpöytä ja lukitusnäyttö', lambda: self.controller.open_page('wallpapers'))
         menu.addAction('Piilota sääwidget', lambda: self.controller.set_widget('weather', False))
         menu.addAction('Palauta tämän widgetin oletuskoko',self.frame.reset)

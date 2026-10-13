@@ -1,5 +1,20 @@
 # Tarkistukset
 
+## Tietoa sovelluksesta ja kahden asennuksen tunnistaminen · 13.10.2026 · 1.8.2
+
+- 244 testiä läpäistiin. Uudet kolme Qt-testiä avaavat Tietoa sovelluksesta
+  Ohje-valikosta, Asetuksista, sääwidgetistä ja ilmoitusalueelta.
+- Dialogi näyttää prosessin lataaman version ja fyysisen asennuskansion.
+  Ulkoasuluonnokset, asetukset ja työpöytä säilyvät avaamisen ja sulkemisen yli.
+  Prosessin versionumero ei vaihdu, vaikka levyllä oleva versiotieto muuttuisi.
+- Käyttäjän tulosteista tunnistettiin järjestelmäasennuksen 1.8.1 ja
+  codex-ajanlasku-käyttäjäasennuksen 1.6.0 ero. Julkaistun 1.8.1-paketin
+  todellisessa Qt-valikossa Ubuntu 26.10 Dark on neljäs näkyvä vaihtoehto;
+  sama valinta löytyy myös kellojen ja kaikkien widgettien teemavalikoista.
+- Päivitysohjeessa nykyinen käyttäjäasennuksen päivityskansio luetaan
+  codex-ajanlasku status -komennosta. Muokattu polku ja välilyönnit säilyvät,
+  eikä käyttäjän asetuskansiota poisteta päivitystä varten.
+
 ## Windyn käynnistyslataus ja uudelleenyritys · 12.10.2026 · 1.8.1
 
 - 241 testiä läpäistiin. Uudet 29 Qt-testiä kattavat näkyvyyden jälkeen

@@ -1,6 +1,6 @@
 # Ajanlaskut ja Sää
 
-**Uusin asennuspaketti: [1.8.1 · Windy-kartan latauskorjaus](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.1).**
+**Uusin asennuspaketti: [1.8.2 · Tietoa sovelluksesta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -11,6 +11,20 @@ Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, tavallinen kalenteri ja s
 yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
+
+## Tietoa sovelluksesta · versio 1.8.2
+
+**Ohje → Tietoa sovelluksesta** näyttää käynnissä olevan version ja sen
+asennuskansion. Sama toiminto löytyy Asetuksista, sääwidgetin oikean painikkeen
+valikosta ja ilmoitusalueen valikosta. Tiedot voi kopioida.
+
+Jos Ubuntu 26.10 Dark puuttuu, tarkista tämä versionumero. Teema on mukana
+versiosta 1.8.0 lähtien. Järjestelmän `.deb` ja `codex-ajanlasku` ovat kaksi
+asennusta: esimerkiksi `/usr/bin/ajanlaskut-ja-saa --version` voi näyttää
+1.8.1 ja `codex-ajanlasku run --version` samalla 1.6.0. Lopeta vanha ohjelma
+**Lopeta sovellus** -komennolla ja avaa uusi järjestelmäasennus komennolla
+`/usr/bin/ajanlaskut-ja-saa --page settings`, tai päivitä käyttäjäasennus
+[ohjeen mukaan](UPDATES.md#eri-versiot-järjestelmä--ja-käyttäjäasennuksessa).
 
 ## Windy-kartan latauskorjaus · versio 1.8.1
 
@@ -92,7 +106,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.8.1-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.1).
+[Lataa uusin 1.8.2-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -134,7 +148,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.8.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.1).
+[packages/v1.8.2-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0
