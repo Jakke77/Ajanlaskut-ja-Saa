@@ -19,13 +19,24 @@ class FakeProfile(QObject):
 
 class FakePage(QObject):
     permissionRequested = pyqtSignal(object)
+    fullScreenRequested = pyqtSignal(object)
 
     def __init__(self, profile, view):
         super().__init__(view)
         self.profile = profile
+        self.view = view
+        self.scripts = []
 
     def setBackgroundColor(self, color):
         self.background = color
+
+    def url(self):
+        return QUrl(self.view.requests[-1] if self.view.requests else '')
+
+    def runJavaScript(self, script, callback=None):
+        self.scripts.append(script)
+        if callback:
+            callback({'state': 'fullscreen'})
 
 
 class FakeSettings:
@@ -47,12 +58,19 @@ class FakeView(QWidget):
         self.request_sizes = []
         self.stops = 0
         self._settings = FakeSettings()
+        self._zoom = 1.0
 
     def setPage(self, page):
         self.page = page
 
     def settings(self):
         return self._settings
+
+    def setZoomFactor(self, zoom):
+        self._zoom = zoom
+
+    def zoomFactor(self):
+        return self._zoom
 
     def load(self, url):
         self.requests.append(url.toString(QUrl.ComponentFormattingOption.FullyEncoded))

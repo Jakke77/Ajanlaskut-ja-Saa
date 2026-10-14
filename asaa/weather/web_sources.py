@@ -1,11 +1,10 @@
 """Official weather pages; no copied tiles or alternate forecast attribution."""
 from __future__ import annotations
 
-import re
-from urllib.parse import quote, unquote, urlencode, urlsplit
+from urllib.parse import urlencode
 
 
-FORECA_RADAR_URL = 'https://www.foreca.fi/sadetutka'
+FORECA_RADAR_URL = 'https://www.foreca.fi/tutka'
 FMI_RADAR_URL = 'https://www.ilmatieteenlaitos.fi/sadekartta'
 
 
@@ -27,30 +26,19 @@ def forecast_url(place):
         metricTemp='°C', metricRain='mm', metricWind='m/s'))
 
 
-def foreca_map_url(resolved_url=''):
-    """Use a validated city resolved by Foreca, otherwise its national radar.
+def foreca_map_url(resolved_url='', *, place=None, zoom=9):
+    """Use Foreca's current radar and its own coordinate/layer parameters.
 
-    The cached source URL is user-writable. Never navigate to its arbitrary
-    host, retain a query/fragment or guess a city from the user-facing name.
+    Older city pages can omit the site's fullscreen control. The current
+    /tutka renderer supports it and reads lt/ln/z/l directly. Cached forecast
+    URLs are deliberately not navigation inputs, including their queries.
     """
-    if (not isinstance(resolved_url, str) or len(resolved_url) > 2000
-            or any(ord(char) <= 32 for char in resolved_url)):
+    if place is None:
         return FORECA_RADAR_URL
-    try:
-        parsed = urlsplit(resolved_url)
-        if (parsed.scheme != 'https'
-                or parsed.netloc.lower() not in ('www.foreca.fi', 'foreca.fi')):
-            return FORECA_RADAR_URL
-        parts = parsed.path.strip('/').split('/')
-        if len(parts) < 2:
-            return FORECA_RADAR_URL
-        country, city = (unquote(part, errors='strict') for part in parts[:2])
-        if not all(re.fullmatch(r'[\w-]+', part) for part in (country, city)):
-            return FORECA_RADAR_URL
-        return ('https://www.foreca.fi/' + quote(country, safe='-_') + '/'
-                + quote(city, safe='-_') + '/kartta-v2')
-    except (ValueError, UnicodeError):
-        return FORECA_RADAR_URL
+    if type(zoom) is not int or not 1 <= zoom <= 20:
+        raise ValueError('Virheellinen Forecan kartan zoom')
+    return FORECA_RADAR_URL + '?' + urlencode(dict(
+        lt=place.latitude, ln=place.longitude, z=zoom, l='tutkaennuste'))
 
 
 def source_url(provider, mode, place, zoom=9, layer='temp', foreca_url=''):
@@ -62,7 +50,7 @@ def source_url(provider, mode, place, zoom=9, layer='temp', foreca_url=''):
             return forecast_url(place)
     elif mode == 'map':
         if provider == 'foreca':
-            return foreca_map_url(foreca_url)
+            return foreca_map_url(foreca_url, place=place, zoom=zoom)
         if provider == 'fmi':
             return FMI_RADAR_URL
     raise ValueError('Tälle sääpalvelulle ei ole tätä verkkonäkymää')

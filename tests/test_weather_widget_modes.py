@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 from PyQt6.QtCore import QEvent
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -159,17 +160,22 @@ class WeatherWidgetModeTests(unittest.TestCase):
         self.assertFalse(owner.uses_web_view)
         self.assertFalse(owner.weather_web.isVisible())
 
-    def test_resolved_foreca_city_updates_selected_map_without_an_extra_fetch(self):
+    def test_resolved_foreca_city_does_not_override_selected_map_coordinates(self):
         controller = self.start()
         owner = controller.weather
         owner.set_view_mode('map')
+        owner.weather_web.requests.clear()
         cache = owner.caches['foreca']
         cache.path.parent.mkdir(parents=True, exist_ok=True)
         cache.path.write_text(json.dumps({'provider': 'foreca', 'location': owner.place.key,
-                                         'source_url': 'https://www.foreca.fi/Finland/Oulu'}))
+                                         'source_url': 'https://www.foreca.fi/Finland/Helsinki'}))
         owner.provider_received(owner.place.key, 'foreca', None, 'Offline')
-        self.assertEqual(owner.weather_web.url,
-                         source_url('foreca', 'map', owner.place, foreca_url=owner.foreca_source_url))
+        destination = urlsplit(owner.weather_web.url)
+        self.assertEqual(destination.path, '/tutka')
+        query = parse_qs(destination.query)
+        self.assertEqual(float(query['lt'][0]), owner.place.latitude)
+        self.assertEqual(float(query['ln'][0]), owner.place.longitude)
+        self.assertEqual(owner.weather_web.requests, [])
         self.assertIsNone(owner.worker)
         self.assertIn('Sadetutka', owner.accessibleName())
 

@@ -1,5 +1,39 @@
 # Tarkistukset
 
+## Forecan ja FMI:n kartta widgetin kokoiseksi · 14.10.2026 · 1.9.1
+
+- 306 yksikkö- ja Qt-testiä läpäisi. Uudet karttatestit kattavat palvelun oman
+  suurennussäätimen käytön, vain tunnetun karttasivun sallimisen, evästeikkunan,
+  puuttuvan säätimen, aikakatkaisun, palvelun vaihdon ja myöhäiset JS-vastaukset.
+- Pääikkuna ja työpöytäwidgetti säilyvät tavallisina Qt-ikkunoina. Palvelun
+  valitsema oma karttaelementti avautuu selaimen sisältöalueelle; verkkosivun
+  HTML:ää, kartan säätimiä tai lähdemerkintöjä ei poisteta tai kopioida.
+- Todellinen Qt WebEngine ja ohjelmallinen OpenGL näyttivät kummankin palvelun
+  oikean sadekartan lopullisella tuotantototeutuksella. Pääikkunan kartta oli
+  1200×817 ja 432×276-widgetin kartta 389×156. Aikajana, kartan alkuperäiset
+  säätimet ja tekijämerkinnät pysyivät palvelun omassa näkymässä.
+- Molemmat kartat avattiin myös suoraan pieneen widgettiin tuoreella
+  selainprofiililla. FMI:n evästevalinta pysyy normaalissa selainzoomissa;
+  valinnan jälkeen sivun yläpalkin peittämä suurennussäädin saadaan näkyviin
+  väliaikaisella sovituksella. Valmis kartta palautuu normaaliin zoomiin.
+- Foreca käyttää nykyistä `/tutka`-renderöijää ja palvelun omassa
+  JavaScriptissä tuettuja `lt`-, `ln`-, `z`- ja `l`-parametreja. Oulun testissä
+  kartan keskipiste vastasi valittuja koordinaatteja. FMI:n kartta pysyy Suomen
+  yhteisenä karttana, eikä sille muodosteta keksittyä sijaintiparametria.
+- Evästevalintoja ei tehdä tuotantokoodissa käyttäjän puolesta. Forecan
+  alkuperäinen evästeikkuna esti karttasäätimen käytön testissä, ja tilaviesti
+  pyysi tekemään valinnan. Poisheittoprofiilin testaaja painoi alkuperäistä
+  Estä kaikki -painiketta; vasta sen jälkeen kartta avautui automaattisesti.
+- Tilaviestit ja uudelleenyritys mahtuvat myös 389×189-kehykseen. Piilotettuna
+  valmistuva verkkolataus odottaa näkymän avaamista; piilotus ei käynnistä
+  kartan aikakatkaisua. Uudelleen avaaminen tarkistaa jo ladatun kartan ilman
+  uutta HTTP-latausta. Kartan sulkeminen näyttää uudelleenyrityksen.
+- Windyn alkuperäinen kartta ja tuntiennuste säilyvät. 12/24 tunnin valinta
+  piilotetaan verkkokartoista ja palautetaan sovelluksen omiin graafeihin.
+- Live-tarkistus tehtiin kertakäyttökontissa TLS-tarkistus säilyttäen.
+  Isäntäympäristön CA-/NSS-asetuksia ei muutettu. Xvfb-paketin SHA256
+  tarkistettiin allekirjoitetun Debian-julkaisun ja pakettimetadatan kautta.
+
 ## Sadekartat ja Windyn tuntiennuste · 14.10.2026 · 1.9.0
 
 - Lopullinen yksikkö- ja Qt-testisarja: 281 testiä läpäisi. Mukana ovat

@@ -76,18 +76,18 @@ class WeatherWebViewTests(unittest.TestCase):
         self.assertEqual(self.web.accessibleName(), 'Ilmatieteen laitoksen sadekartta')
         self.assertEqual(self.widget.browser_button.text(), 'Avaa Ilmatieteen laitos selaimessa')
 
-    def test_foreca_city_source_can_arrive_after_national_map_started(self):
+    def test_foreca_cached_city_source_does_not_repeat_coordinate_map(self):
         self.widget.show()
         self.widget.load_source('foreca', 'map', self.place)
         self.events()
         self.widget.load_source('foreca', 'map', self.place,
                                 foreca_url='https://www.foreca.fi/Finland/Oulu')
         self.events()
-        self.assertEqual(self.web.requests, [foreca_map_url()])
+        self.assertEqual(self.web.requests, [foreca_map_url(place=self.place)])
         self.web.loadFinished.emit(True)
         self.events()
         self.assertEqual(self.web.requests,
-                         [foreca_map_url(), foreca_map_url('https://www.foreca.fi/Finland/Oulu')])
+                         [foreca_map_url(place=self.place)])
 
     def test_windy_graph_uses_own_forecast_and_same_profile_across_modes(self):
         self.widget.load_source('fmi', 'map', self.place)
@@ -200,7 +200,7 @@ class WeatherWebViewTests(unittest.TestCase):
             open_url.assert_not_called()
             fallback.browser_button.click()
             self.assertEqual(open_url.call_args.args[0].toString(QUrl.ComponentFormattingOption.FullyEncoded),
-                             foreca_map_url())
+                             foreca_map_url(place=self.place))
 
     def test_native_graphs_are_rejected_without_mutating_selected_source(self):
         self.widget.load_source('windy', 'graph', self.place)

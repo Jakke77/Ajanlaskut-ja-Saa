@@ -32,17 +32,26 @@ class WeatherWebSourcesTests(unittest.TestCase):
         self.assertEqual((helsinki['lat'], helsinki['lon']), (['60.1699'], ['24.9384']))
         self.assertEqual((helsinki['zoom'], helsinki['overlay']), (['7'], ['rain']))
 
-    def test_foreca_resolved_city_becomes_its_official_radar(self):
+    def test_foreca_uses_selected_coordinates_even_if_cached_city_differs(self):
         for resolved in ('https://www.foreca.fi/Finland/Oulu',
                          'https://foreca.fi/Finland/Oulu/',
                          'https://www.foreca.fi/Finland/Oulu/tuntiennuste?hours=12#forecast'):
             with self.subTest(resolved=resolved):
-                self.assertEqual(foreca_map_url(resolved),
-                                 'https://www.foreca.fi/Finland/Oulu/kartta-v2')
+                parsed = urlsplit(foreca_map_url(resolved, place=self.helsinki, zoom=7))
+                self.assertEqual((parsed.scheme, parsed.netloc, parsed.path),
+                                 ('https', 'www.foreca.fi', '/tutka'))
+                self.assertEqual(parse_qs(parsed.query),
+                                 {'lt':['60.1699'], 'ln':['24.9384'],
+                                  'z':['7'], 'l':['tutkaennuste']})
 
-    def test_foreca_city_with_encoded_finnish_letters_is_preserved(self):
+    def test_foreca_without_place_uses_current_renderer_not_older_city_page(self):
         self.assertEqual(foreca_map_url('https://www.foreca.fi/Finland/%C3%84k%C3%A4slompolo'),
-                         'https://www.foreca.fi/Finland/%C3%84k%C3%A4slompolo/kartta-v2')
+                         FORECA_RADAR_URL)
+
+    def test_foreca_zoom_is_the_supported_integer_range(self):
+        for zoom in (0, 21, 9.5, '9', True):
+            with self.subTest(zoom=zoom), self.assertRaises(ValueError):
+                foreca_map_url(place=self.oulu, zoom=zoom)
 
     def test_missing_or_unsafe_foreca_cache_uses_national_official_page(self):
         for resolved in ('', None, {}, 'https://www.foreca.fi/sadetutka',
@@ -70,7 +79,7 @@ class WeatherWebSourcesTests(unittest.TestCase):
                          map_url(self.helsinki, 7, 'rain'))
         self.assertEqual(source_url('foreca', 'map', self.oulu,
                                     foreca_url='https://www.foreca.fi/Finland/Oulu'),
-                         'https://www.foreca.fi/Finland/Oulu/kartta-v2')
+                         foreca_map_url(place=self.oulu))
         for provider, mode in (('yr', 'map'), ('foreca', 'graph'), ('fmi', 'graph'),
                                ('windy', 'unknown'), ('unknown', 'map')):
             with self.subTest(provider=provider, mode=mode), self.assertRaises(ValueError):

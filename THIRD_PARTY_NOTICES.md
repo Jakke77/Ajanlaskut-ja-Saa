@@ -79,6 +79,8 @@ Sadekartta avautuu muuttamattomana palvelun omana sivuna:
 https://www.ilmatieteenlaitos.fi/sadekartta
 Verkkosivun aineisto ja avoimen WFS-rajapinnan aineisto ovat eri käyttötapauksia.
 Kartasta ei eroteta tai kopioida kuvia eikä poisteta palvelun merkintöjä.
+Widgettiin sovittaminen käyttää kartan omaa suurennustoimintoa. Sen kartta,
+aikajana ja selitteet pysyvät samassa palvelun omassa näkymässä.
 Sivuston käyttöehdot: https://www.ilmatieteenlaitos.fi/tietoa-sivustosta
 
 ## Foreca
@@ -91,8 +93,11 @@ Sääkoodeja tulkitaan dokumentaation mukaan:
 https://developer.foreca.com/resources
 Virallinen API ja sen käyttöehdot: https://developer.foreca.com/
 
-Oma sadetutka avautuu muuttamattomana Forecan verkkosivuna:
-https://www.foreca.fi/sadetutka tai tunnistetun paikan kartta-v2-sivu.
+Oma sadetutka avautuu Forecan nykyisessä tutkanäkymässä:
+https://www.foreca.fi/tutka
+Palvelun oma JavaScript tukee paikan `lt`-/`ln`-koordinaatteja, `z`-zoomia ja
+`l=tutkaennuste`-kerrosta. Kartta sovitetaan widgettiin sen omalla
+suurennustoiminnolla; verkkosivun HTML:ää tai karttatiiliä ei kopioida.
 Karttatiiliä, logoa, hallintapainikkeita tai kartta-aineistoa ei kopioida.
 Verkkosivun käyttöehdot: https://www.foreca.fi/kayttoehdot
 

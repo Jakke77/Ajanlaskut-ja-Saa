@@ -6,6 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 from PyQt6.QtCore import QEvent
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -183,6 +184,7 @@ class WeatherModeUiTests(unittest.TestCase):
         self.choose(page.view, 'graph')
         self.assertEqual(page.view.currentText(), 'Tuntiennuste')
         self.assertFalse(page.count.isEnabled())
+        self.assertFalse(page.count.isVisible())
         self.assertIs(page.stack.currentWidget(), page.weather_web)
         self.assertEqual(page.weather_web.url, forecast_url(controller.weather.place))
         self.assertEqual(controller.weather.forecast, None)
@@ -190,16 +192,53 @@ class WeatherModeUiTests(unittest.TestCase):
         self.assertEqual(page.view.count(), 1)
         self.assertFalse(page.view.isEnabled())
         self.assertTrue(page.count.isEnabled())
+        self.assertTrue(page.count.isVisible())
         self.assertEqual(page.forecast.count, 12)
         self.assertIs(page.stack.currentWidget(), page.forecast)
 
-    def test_foreca_map_uses_cached_resolved_city_without_guessing_place_name(self):
-        controller, page = self.start(desktop=False)
+    def test_foreca_map_uses_selected_coordinates_despite_cached_city(self):
+        controller, page = self.start()
+        chosen = Place('Oma ennustepaikka', 61.484, 23.771)
+        controller.weather.set_place(chosen)
         with patch.object(controller.weather.caches['foreca'], 'read',
-                          return_value={'source_url': 'https://www.foreca.fi/Finland/Tampere/hourly'}):
+                          return_value={'source_url': 'https://www.foreca.fi/Finland/Oulu/hourly'}):
             self.choose(page.view, 'map')
-        self.assertEqual(page.weather_web.url, 'https://www.foreca.fi/Finland/Tampere/kartta-v2')
+        parsed = urlsplit(page.weather_web.url)
+        query = parse_qs(parsed.query)
+        self.assertEqual((parsed.scheme,parsed.netloc,parsed.path),
+                         ('https','www.foreca.fi','/tutka'))
+        self.assertEqual(float(query['lt'][0]), chosen.latitude)
+        self.assertEqual(float(query['ln'][0]), chosen.longitude)
+        self.assertEqual(query['z'], [str(controller.weather.options['windy_zoom'])])
+        self.assertEqual(query['l'], ['tutkaennuste'])
+        self.assertEqual(controller.weather.web_view.url, page.weather_web.url)
+        self.assertFalse(page.count.isVisible())
         self.assertTrue(all(request[2] for request in page.weather_web.requests))
+
+    def test_map_provider_and_view_are_shared_after_place_change(self):
+        controller, page = self.start()
+        self.choose(page.view, 'map')
+        original_main, original_desktop = page.weather_web, controller.weather.web_view
+        new_place = Place('Uusi ennustepaikka', 62.243, 25.747)
+        controller.weather.set_place(new_place); self.app.processEvents()
+        self.assertEqual(controller.weather.selected, 'foreca')
+        self.assertEqual(controller.weather.view_mode, 'map')
+        self.assertEqual(page.provider.currentData(), 'foreca')
+        self.assertEqual(page.view.currentData(), 'map')
+        self.assertIs(page.weather_web, original_main)
+        self.assertIs(controller.weather.web_view, original_desktop)
+        self.assertEqual(original_main.url, original_desktop.url)
+        query = parse_qs(urlsplit(original_main.url).query)
+        self.assertEqual(float(query['lt'][0]), new_place.latitude)
+        self.assertEqual(float(query['ln'][0]), new_place.longitude)
+        self.choose(page.provider, 'fmi'); self.choose(page.view, 'map')
+        controller.weather.set_place(Place('Toinen paikka', 60.169, 24.941)); self.app.processEvents()
+        self.assertEqual(controller.weather.selected, 'fmi')
+        self.assertEqual(page.provider.currentData(), 'fmi')
+        self.assertEqual(page.view.currentData(), 'map')
+        self.assertEqual(original_main.url, FMI_RADAR_URL)
+        self.assertEqual(original_desktop.url, FMI_RADAR_URL)
+        self.assertIn('Suomen sadekartta', page.summary.text())
 
     def test_saved_radar_does_not_create_hidden_web_surfaces(self):
         state = State(self.path)

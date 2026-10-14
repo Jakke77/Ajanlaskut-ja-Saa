@@ -332,19 +332,20 @@ class WeatherPage(QWidget):
             self.view.addItem(title,mode)
         self.view.setCurrentIndex(self.view.findData(owner.view_mode));self.view.setEnabled(self.view.count()>1);self.view.blockSignals(False)
         self.count.setEnabled(not owner.uses_web_view)
+        self.count.setVisible(not owner.uses_web_view)
         if owner.uses_web_view and self.isVisible():
             self.show_web()
         else:self.stack.setCurrentWidget(self.forecast)
         if owner.uses_web_view:
             if owner.selected=='fmi':
-                detail='Ilmatieteen laitoksen oma Suomen sadekartta · havainnot ja sade-ennuste. Kartan alue valitaan kartan omilla säätimillä.'
+                detail='Ilmatieteen laitos · Suomen sadekartta, havainnot ja sade-ennuste'
             elif owner.selected=='foreca':
-                detail='Forecan oma sadetutka ja sade-ennuste. Kartan paikkaa ja aikaa voi vaihtaa palvelun omilla säätimillä.'
+                detail='Foreca · sadetutka ja sade-ennuste'
             elif owner.view_mode=='graph':
-                detail='Windyn oma tuntiennuste · lämpötila, tuuli, sääsymbolit ja sade. Tuntien määrä valitaan Windyn näkymässä.'
+                detail='Windyn tuntiennuste · lämpötila, tuuli, sääsymbolit ja sade'
             else:
-                detail='Windyn oma sääkartta · kartan kerrosta ja aikaa voi vaihtaa kartan säätimillä.'
-            self.summary.setText(detail+'\nJos näkymä ei lataudu, käytä sen Avaa selaimessa -painiketta.')
+                detail='Windy · sääkartta'
+            self.summary.setText(detail)
         else:
             self.summary.setText('Varjosää · wttr.in\n'+'\n'.join(self.controller.daily.lines())+'\n\nHaetaan '+str(self.controller.options['refresh_minutes'])+' minuutin välein. Lämpö on ennuste; sade on tunnin kertymä.')
     def show_windy(self,*,force=False):

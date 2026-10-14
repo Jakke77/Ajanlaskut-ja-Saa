@@ -1,6 +1,6 @@
 # Ajanlaskut ja Sää
 
-**Uusin asennuspaketti: [1.9.0 · Sadekartat ja Windyn tuntiennuste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).**
+**Uusin asennuspaketti: [1.9.1 · Sadekartat widgetin kokoisiksi](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -12,6 +12,23 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Sadekartat widgetin kokoisiksi · versio 1.9.1
+
+**Sää → Foreca tai Ilmatieteen laitos → Sadekartta** avaa kartan koko
+sisältöalueelle sekä pääikkunassa että sääwidgetissä. Versiossa 1.9.0 mukana
+näkyivät verkkosivun otsikot, sivuvalikot ja mainosalueet; uusi versio käyttää
+palvelun omaa kartan suurennustoimintoa sovelluksen sisällä. Pääikkuna ja
+widgetti säilyvät tavallisen kokoisina.
+
+Kartan säätimet, aikajana, selitteet ja lähdemerkinnät säilyvät. Foreca käyttää
+valitun paikan koordinaatteja omassa uudessa tutkanäkymässään. Ilmatieteen
+laitoksen kartta on Suomen yhteinen sadekartta, jonka aluetta voi siirtää itse.
+12/24 tunnin valinta näkyy vain sovelluksen omissa ennustegraafeissa.
+
+Palvelun mahdolliset evästevalinnat tehdään sen omassa ikkunassa. Palvelu voi
+pyytää valintaa uudelleen sovelluksen seuraavalla käynnistyskerralla. Jos kartan
+avaaminen ei onnistu, käytä uudelleenyritystä tai **Avaa selaimessa** -painiketta.
+
 ## Sadekartat ja Windyn tuntiennuste · versio 1.9.0
 
 Valitse **Sää → Palvelu** ja sitten **Näkymä**. Foreca ja Ilmatieteen laitos
@@ -20,14 +37,14 @@ tarjoavat ennustegraafin lisäksi oman **Sadekartta**-sivunsa. Windylle voi vali
 valikossa on sama näkymävalinta, ja sovellus muistaa valinnan palvelukohtaisesti.
 Yr säilyttää sovelluksen oman 12/24 tunnin graafin.
 
-Forecan kartta käyttää ennusteesta tunnistettua paikkasivua, kun se on saatavilla;
-muuten avautuu Suomen sadetutka. Ilmatieteen laitoksen sadekartta on Suomen
+Forecan kartta käyttää versiosta 1.9.1 lähtien valittuja koordinaatteja omassa
+tutkanäkymässään. Ilmatieteen laitoksen sadekartta on Suomen
 yhteinen näkymä. Windyn tuntiennuste käyttää valittuja koordinaatteja ja näyttää
 Windyn oman ennustetaulukon sääsymboleineen. Se ei käytä toisen palvelun tietoja
 Windyn nimellä. Windyn omaan piirrettyyn ennustekäyrään tarvittaisiin erillinen
 lisensoitu API.
 
-Kartat avautuvat palvelujen muuttamattomina verkkosivuina. Niiden omat
+Kartat käyttävät palvelujen omia karttanäkymiä. Niiden omat
 merkinnät, evästevalinnat ja käyttöehdot säilyvät. Näkymässä on myös avaus
 tavalliseen selaimeen ja uudelleenyritys latausvirheen varalta. Verkkonäkymät
 tarvitsevat PyQt6 WebEnginen ja verkkoyhteyden; niiden oma aikajana korvaa
@@ -130,7 +147,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.9.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).
+[Lataa uusin 1.9.1-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -172,7 +189,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.9.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).
+[packages/v1.9.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0

@@ -1,8 +1,9 @@
 """Official weather pages, retaining provider controls, branding and colours."""
 from PyQt6.QtCore import QTimer,QUrl,Qt
 from PyQt6.QtGui import QColor,QDesktopServices
-from PyQt6.QtWidgets import QWidget,QVBoxLayout,QLabel,QPushButton
+from PyQt6.QtWidgets import QWidget,QVBoxLayout,QLabel,QPushButton,QSizePolicy
 from .web_sources import map_url, source_url
+from .radar_focus import RadarFocus
 
 try:
     from PyQt6.QtWebEngineCore import QWebEnginePage,QWebEngineProfile,QWebEngineSettings
@@ -191,6 +192,46 @@ class WindyView(QWidget):
 class WeatherWebView(WindyView):
     """Shared map browser and Windy's own map-free hourly forecast embed."""
 
+    def __init__(self,parent=None,*,network=True):
+        self._active_source = ('windy','map')
+        self._document_ready = False
+        self._radar = None
+        super().__init__(parent,network=network)
+        if self.view:
+            self._radar = RadarFocus(self)
+            self.view.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding)
+            self.layout().setStretch(0,1)
+            self.status.setWordWrap(True)
+            self.status.setMinimumWidth(0)
+            self.status.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Fixed)
+
+    def load(self,place,zoom,layer,*,force=False):
+        if self.view:
+            self.view.settings().setAttribute(
+                QWebEngineSettings.WebAttribute.FullScreenSupportEnabled,False)
+        super().load(place,zoom,layer,force=force)
+
+    def _start_load(self):
+        if (self.view and not self._stopped and self._pending
+                and not self._loading_url and self.isVisible()):
+            self._active_source = self._source
+            self._document_ready = False
+            if self._radar:
+                self._radar.cancel(exit_fullscreen=True)
+            super()._start_load()
+            if self._radar and self._radar.supports(self._active_source):
+                self._radar.prepare(self._active_source[0])
+
+    def _load_url(self,url,*,force=False):
+        if self._radar and (url != self.url or force):
+            self._radar.cancel(exit_fullscreen=True)
+            if self._document_ready and self._loading_url:
+                # The document finished already; its asynchronous map focus
+                # must not block the newer source/place or explicit refresh.
+                self._loading_url = ''
+                self._document_ready = False
+        super()._load_url(url,force=force)
+
     def _update_source_labels(self):
         super()._update_source_labels()
         forecast = self._source == ('windy','graph')
@@ -212,6 +253,12 @@ class WeatherWebView(WindyView):
                              - max(0,self.layout().spacing()) * len(controls))
                 height = max(47,min(187,available))
                 zoom = height / 187
+            elif not self._loaded_url and RadarFocus.supports(self._source):
+                if self._radar:
+                    zoom = self._radar.viewport_zoom(
+                        self._source[0],self.view.width(),self.view.height())
+                elif self._source == ('foreca','map'):
+                    zoom = max(0.25,min(1.0,max(1,self.view.width()) / 600))
             self.view.setMinimumHeight(height)
             self.view.setMaximumHeight(height if forecast else 16777215)
             if self.view.zoomFactor() != zoom:
@@ -226,13 +273,68 @@ class WeatherWebView(WindyView):
         self._fit_forecast_viewport()
 
     def loaded(self,ok):
-        super().loaded(ok)
+        if self._stopped or not self._loading_url:
+            return
+        if (ok and self._radar and self._radar.supports(self._active_source)
+                and self._loading_url == self.url and self._active_source == self._source
+                and not self._force_pending):
+            self._document_ready = True
+            if self.isVisible():
+                self._begin_radar_focus()
+        else:
+            super().loaded(ok)
         self._fit_forecast_viewport()
+
+    def _begin_radar_focus(self):
+        self._radar.begin(self._active_source[0],self._loading_url,self._radar_focused)
+
+    def _radar_focused(self,ok):
+        if self._stopped or not self._loading_url:
+            return
+        self._document_ready = False
+        WindyView.loaded(self,ok)
+        if not ok:
+            self.status.setText(
+                'Kartta ei avautunut. Yritä uudelleen tai avaa selaimessa.')
+        self._fit_forecast_viewport()
+
+    def _radar_closed(self):
+        self._loaded_url = ''
+        self._failed_url = self.url
+        self.status.setText('Sadekartta suljettiin. Yritä uudelleen.')
+        self.status.show()
+        self.retry_button.show()
+
+    def showEvent(self,event):
+        super().showEvent(event)
+        if self._document_ready and self._loading_url and self._radar:
+            self._begin_radar_focus()
+
+    def hideEvent(self,event):
+        if self._radar:
+            if (self._radar.supports(self._source) and self.url
+                    and self._loaded_url == self.url):
+                # Reopening checks that the browser kept DOM fullscreen while
+                # hidden. It uses the already loaded document, not the network.
+                self._loading_url = self.url
+                self._loaded_url = ''
+                self._document_ready = True
+            self._radar.cancel()
+        super().hideEvent(event)
+
+    def stop(self):
+        if self._radar:
+            self._radar.stop()
+        super().stop()
 
     def load_source(self,provider,mode,place,zoom=9,layer='temp',foreca_url='',*,force=False):
         if self._stopped:
             return
         url = source_url(provider,mode,place,zoom,layer,foreca_url)
+        if self.view:
+            self.view.settings().setAttribute(
+                QWebEngineSettings.WebAttribute.FullScreenSupportEnabled,
+                RadarFocus.supports((provider,mode)))
         self._source = (provider,mode)
         self._update_source_labels()
         self._load_url(url,force=force)
