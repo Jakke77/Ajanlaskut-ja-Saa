@@ -1,0 +1,15 @@
+N: android=http://schemas.android.com/apk/res/android
+  E: appwidget-provider (line=8)
+    A: android:description(0x01010020)=@0x7f050001
+    A: android:minWidth(0x0101013f)=(type 0x5)0x2801
+    A: android:minHeight(0x01010140)=(type 0x5)0x2801
+    A: android:updatePeriodMillis(0x01010250)=(type 0x10)0x0
+    A: android:initialLayout(0x01010251)=@0x7f030000
+    A: android:configure(0x0101025d)="fi.jakke77.saawidget.MainActivity" (Raw: "fi.jakke77.saawidget.MainActivity")
+    A: android:previewImage(0x010102da)=@0x7f010001
+    A: android:resizeMode(0x01010363)=(type 0x11)0x0
+    A: android:widgetCategory(0x010103c4)=(type 0x11)0x1
+    A: android:widgetFeatures(0x01010579)=(type 0x11)0x1
+    A: android:previewLayout(0x01010627)=@0x7f030000
+    A: android:targetCellWidth(0x01010634)=(type 0x10)0x1
+    A: android:targetCellHeight(0x01010635)=(type 0x10)0x1

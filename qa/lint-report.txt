@@ -1,0 +1,191 @@
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_forecast_widget_info.xml:3: Warning: Attribute targetCellHeight is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="250dp" android:minHeight="110dp" android:targetCellWidth="4" android:targetCellHeight="2"
+                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_forecast_widget_info.xml:3: Warning: Attribute targetCellWidth is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="250dp" android:minHeight="110dp" android:targetCellWidth="4" android:targetCellHeight="2"
+                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_forecast_widget_info.xml:7: Warning: Attribute widgetFeatures is only used in API level 28 and higher (current min is 26) [UnusedAttribute]
+    android:widgetCategory="home_screen" android:widgetFeatures="reconfigurable"
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_forecast_widget_info.xml:8: Warning: Attribute previewLayout is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:previewLayout="@layout/weather_widget_forecast" android:previewImage="@drawable/ic_launcher_foreground"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_wide_widget_info.xml:3: Warning: Attribute targetCellHeight is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="110dp" android:minHeight="40dp" android:targetCellWidth="2" android:targetCellHeight="1"
+                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_wide_widget_info.xml:3: Warning: Attribute targetCellWidth is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="110dp" android:minHeight="40dp" android:targetCellWidth="2" android:targetCellHeight="1"
+                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_wide_widget_info.xml:7: Warning: Attribute widgetFeatures is only used in API level 28 and higher (current min is 26) [UnusedAttribute]
+    android:widgetCategory="home_screen" android:widgetFeatures="reconfigurable"
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_wide_widget_info.xml:8: Warning: Attribute previewLayout is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:previewLayout="@layout/weather_widget_wide" android:previewImage="@drawable/ic_launcher_foreground"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_widget_info.xml:3: Warning: Attribute targetCellHeight is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="40dp" android:minHeight="40dp" android:targetCellWidth="1" android:targetCellHeight="1"
+                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_widget_info.xml:3: Warning: Attribute targetCellWidth is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:minWidth="40dp" android:minHeight="40dp" android:targetCellWidth="1" android:targetCellHeight="1"
+                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_widget_info.xml:6: Warning: Attribute widgetFeatures is only used in API level 28 and higher (current min is 26) [UnusedAttribute]
+    android:widgetCategory="home_screen" android:widgetFeatures="reconfigurable"
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/xml/weather_widget_info.xml:7: Warning: Attribute previewLayout is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    android:previewLayout="@layout/weather_widget_compact" android:previewImage="@drawable/ic_launcher_foreground"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:32: Warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities into your application, review carefully [SetJavaScriptEnabled]
+        web=new WebView(this);web.setBackgroundColor(Color.rgb(23,18,31));web.getSettings().setJavaScriptEnabled(true);web.getSettings().setDomStorageEnabled(true);web.getSettings().setAllowFileAccess(false);web.getSettings().setAllowContentAccess(false);web.getSettings().setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetJavaScriptEnabled":
+   Your code should not invoke setJavaScriptEnabled if you are not sure that
+   your app really requires JavaScript support.
+
+   https://goo.gle/SetJavaScriptEnabled
+   https://developer.android.com/training/articles/security-tips
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/ForecastGraphView.java:26: Warning: Avoid object allocations during draw/layout operations (preallocate and reuse instead) [DrawAllocation]
+        Path line=new Path();long start=System.currentTimeMillis()/ForecastData.HOUR*ForecastData.HOUR;long previous=Long.MIN_VALUE;
+                  ~~~~~~~~~~
+
+   Explanation for issues of type "DrawAllocation":
+   You should avoid allocating objects during a drawing or layout operation.
+   These are called frequently, so a smooth UI can be interrupted by garbage
+   collection pauses caused by the object allocations.
+
+   The way this is generally handled is to allocate the needed objects up
+   front and to reuse them for each drawing operation.
+
+   Some methods allocate memory on your behalf (such as Bitmap.create), and
+   these should be handled in the same way.
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/mipmap-anydpi-v26: Warning: This folder configuration (v26) is unnecessary; minSdkVersion is 26. Merge all the resources in this folder into mipmap-anydpi. [ObsoleteSdkInt]
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_forecast.xml:5: Warning: This tag and its children can be replaced by one <TextView/> and a compound drawable [UseCompoundDrawables]
+    <LinearLayout android:layout_width="match_parent" android:layout_height="24dp" android:gravity="center_vertical" android:orientation="horizontal">
+     ~~~~~~~~~~~~
+
+   Explanation for issues of type "UseCompoundDrawables":
+   A LinearLayout which contains an ImageView and a TextView can be more
+   efficiently handled as a compound drawable (a single TextView, using the
+   drawableTop, drawableLeft, drawableRight and/or drawableBottom attributes
+   to draw one or more images adjacent to the text).
+
+   If the two widgets are offset from each other with margins, this can be
+   replaced with a drawablePadding attribute.
+
+   There's a lint quickfix to perform this conversion in the Eclipse plugin.
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_compact.xml:9: Warning: Avoid using sizes smaller than 11sp: 9sp [SmallSp]
+        android:gravity="center" android:maxLines="1" android:text="@string/widget_initial_source" android:textSize="9sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_forecast.xml:15: Warning: Avoid using sizes smaller than 11sp: 10sp [SmallSp]
+            android:maxLines="1" android:ellipsize="end" android:text="@string/widget_initial_source" android:textSize="10sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_forecast.xml:17: Warning: Avoid using sizes smaller than 11sp: 9sp [SmallSp]
+            android:maxLines="1" android:text="@string/widget_no_forecast" android:textSize="9sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+                                                                           ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_wide.xml:9: Warning: Avoid using sizes smaller than 11sp: 9sp [SmallSp]
+            android:maxLines="1" android:ellipsize="end" android:text="@string/widget_initial_place" android:textSize="9sp" android:textColor="#FFFFFF" android:includeFontPadding="false" />
+                                                                                                     ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_wide.xml:11: Warning: Avoid using sizes smaller than 11sp: 9sp [SmallSp]
+            android:maxLines="1" android:ellipsize="end" android:text="@string/widget_initial_wind" android:textSize="9sp" android:textColor="#FFFFFF" android:includeFontPadding="false" />
+                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_wide.xml:14: Warning: Avoid using sizes smaller than 11sp: 8sp [SmallSp]
+                android:maxLines="1" android:text="@string/widget_initial_source" android:textSize="8sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+                                                                                  ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/res/layout/weather_widget_wide.xml:16: Warning: Avoid using sizes smaller than 11sp: 8sp [SmallSp]
+                android:maxLines="1" android:ellipsize="end" android:text="@string/widget_value_missing" android:textSize="8sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SmallSp":
+   Avoid using sizes smaller than 11sp.
+
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/MainActivity.java:43: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+    private void display(ForecastData data,String error){location.setText(config.place);attribution.setText(SourceUrls.attribution(config.provider));graph.setForecast(data,config);ForecastData.Hour now=data==null?null:data.current(System.currentTimeMillis());temperature.setText(now==null?"—":String.format(Locale.getDefault(),"%.0f°",now.tempC));summary.setText("Ennuste nyt · "+WidgetConfig.providerName(config.provider)+(now==null?"":" · tuuli "+String.format(Locale.getDefault(),"%.1f",now.windMps)+" m/s"));
+                                                                                                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/MainActivity.java:43: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+    private void display(ForecastData data,String error){location.setText(config.place);attribution.setText(SourceUrls.attribution(config.provider));graph.setForecast(data,config);ForecastData.Hour now=data==null?null:data.current(System.currentTimeMillis());temperature.setText(now==null?"—":String.format(Locale.getDefault(),"%.0f°",now.tempC));summary.setText("Ennuste nyt · "+WidgetConfig.providerName(config.provider)+(now==null?"":" · tuuli "+String.format(Locale.getDefault(),"%.1f",now.windMps)+" m/s"));
+                                                                                                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/MainActivity.java:44: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        if(data==null){status.setText(error==null||error.isEmpty()?"Ennustetta ei ole vielä saatavilla":error);}else{String stamp=DateTimeFormatter.ofPattern("HH:mm",Locale.getDefault()).withZone(ZoneId.of(config.timezone)).format(Instant.ofEpochMilli(data.fetchedAt));String label=data.stale(System.currentTimeMillis())?"Vanha välimuisti / verkkoyhteys katkennut":"Päivitetty";status.setText(label+" "+stamp+(error==null||error.isEmpty()?"":" · "+error)+(now==null?" · Nykyiselle tunnille ei ole arvoa":""));}temperature.setContentDescription(now==null?"Nykyisen tunnin lämpötilaennuste puuttuu":"Nykyisen tunnin ennuste "+Math.round(now.tempC)+" astetta, "+WidgetConfig.providerName(config.provider));}
+                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/MainActivity.java:55: Warning: Number formatting does not take into account locale settings. Consider using String.format instead. [SetTextI18n]
+        find.setOnClickListener(v->{String query=search.getText().toString().trim();if(query.length()<2){search.setError("Kirjoita vähintään kaksi merkkiä");return;}find.setEnabled(false);WeatherRepository.get(this).searchPlaces(query,(places,error)->{if(isFinishing()||!dialog.isShowing())return;find.setEnabled(true);if(!error.isEmpty()){search.setError(error);return;}String[] names=new String[places.size()];for(int i=0;i<names.length;i++)names[i]=places.get(i).name;new AlertDialog.Builder(this).setTitle("Valitse paikka").setItems(names,(d,index)->{WeatherRepository.Place chosen=places.get(index);place.setText(chosen.name);lat.setText(Double.toString(chosen.latitude));lon.setText(Double.toString(chosen.longitude));timezone.setText(chosen.timezone);}).setNegativeButton("Peruuta",null).show();});});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/MainActivity.java:55: Warning: Number formatting does not take into account locale settings. Consider using String.format instead. [SetTextI18n]
+        find.setOnClickListener(v->{String query=search.getText().toString().trim();if(query.length()<2){search.setError("Kirjoita vähintään kaksi merkkiä");return;}find.setEnabled(false);WeatherRepository.get(this).searchPlaces(query,(places,error)->{if(isFinishing()||!dialog.isShowing())return;find.setEnabled(true);if(!error.isEmpty()){search.setError(error);return;}String[] names=new String[places.size()];for(int i=0;i<names.length;i++)names[i]=places.get(i).name;new AlertDialog.Builder(this).setTitle("Valitse paikka").setItems(names,(d,index)->{WeatherRepository.Place chosen=places.get(index);place.setText(chosen.name);lat.setText(Double.toString(chosen.latitude));lon.setText(Double.toString(chosen.longitude));timezone.setText(chosen.timezone);}).setNegativeButton("Peruuta",null).show();});});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:29: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        Button external=new Button(this);external.setText("Selaimessa");external.setOnClickListener(v->{ try{String current=web==null?initialUrl:web.getUrl();startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(allowed(current)?current:initialUrl)));}catch(Exception e){status.setText("Selain ei ole käytettävissä");}});bar.addView(external);root.addView(bar);
+                                                          ~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:29: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        Button external=new Button(this);external.setText("Selaimessa");external.setOnClickListener(v->{ try{String current=web==null?initialUrl:web.getUrl();startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(allowed(current)?current:initialUrl)));}catch(Exception e){status.setText("Selain ei ole käytettävissä");}});bar.addView(external);root.addView(bar);
+                                                                                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:30: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        status=new TextView(this);status.setTextColor(Color.rgb(198,174,189));status.setText("Ladataan palvelun omaa sivua…");status.setPadding(16,4,16,8);root.addView(status);
+                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:31: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        Button retry=new Button(this);retry.setText("Yritä uudelleen");retry.setVisibility(View.GONE);retry.setOnClickListener(v->{retry.setVisibility(View.GONE);web.loadUrl(initialUrl);});root.addView(retry);
+                                                    ~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:35: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            @Override public void onPageStarted(WebView view,String url,android.graphics.Bitmap icon){failed=false;status.setText("Ladataan palvelun omaa sivua…");}
+                                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:36: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            @Override public void onPageFinished(WebView view,String url){if(!failed)status.setText("Palvelun oma sivu · sijainti ja evästevalinnat sivun omista painikkeista");}
+                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:37: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            @Override public void onReceivedError(WebView view,WebResourceRequest request,WebResourceError error){if(request.isForMainFrame()){failed=true;status.setText("Sivu ei latautunut. Kokeile uudelleen tai avaa selaimessa.");retry.setVisibility(View.VISIBLE);}}
+                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:38: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            @Override public void onReceivedSslError(WebView view,SslErrorHandler handler,SslError error){handler.cancel();failed=true;status.setText("Sivun suojattua yhteyttä ei voitu vahvistaa.");retry.setVisibility(View.VISIBLE);}
+                                                                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:39: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+            @Override public void onReceivedHttpError(WebView view,WebResourceRequest request,WebResourceResponse response){if(request.isForMainFrame()&&response.getStatusCode()>=400){failed=true;status.setText("Palvelu ei vastaa ("+response.getStatusCode()+").");retry.setVisibility(View.VISIBLE);}}
+                                                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ajanlaskut-Saa-Android/app/src/main/java/fi/jakke77/saawidget/WeatherWebActivity.java:39: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            @Override public void onReceivedHttpError(WebView view,WebResourceRequest request,WebResourceResponse response){if(request.isForMainFrame()&&response.getStatusCode()>=400){failed=true;status.setText("Palvelu ei vastaa ("+response.getStatusCode()+").");retry.setVisibility(View.VISIBLE);}}
+                                                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+0 errors, 38 warnings

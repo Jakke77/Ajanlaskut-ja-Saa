@@ -1,0 +1,35 @@
+[
+  {
+    "bodySha256": "3ecec939d1d4d9e54dee905e920d3ac526ba61997c1db9ef9072424c5804c70d",
+    "currentHourUtc": "2026-10-14T07:00:00Z",
+    "rainMm": 0.8,
+    "provider": "yr",
+    "temperatureForecastC": 1.6,
+    "fetchedAtUtc": "2026-10-14T07:46:35.914Z",
+    "windMps": 4.4,
+    "source": "actual HTTPS API response fetched by Android app agent",
+    "forecastHours": 77
+  },
+  {
+    "bodySha256": "bcdc19e5ee7056bc1df5a0611540d79821712e147bce2e816493862831cd4110",
+    "currentHourUtc": "2026-10-14T07:00:00Z",
+    "rainMm": 0.581,
+    "provider": "fmi",
+    "temperatureForecastC": 1.7,
+    "fetchedAtUtc": "2026-10-14T07:46:35.914Z",
+    "windMps": 5.2,
+    "source": "actual HTTPS API response fetched by Android app agent",
+    "forecastHours": 27
+  },
+  {
+    "bodySha256": "d6737f53875b51b6235fb9bdf9da9bcb46e504b5d224e7d42d48459606bd07f3",
+    "currentHourUtc": "2026-10-14T07:00:00Z",
+    "rainMm": 0.9,
+    "provider": "openmeteo",
+    "temperatureForecastC": 1.7,
+    "fetchedAtUtc": "2026-10-14T07:46:35.914Z",
+    "windMps": 4.6,
+    "source": "actual HTTPS API response fetched by Android app agent",
+    "forecastHours": 65
+  }
+]

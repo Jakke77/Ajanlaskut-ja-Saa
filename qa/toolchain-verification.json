@@ -1,0 +1,68 @@
+{
+  "toolchain": {
+    "jdk": "Temurin21.0.12.1",
+    "gradle": "8.11.1",
+    "androidGradlePlugin": "8.9.3",
+    "sdk": 35,
+    "buildTools": "35.0.0",
+    "robolectric": "4.14.1",
+    "robolectricRuntimeSdk": 28
+  },
+  "applicationId": "fi.jakke77.saawidget",
+  "versionName": "0.1.0",
+  "minSdk": 26,
+  "targetSdk": 35,
+  "unitTestSuites": [
+    {
+      "suite": "fi.jakke77.saawidget.WidgetRenderTest",
+      "tests": 7,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": "2026-10-14T08:08:55"
+    },
+    {
+      "suite": "fi.jakke77.saawidget.ForecastParserTest",
+      "tests": 24,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": "2026-10-14T08:08:54"
+    },
+    {
+      "suite": "fi.jakke77.saawidget.WidgetPresentationTest",
+      "tests": 6,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": "2026-10-14T08:08:55"
+    }
+  ],
+  "lint": {
+    "errors": 0,
+    "warnings": 38
+  },
+  "build": "testDebugUnitTest lintDebug assembleDebug: BUILD SUCCESSFUL",
+  "apk": {
+    "path": "/workspace/artifacts/android-0.1.0/Ajanlaskut-Saa-Android-0.1.0.apk",
+    "bytes": 102237,
+    "sha256": "06d7a68b9e408f7f0ce0c10f28fa6c17d03b684d51aa7cbe225101c741af8198",
+    "signatureScheme": "APK Signature Scheme v2",
+    "signingVariant": "debug"
+  },
+  "verifiedManifestWidgetTargets": [
+    "1x1",
+    "2x1",
+    "4x2"
+  ],
+  "remoteViewsRuntimeChecks": "Android28 RemoteViews.apply, minimum40dp, -42degrees/fontScale1.0+1.3, nativeCanvas orange temperature+blue rain pixels, bitmap<=600KB, source attribution, no-current-hour, per-widget prefs",
+  "screenshots": "QA/widget-*-fixture.png contain actual Android framework rendering of synthetic forecast fixture data",
+  "nativeLibrariesInApk": false,
+  "liveProviderParsers": [
+    "yr",
+    "fmi",
+    "openmeteo"
+  ],
+  "physicalDeviceOrLauncherRuntimeTested": false,
+  "emulatorRuntimeTested": false
+}
