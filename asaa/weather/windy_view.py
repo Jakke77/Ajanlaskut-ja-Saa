@@ -194,11 +194,40 @@ class WeatherWebView(WindyView):
     def _update_source_labels(self):
         super()._update_source_labels()
         forecast = self._source == ('windy','graph')
-        if self.view:
-            # Match Windy's own 187 px forecast iframe. A tall viewport also
-            # exposes its unused map background beneath the forecast strip.
-            self.view.setMaximumHeight(187 if forecast else 16777215)
         self.layout().setAlignment(Qt.AlignmentFlag.AlignTop if forecast else Qt.AlignmentFlag(0))
+        self._fit_forecast_viewport()
+
+    def _fit_forecast_viewport(self):
+        forecast = self._source == ('windy','graph')
+        if self.view:
+            height, zoom = 0, 1.0
+            if forecast:
+                # Windy's own iframe is 187 CSS px. Fit that complete strip
+                # above the browser/retry controls even in a small widget.
+                controls = [item for item in (self.status,self.retry_button,self.browser_button)
+                            if not item.isHidden()]
+                margins = self.layout().contentsMargins()
+                available = (self.height() - margins.top() - margins.bottom()
+                             - sum(item.sizeHint().height() for item in controls)
+                             - max(0,self.layout().spacing()) * len(controls))
+                height = max(47,min(187,available))
+                zoom = height / 187
+            self.view.setMinimumHeight(height)
+            self.view.setMaximumHeight(height if forecast else 16777215)
+            if self.view.zoomFactor() != zoom:
+                self.view.setZoomFactor(zoom)
+
+    def resizeEvent(self,event):
+        super().resizeEvent(event)
+        self._fit_forecast_viewport()
+
+    def loading_started(self):
+        super().loading_started()
+        self._fit_forecast_viewport()
+
+    def loaded(self,ok):
+        super().loaded(ok)
+        self._fit_forecast_viewport()
 
     def load_source(self,provider,mode,place,zoom=9,layer='temp',foreca_url='',*,force=False):
         if self._stopped:

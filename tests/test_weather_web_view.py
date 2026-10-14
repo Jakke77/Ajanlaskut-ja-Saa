@@ -4,12 +4,22 @@ import unittest
 from unittest.mock import patch
 
 from PyQt6.QtCore import QEvent, QUrl, Qt
-from PyQt6.QtWidgets import QApplication, QLabel
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget
 
 from asaa.weather import windy_view
 from asaa.weather.providers import Place
 from asaa.weather.web_sources import FMI_RADAR_URL, foreca_map_url, forecast_url
 from tests.test_windy_view import FakePage, FakeProfile, FakeView
+
+
+class FakeForecastView(FakeView):
+    _zoom = 1.0
+
+    def setZoomFactor(self, zoom):
+        self._zoom = zoom
+
+    def zoomFactor(self):
+        return self._zoom
 
 
 class WeatherWebViewTests(unittest.TestCase):
@@ -20,13 +30,14 @@ class WeatherWebViewTests(unittest.TestCase):
 
     def setUp(self):
         self.patches = [
-            patch.object(windy_view, 'QWebEngineView', FakeView),
+            patch.object(windy_view, 'QWebEngineView', FakeForecastView),
             patch.object(windy_view, 'QWebEngineProfile', FakeProfile),
             patch.object(windy_view, 'QWebEnginePage', FakePage),
         ]
         for replacement in self.patches:
             replacement.start()
         self.widgets = []
+        self.parents = []
         self.place = Place('Oulu', 65.0701, 25.5071)
         self.widget = self.create()
         self.web = self.widget.view
@@ -42,6 +53,9 @@ class WeatherWebViewTests(unittest.TestCase):
             widget.stop()
             widget.hide()
             widget.deleteLater()
+        for parent in self.parents:
+            parent.hide()
+            parent.deleteLater()
         self.app.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.app.processEvents()
         for replacement in reversed(self.patches):
@@ -98,6 +112,7 @@ class WeatherWebViewTests(unittest.TestCase):
         self.widget.load_source('windy', 'graph', self.place)
         self.events()
         self.assertEqual(self.web.maximumHeight(), 187)
+        self.assertEqual(self.web.minimumHeight(), 187)
         self.assertEqual(self.web.height(), 187)
         self.assertEqual(self.widget.layout().alignment(), Qt.AlignmentFlag.AlignTop)
         self.assertTrue(self.widget.browser_button.isVisible())
@@ -105,9 +120,45 @@ class WeatherWebViewTests(unittest.TestCase):
         self.widget.load_source('fmi', 'map', self.place)
         self.events()
         self.assertEqual(self.web.maximumHeight(), 16777215)
+        self.assertEqual(self.web.minimumHeight(), 0)
         self.assertGreater(self.web.height(), 500)
         self.assertEqual(self.widget.layout().alignment(), Qt.AlignmentFlag(0))
         self.assertEqual(self.web.requests, [forecast_url(self.place), FMI_RADAR_URL])
+
+    def test_small_forecast_frame_keeps_every_row_above_browser_and_error_controls(self):
+        parent = QWidget()
+        self.parents.append(parent)
+        parent.resize(432, 276)
+        self.widget.setParent(parent)
+        self.widget.setGeometry(22, 55, 389, 189)
+        parent.show()
+        self.widget.show()
+        self.widget.load_source('windy', 'graph', self.place)
+        self.events()
+        self.web.loadFinished.emit(True)
+        self.events()
+        self.assertEqual(self.widget.height(), 189)
+        self.assertLess(self.web.height(), 187)
+        self.assertAlmostEqual(self.web.height() / self.web.zoomFactor(), 187)
+        self.assertGreater(self.widget.browser_button.y(), self.web.geometry().bottom())
+        self.assertLessEqual(self.widget.browser_button.geometry().bottom(), 188)
+        self.widget.resize(900, 700)
+        self.events()
+        self.assertEqual(self.web.height(), 187)
+        self.assertEqual(self.web.zoomFactor(), 1.0)
+        self.widget.resize(389, 189)
+        self.widget.load_source('windy', 'graph', self.place, force=True)
+        self.events()
+        self.web.loadFinished.emit(False)
+        self.events()
+        self.assertAlmostEqual(self.web.height() / self.web.zoomFactor(), 187)
+        self.assertGreater(self.widget.status.y(), self.web.geometry().bottom())
+        self.assertGreater(self.widget.browser_button.y(), self.widget.retry_button.geometry().bottom())
+        self.assertLessEqual(self.widget.browser_button.geometry().bottom(), 188)
+        self.widget.load_source('fmi', 'map', self.place)
+        self.events()
+        self.assertEqual(self.web.zoomFactor(), 1.0)
+        self.assertEqual(self.web.minimumHeight(), 0)
 
     def test_failed_foreca_map_has_honest_labels_and_explicit_retry(self):
         self.widget.load_source('foreca', 'map', self.place)

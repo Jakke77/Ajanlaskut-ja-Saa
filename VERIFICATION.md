@@ -2,7 +2,7 @@
 
 ## Sadekartat ja Windyn tuntiennuste · 14.10.2026 · 1.9.0
 
-- Lopullinen yksikkö- ja Qt-testisarja: 280 testiä läpäisi. Mukana ovat
+- Lopullinen yksikkö- ja Qt-testisarja: 281 testiä läpäisi. Mukana ovat
   palvelukohtaisen näkymän tallennus, vanhan asetustiedoston oletukset,
   yhteinen pääikkunan/widgetin valinta, piilotetun näkymän latauksen lykkäys,
   manuaalinen uudelleenlataus kesken ennustehaun ja kaikkien web-sivujen sulkeminen.
@@ -31,6 +31,9 @@
   Windyn tuntiennuste näytti oikeat lämpötilat, sademäärät, tuulet ja symbolit.
   Ennuste käyttää virallisen upotteen 187 pikselin korkeutta; karttaan vaihto
   palauttaa koko näkymäkorkeuden ja palvelun merkinnät säilyvät.
+  Pienessä työpöytäwidgetissä selainzoom sovittaa kaikki ennusterivit
+  käytettävään tilaan. Aito Qt-selaintesti ja kokotesti varmistivat, ettei
+  selain- tai uudelleenyrityspainike peitä ennustetta, myös latausvirheessä.
   Forecan ja FMI:n sivut, JavaScript, kartan hallinta ja evästevalinnat latautuivat.
   Sadekarttojen karttagrafiikka jäi tarkistamatta kontin puuttuvan WebGL:n vuoksi.
 
