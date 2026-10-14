@@ -1,0 +1,142 @@
+[
+  {
+    "provider": "foreca",
+    "size": "fresh-small",
+    "state": {
+      "requested": "https://www.foreca.fi/tutka?lt=65.0701&ln=25.5071&z=9&l=tutkaennuste",
+      "loaded": "https://www.foreca.fi/tutka?lt=65.0701&ln=25.5071&z=9&l=tutkaennuste",
+      "loading": "",
+      "source": [
+        "foreca",
+        "map"
+      ],
+      "status": "Avataan sadekarttaa…",
+      "radar_active": false,
+      "radar_polls": 4,
+      "normalHost": true,
+      "normalView": true,
+      "wrapper": [
+        22,
+        55,
+        389,
+        189
+      ],
+      "view": [
+        389,
+        156
+      ],
+      "zoom": 1.0
+    },
+    "DOM": {
+      "canvasSizes": [
+        [
+          389,
+          156
+        ]
+      ],
+      "creditText": [
+        "© OpenMapTiles © OpenStreetMap contributors"
+      ],
+      "fullClass": "maplibregl-map",
+      "fullRect": [
+        0,
+        0,
+        389,
+        156
+      ],
+      "fullscreen": true,
+      "providerMapText": "Ke\n\n16.30\n\n5 km\n© OpenMapTiles © OpenStreetMap contributors",
+      "url": "https://www.foreca.fi/tutka?lt=65.07010&ln=25.50710&z=9.00&l=tutkaennuste",
+      "viewport": [
+        389,
+        156
+      ]
+    },
+    "before_choice_production_probe": {
+      "state": "blocked"
+    },
+    "before_choice_status": "Valitse sivuston evästeasetukset.",
+    "before_choice_loaded": false,
+    "before_choice_zoom": 0.6483333333333333,
+    "deliberate_tester_cookie_choice": {
+      "label": "ESTÄ KAIKKI",
+      "probe": {
+        "classes": "gravitoCMP-btn gravitoCMP-standardCMP-secondary",
+        "state": "ready",
+        "tag": "BUTTON",
+        "x": 294.99918365478516,
+        "y": 125.38158416748047
+      },
+      "scope": "Approved QA step in disposable fresh profile only; production never chooses cookies."
+    }
+  },
+  {
+    "provider": "fmi",
+    "size": "fresh-small",
+    "state": {
+      "requested": "https://www.ilmatieteenlaitos.fi/sadekartta",
+      "loaded": "https://www.ilmatieteenlaitos.fi/sadekartta",
+      "loading": "",
+      "source": [
+        "fmi",
+        "map"
+      ],
+      "status": "Avataan sadekarttaa…",
+      "radar_active": false,
+      "radar_polls": 5,
+      "normalHost": true,
+      "normalView": true,
+      "wrapper": [
+        22,
+        55,
+        389,
+        189
+      ],
+      "view": [
+        389,
+        156
+      ],
+      "zoom": 1.0
+    },
+    "DOM": {
+      "canvasSizes": [
+        [
+          389,
+          156
+        ]
+      ],
+      "creditText": [],
+      "fullClass": "relative w-full min-w-0 isolate",
+      "fullRect": [
+        0,
+        0,
+        389,
+        156
+      ],
+      "fullscreen": true,
+      "providerMapText": "13:40\nhavainto\n11:45\nke 14.10.\n15:40\nke 14.10.\nHavainto, ke 14.10. 13:40\nHeikkoa\nKohtalaista\nVoimakasta",
+      "url": "https://www.ilmatieteenlaitos.fi/sadekartta",
+      "viewport": [
+        389,
+        156
+      ]
+    },
+    "before_choice_production_probe": {
+      "state": "consent"
+    },
+    "before_choice_status": "Valitse sivuston evästeasetukset.",
+    "before_choice_loaded": false,
+    "before_choice_zoom": 1.0,
+    "deliberate_tester_cookie_choice": {
+      "label": "SALLI VAIN VÄLTTÄMÄTTÖMÄT",
+      "probe": {
+        "classes": "inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 border-2 border-blueberry bg-transparent shadow-sm hover:bg-blueberry hover:text-white text-blueberry h-12 px-8 text-lg font-bold rounded-full",
+        "state": "ready",
+        "tag": "BUTTON",
+        "x": 186.9921875,
+        "y": 11
+      },
+      "scope": "Approved QA step in disposable fresh profile only; production never chooses cookies."
+    }
+  }
+]
