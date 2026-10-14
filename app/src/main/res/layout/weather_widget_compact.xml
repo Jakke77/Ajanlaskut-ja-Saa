@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/widget_background_ubuntu" android:orientation="vertical" android:gravity="center"
+    android:padding="4dp">
+    <TextView android:id="@+id/widget_temperature" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:gravity="center" android:maxLines="1" android:text="@string/widget_value_missing" android:textSize="30sp" android:textStyle="bold" android:textColor="#FFFFFF" android:includeFontPadding="false" />
+    <TextView android:id="@+id/widget_source" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center" android:maxLines="1" android:text="@string/widget_initial_source" android:textSize="9sp" android:textColor="#D4BBCC" android:includeFontPadding="false" />
+</LinearLayout>

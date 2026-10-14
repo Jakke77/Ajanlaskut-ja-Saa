@@ -1,0 +1,16 @@
+<resources>
+    <string name="widget_compact_name">Sää · lämpötila 1×1</string>
+    <string name="widget_wide_name">Sää · lämpötila ja tuuli 2×1</string>
+    <string name="widget_forecast_name">Sää · tuntiennuste 4×2</string>
+    <string name="widget_compact_description">Valitun sääpalvelun tämän tunnin lämpötilaennuste. Napauta vaihtaaksesi paikan ja palvelun.</string>
+    <string name="widget_wide_description">Lämpötilaennuste, tuuli ja päivitysaika. Jokaisella widgetillä on oma paikka ja sääpalvelu.</string>
+    <string name="widget_forecast_description">12 tai 24 tunnin lämpötilaennuste. Suurenna widgetiä nähdäksesi myös sateen.</string>
+    <string name="widget_refresh">Päivitä sääennuste</string>
+    <string name="widget_forecast_graph">Seuraavien tuntien lämpötila ja suuressa widgetissä sademäärä</string>
+    <string name="widget_value_missing">—</string>
+    <string name="widget_initial_source">enn. · Yr</string>
+    <string name="widget_initial_place">Sää</string>
+    <string name="widget_initial_forecast">Sääennuste</string>
+    <string name="widget_initial_wind">Tuuli —</string>
+    <string name="widget_no_forecast">Ennuste puuttuu</string>
+</resources>
