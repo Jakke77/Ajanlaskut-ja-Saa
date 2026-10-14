@@ -75,6 +75,12 @@ Palvelu: https://opendata.fmi.fi/wfs
 Lisenssi ja käyttöehdot: https://www.ilmatieteenlaitos.fi/avoin-data-lisenssi
 CC BY 4.0. Aineisto rajataan tuntiennusteeksi ja esitetään omilla kuvakkeilla/käyrillä.
 
+Sadekartta avautuu muuttamattomana palvelun omana sivuna:
+https://www.ilmatieteenlaitos.fi/sadekartta
+Verkkosivun aineisto ja avoimen WFS-rajapinnan aineisto ovat eri käyttötapauksia.
+Kartasta ei eroteta tai kopioida kuvia eikä poisteta palvelun merkintöjä.
+Sivuston käyttöehdot: https://www.ilmatieteenlaitos.fi/tietoa-sivustosta
+
 ## Foreca
 
 Foreca.fi:n julkisen tuntiennusteen epävirallinen lukija.
@@ -85,13 +91,29 @@ Sääkoodeja tulkitaan dokumentaation mukaan:
 https://developer.foreca.com/resources
 Virallinen API ja sen käyttöehdot: https://developer.foreca.com/
 
+Oma sadetutka avautuu muuttamattomana Forecan verkkosivuna:
+https://www.foreca.fi/sadetutka tai tunnistetun paikan kartta-v2-sivu.
+Karttatiiliä, logoa, hallintapainikkeita tai kartta-aineistoa ei kopioida.
+Verkkosivun käyttöehdot: https://www.foreca.fi/kayttoehdot
+
 ## Windy
 
 Virallinen upotettu kartta: https://embed.windy.com/config/map
-Kartta, kuvakkeet, merkinnät ja aineisto latautuvat Windyn palvelusta.
+Virallinen kartaton tuntiennuste: https://embed.windy.com/config/forecast
+Kartta, ennustetaulukko, kuvakkeet, merkinnät ja aineisto latautuvat Windyn palvelusta.
 Kartasta ei poisteta lähdemerkintöjä eikä tehdä omaa karttatiilikopiota.
 Käyttöehdot ja tietosuoja ovat Windyn upotuspalvelun sivulla.
+Point Forecast API ei kuulu tähän toteutukseen. Sen testiavaimen muuttamaa
+aineistoa ei käytetä oikeana sääennusteena eikä muiden palvelujen tietoja
+esitetä Windyn ennusteena.
 Qt WebEngine on riippuvuus; Qt/PyQt-binaareja ei sisällytetä sovelluksen .deb-pakettiin.
+
+## RainViewer
+
+Vaihtoehtoisen sadekartan linkki avaa palvelun oman sivun selaimessa:
+https://www.rainviewer.com/weather-radar-map-live.html
+RainViewerin karttatiiliä tai API-aineistoa ei kopioida tai noudeta sovelluksen
+omaksi kartaksi. Verkkosivun lähdemerkinnät ja käyttöehdot säilyvät.
 
 ## Paikkahaku
 

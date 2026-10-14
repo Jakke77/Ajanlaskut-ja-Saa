@@ -1,5 +1,39 @@
 # Tarkistukset
 
+## Sadekartat ja Windyn tuntiennuste · 14.10.2026 · 1.9.0
+
+- Lopullinen yksikkö- ja Qt-testisarja: 280 testiä läpäisi. Mukana ovat
+  palvelukohtaisen näkymän tallennus, vanhan asetustiedoston oletukset,
+  yhteinen pääikkunan/widgetin valinta, piilotetun näkymän latauksen lykkäys,
+  manuaalinen uudelleenlataus kesken ennustehaun ja kaikkien web-sivujen sulkeminen.
+- Tallennusvirheen jälkeen sekä palvelu että näkymä säilyvät entisinä.
+  Pääikkunan valinta ja widgetin oikean painikkeen toiminto raportoivat virheen
+  kerran ja säilyttävät molemmat näkyvät sääpinnat.
+- `main.py --self-test` läpäisi laajat ulkoasun, kahdeksan widgetin,
+  kalenterin, muistutusten, tallennuksen ja yhden sovellusinstanssin tarkistukset.
+  Lopputarkistukset tehtiin eristetyissä testihakemistoissa, ilman oikean
+  GNOME-istunnon tai käyttäjän merkintöjen muuttamista.
+- Forecan, Ilmatieteen laitoksen ja Windyn viralliset sivuosoitteet vastasivat
+  HTTPS-pyyntöihin. Forecan cache-URL validoidaan ennen kaupungin kartan
+  muodostamista; tuntematon tai muun palvelun URL avaa kansallisen sadetutkan.
+  FMI:n kartta esitetään Suomen yhteisenä karttana ilman keksittyä paikkaparametria.
+- Windyn kartaton tuntiennuste käyttää valitun paikan todellisia koordinaatteja.
+  Sen oma taulukko ja aikajana säilyvät. Yr:n tai muiden palvelujen ennustetta
+  ei esitetä Windyn datana eikä Windyn testirajapintaa käytetä oikeaan ennusteeseen.
+- Todellinen Qt WebEngine avasi uuden yhteisen web-näkymän kautta paikallisen
+  HTML-testisivun vasta näkyviin tulon jälkeen. Näkymällä oli positiiviset mitat,
+  profiili oli yksityinen ja sivu/profiili vapautuivat sulkemisessa.
+  Tämä paikallinen tarkistus ei yksin todista palvelujen verkkokarttatiilien
+  tai WebGL:n toimintaa. TLS-varmenteiden tarkistusta ei ohiteta sovelluksessa.
+- Lisäksi kaikki kolme virallista web-näkymää avattiin todellisessa
+  Qt-selaimessa poisheittokontissa. HTTPS-varmenteet tarkistettiin kontin omassa
+  luottamusympäristössä; isäntäympäristön pysyviä selainvarmenteita ei muutettu.
+  Windyn tuntiennuste näytti oikeat lämpötilat, sademäärät, tuulet ja symbolit.
+  Ennuste käyttää virallisen upotteen 187 pikselin korkeutta; karttaan vaihto
+  palauttaa koko näkymäkorkeuden ja palvelun merkinnät säilyvät.
+  Forecan ja FMI:n sivut, JavaScript, kartan hallinta ja evästevalinnat latautuivat.
+  Sadekarttojen karttagrafiikka jäi tarkistamatta kontin puuttuvan WebGL:n vuoksi.
+
 ## Tietoa sovelluksesta ja kahden asennuksen tunnistaminen · 13.10.2026 · 1.8.2
 
 - 244 testiä läpäistiin. Uudet kolme Qt-testiä avaavat Tietoa sovelluksesta

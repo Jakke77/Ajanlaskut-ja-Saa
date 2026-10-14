@@ -1,6 +1,6 @@
 # Ajanlaskut ja Sää
 
-**Uusin asennuspaketti: [1.8.2 · Tietoa sovelluksesta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).**
+**Uusin asennuspaketti: [1.9.0 · Sadekartat ja Windyn tuntiennuste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -11,6 +11,30 @@ Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, tavallinen kalenteri ja s
 yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
+
+## Sadekartat ja Windyn tuntiennuste · versio 1.9.0
+
+Valitse **Sää → Palvelu** ja sitten **Näkymä**. Foreca ja Ilmatieteen laitos
+tarjoavat ennustegraafin lisäksi oman **Sadekartta**-sivunsa. Windylle voi valita
+**Sääkartan** tai kartattoman **Tuntiennusteen**. Sääwidgetin oikean painikkeen
+valikossa on sama näkymävalinta, ja sovellus muistaa valinnan palvelukohtaisesti.
+Yr säilyttää sovelluksen oman 12/24 tunnin graafin.
+
+Forecan kartta käyttää ennusteesta tunnistettua paikkasivua, kun se on saatavilla;
+muuten avautuu Suomen sadetutka. Ilmatieteen laitoksen sadekartta on Suomen
+yhteinen näkymä. Windyn tuntiennuste käyttää valittuja koordinaatteja ja näyttää
+Windyn oman ennustetaulukon sääsymboleineen. Se ei käytä toisen palvelun tietoja
+Windyn nimellä. Windyn omaan piirrettyyn ennustekäyrään tarvittaisiin erillinen
+lisensoitu API.
+
+Kartat avautuvat palvelujen muuttamattomina verkkosivuina. Niiden omat
+merkinnät, evästevalinnat ja käyttöehdot säilyvät. Näkymässä on myös avaus
+tavalliseen selaimeen ja uudelleenyritys latausvirheen varalta. Verkkonäkymät
+tarvitsevat PyQt6 WebEnginen ja verkkoyhteyden; niiden oma aikajana korvaa
+sovelluksen 12/24 tunnin valinnan.
+
+Erillinen Android-sääsovellus ja sen kotinäyttöwidgetit ovat
+[omassa paketissaan](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/android/v0.1.0).
 
 ## Tietoa sovelluksesta · versio 1.8.2
 
@@ -106,7 +130,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.8.2-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).
+[Lataa uusin 1.9.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -148,7 +172,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.8.2-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).
+[packages/v1.9.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.0).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0
@@ -217,8 +241,9 @@ valitse ensin Kupari/Halla ja aiempi kelloteema, kuten [päivitysohjeessa](UPDAT
   Kuukausi- ja vuosivalinta, päivän merkinnät, muistutukset ja valinnaiset rinnakkaispäiväykset.
 - **Ajanlaskuwidgetit:** yhteinen vaihtuva kello, omat ajanlaskuteemat,
   sisältövalinnat ja tallentamaton esikatselu.
-- **Sää:** Yr/MET Norway, Foreca, Ilmatieteen laitos ja Windyn kartta;
-  12 tai 24 tuntia. Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
+- **Sää:** Yr/MET Norway, Foreca ja Ilmatieteen laitos 12/24 tunnin graafina;
+  Forecan ja Ilmatieteen laitoksen sadekartat sekä Windyn kartta ja tuntiennuste.
+  Paikkahaku ja erikseen luvan pyytävä sijaintihaku.
 - **Työpöytäwidgetit:** kahdeksan erikseen valittavaa näkymää ja omat teemavalinnat.
 - **Taustakuvat:** neljän teeman galleria, oma teema-repo ja omat kuvat; eri taustat
   työpöydälle ja lukitusnäytölle sekä 1–77 minuutin diaesitys.
@@ -434,8 +459,9 @@ jätetään koskemattomiksi ja tuoduista tiedoista tehdään erillinen kopio
 Sovellus ei vaadi käyttäjätiliä tai API-avainta. Säähaku välittää valitun
 paikan koordinaatit sääpalveluille; hakuteksti menee Open-Meteon paikkahakuun.
 Laitteen sijaintia pyydetään vain käyttäjän painaessa sijaintipainiketta ja
-hyväksyessä luvan. Kalenterimerkintöjä ei lähetetä verkkoon. Windy näkyy virallisena
-verkkoupotuksena omassa tallentamattomassa selainprofiilissa.
+hyväksyessä luvan. Kalenterimerkintöjä ei lähetetä verkkoon. Windyn viralliset
+upotukset ja Forecan/Ilmatieteen laitoksen karttasivut avautuvat omissa
+tallentamattomissa selainprofiileissa.
 
 Varjoaika ja Tähtiaika ovat kuvitteellisia rinnakkaiskalentereita. Varjoajan alkupäivä on
 28.9.2026, Tähtiajan 1.7.2026. Kuuvaiheiden nimet ovat symbolisia, eivät

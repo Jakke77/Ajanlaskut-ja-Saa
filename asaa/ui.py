@@ -2,8 +2,8 @@
 import copy
 from datetime import date, datetime, time
 from zoneinfo import available_timezones
-from PyQt6.QtCore import Qt, QTimer, QRectF, QTime
-from PyQt6.QtGui import QPainter, QFont
+from PyQt6.QtCore import Qt, QTimer, QRectF, QTime, QUrl
+from PyQt6.QtGui import QPainter, QFont, QDesktopServices
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QFrame, QLabel, QPushButton, QToolButton,
     QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QScrollArea, QComboBox,
     QSpinBox, QFontComboBox, QCheckBox, QFormLayout, QTextEdit, QDialog, QDialogButtonBox,
@@ -18,7 +18,7 @@ from .widgets import WIDGET_LABELS
 from .widget_themes import widget_theme, widget_theme_choices, widget_theme_selection
 from .color_control import ColorControl
 from .weather.providers import NAMES as SOURCES, slots, aligned, common_scales
-from .weather.windy_view import WindyView
+from .weather.windy_view import WindyView, WeatherWebView
 
 def label(value, name=None, wrap=False):
     item = QLabel(value)
@@ -288,42 +288,87 @@ class CalendarPage(QWidget):
 
 class WeatherPage(QWidget):
     def __init__(self,controller):
-        super().__init__();self.controller=controller;self.windy=None
+        super().__init__();self.controller=controller;self.windy=None;self.weather_web=None
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(12)
         layout.addWidget(label('ENNUSTE JA SÄÄKARTTA','eyebrow'))
         self.title=label('Sää','heading');layout.addWidget(self.title)
         top=QHBoxLayout();self.provider=QComboBox()
         for key,value in SOURCES.items():self.provider.addItem(value,key)
-        self.provider.addItem('WINDY · KARTTA','windy');top.addWidget(self.provider)
+        self.provider.addItem('WINDY','windy');self.provider.setAccessibleName('Sääpalvelu');top.addWidget(self.provider)
+        top.addWidget(label('Näkymä'))
+        self.view=QComboBox();self.view.setAccessibleName('Sään näkymä');top.addWidget(self.view)
         self.count=QComboBox();self.count.addItem('24 tuntia',24);self.count.addItem('12 tuntia',12);top.addWidget(self.count)
         top.addStretch(1)
         top.addWidget(button('Hae paikka',controller.weather.open_place));top.addWidget(button('◎ Sijainti',controller.weather.locate));top.addWidget(button('Päivitä',controller.weather.refresh))
         layout.addLayout(top)
+        extras=QHBoxLayout();extras.addStretch(1)
+        extras.addWidget(button('Muita sadekarttoja · RainViewer ↗',lambda:QDesktopServices.openUrl(QUrl('https://www.rainviewer.com/weather-radar-map-live.html'))))
+        layout.addLayout(extras)
         self.stack=QStackedWidget();self.forecast=ForecastView(controller,24);self.stack.addWidget(self.forecast);layout.addWidget(self.stack,1)
         self.summary=label('','muted',True);layout.addWidget(self.summary)
         self.provider.currentIndexChanged.connect(self.select_provider)
+        self.view.currentIndexChanged.connect(self.select_view)
         self.count.currentIndexChanged.connect(self.change_count)
         controller.weather.changed.connect(self.sync);controller.daily.changed.connect(self.sync)
-        controller.weather.windy_reload_requested.connect(self.reload_windy)
+        controller.weather.web_reload_requested.connect(self.reload_web)
         self.sync()
-    def select_provider(self):self.controller.weather.select_provider(self.provider.currentData());self.sync()
+    def select_provider(self):
+        try:self.controller.weather.select_provider(self.provider.currentData())
+        except (OSError,ValueError) as error:self.controller.storage_error(error)
+        self.sync()
+    def select_view(self):
+        if self.view.currentData() is not None:
+            try:self.controller.weather.set_view_mode(self.view.currentData())
+            except (OSError,ValueError) as error:self.controller.storage_error(error)
+            self.sync()
     def change_count(self):self.forecast.count=self.count.currentData();self.forecast.update()
     def sync(self):
         owner=self.controller.weather
         self.title.setText(owner.place.name)
         self.provider.blockSignals(True);self.provider.setCurrentIndex(self.provider.findData(owner.selected));self.provider.blockSignals(False)
-        if owner.selected=='windy' and self.isVisible():
-            self.show_windy()
+        self.view.blockSignals(True);self.view.clear()
+        for mode in owner.available_view_modes:
+            title=('Tuntiennuste' if owner.selected=='windy' else 'Ennustegraafi') if mode=='graph' else ('Sääkartta' if owner.selected=='windy' else 'Sadekartta')
+            self.view.addItem(title,mode)
+        self.view.setCurrentIndex(self.view.findData(owner.view_mode));self.view.setEnabled(self.view.count()>1);self.view.blockSignals(False)
+        self.count.setEnabled(not owner.uses_web_view)
+        if owner.uses_web_view and self.isVisible():
+            self.show_web()
         else:self.stack.setCurrentWidget(self.forecast)
-        self.summary.setText('Varjosää · wttr.in\n'+'\n'.join(self.controller.daily.lines())+'\n\nHaetaan '+str(self.controller.options['refresh_minutes'])+' minuutin välein. Lämpö on ennuste; sade on tunnin kertymä.')
+        if owner.uses_web_view:
+            if owner.selected=='fmi':
+                detail='Ilmatieteen laitoksen oma Suomen sadekartta · havainnot ja sade-ennuste. Kartan alue valitaan kartan omilla säätimillä.'
+            elif owner.selected=='foreca':
+                detail='Forecan oma sadetutka ja sade-ennuste. Kartan paikkaa ja aikaa voi vaihtaa palvelun omilla säätimillä.'
+            elif owner.view_mode=='graph':
+                detail='Windyn oma tuntiennuste · lämpötila, tuuli, sääsymbolit ja sade. Tuntien määrä valitaan Windyn näkymässä.'
+            else:
+                detail='Windyn oma sääkartta · kartan kerrosta ja aikaa voi vaihtaa kartan säätimillä.'
+            self.summary.setText(detail+'\nJos näkymä ei lataudu, käytä sen Avaa selaimessa -painiketta.')
+        else:
+            self.summary.setText('Varjosää · wttr.in\n'+'\n'.join(self.controller.daily.lines())+'\n\nHaetaan '+str(self.controller.options['refresh_minutes'])+' minuutin välein. Lämpö on ennuste; sade on tunnin kertymä.')
     def show_windy(self,*,force=False):
         owner=self.controller.weather
-        if owner.selected!='windy' or not self.isVisible():return
+        if owner.selected!='windy' or owner.view_mode!='map' or not self.isVisible():return
         if self.windy is None:
             self.windy=WindyView(network=owner.network_enabled);self.stack.addWidget(self.windy)
         self.stack.setCurrentWidget(self.windy)
         self.windy.load(owner.place,owner.options['windy_zoom'],owner.options['windy_layer'],force=force)
+    def show_web(self,*,force=False):
+        owner=self.controller.weather
+        if not owner.uses_web_view or not self.isVisible():return
+        if owner.selected=='windy' and owner.view_mode=='map':
+            self.show_windy(force=force);return
+        if self.weather_web is None:
+            self.weather_web=WeatherWebView(network=owner.network_enabled);self.stack.addWidget(self.weather_web)
+        self.stack.setCurrentWidget(self.weather_web)
+        self.weather_web.load_source(owner.selected,owner.view_mode,owner.place,
+            owner.options['windy_zoom'],owner.options['windy_layer'],owner.foreca_source_url,force=force)
+    def reload_web(self):self.show_web(force=True)
     def reload_windy(self):self.show_windy(force=True)
+    def stop_web_views(self):
+        for view in (self.windy,self.weather_web):
+            if view is not None:view.stop()
     def showEvent(self,event):super().showEvent(event);self.sync()
 
 class WidgetsPage(QWidget):

@@ -1,8 +1,8 @@
-"""Windy's official live embed, retaining controls, attribution and map colours."""
-from urllib.parse import urlencode
-from PyQt6.QtCore import QTimer,QUrl
+"""Official weather pages, retaining provider controls, branding and colours."""
+from PyQt6.QtCore import QTimer,QUrl,Qt
 from PyQt6.QtGui import QColor,QDesktopServices
 from PyQt6.QtWidgets import QWidget,QVBoxLayout,QLabel,QPushButton
+from .web_sources import map_url, source_url
 
 try:
     from PyQt6.QtWebEngineCore import QWebEnginePage,QWebEngineProfile,QWebEngineSettings
@@ -11,17 +11,21 @@ except ImportError:
     QWebEngineView = None
 
 
-def map_url(place, zoom=9, layer='temp'):
-    # Default view includes Hailuoto west of Oulu, matching the user's sample.
-    lat,lon = (65.03,25.40) if place.key=='65.0701,25.5071' else (place.latitude,place.longitude)
-    return 'https://embed.windy.com/embed.html?' + urlencode(dict(type='map',location='coordinates',
-        lat=lat,lon=lon,zoom=zoom,overlay=layer,level='surface',product='ecmwf',
-        metricTemp='°C',metricWind='m/s',metricRain='mm',marker='false'))
+_SOURCE_LABELS = {
+    ('windy','map'): ('Windy','kartta','Windyn karttaa','Windyn kartta','Windyn sääkartta'),
+    ('windy','graph'): ('Windy','tuntiennuste','Windyn tuntiennustetta','Windyn tuntiennuste','Windyn tuntiennuste'),
+    ('foreca','map'): ('Foreca','sadekartta','Forecan sadekarttaa','Forecan sadekartta','Forecan sadekartta'),
+    ('fmi','map'): ('Ilmatieteen laitos','sadekartta','Ilmatieteen laitoksen sadekarttaa',
+                    'Ilmatieteen laitoksen sadekartta','Ilmatieteen laitoksen sadekartta'),
+}
 
 
 class WindyView(QWidget):
     def __init__(self,parent=None,*,network=True):
         super().__init__(parent)
+        self._source = ('windy','map')
+        self._network = network
+        self._loading_label = ''
         self.url = ''
         self.view = None
         self._loaded_url = ''
@@ -47,7 +51,6 @@ class WindyView(QWidget):
             settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls,False)
             settings.setAttribute(QWebEngineSettings.WebAttribute.FullScreenSupportEnabled,False)
             self.view.setContextMenuPolicy(__import__('PyQt6.QtCore',fromlist=['Qt']).Qt.ContextMenuPolicy.NoContextMenu)
-            self.view.setAccessibleName('Windyn sääkartta')
             layout.addWidget(self.view)
             self.status = QLabel('Ladataan Windyn karttaa…')
             self.status.setStyleSheet('color:#dcc2b0;background:#171720;padding:6px;')
@@ -55,11 +58,10 @@ class WindyView(QWidget):
             self.view.loadStarted.connect(self.loading_started)
             self.view.loadFinished.connect(self.loaded)
         else:
-            label=QLabel('Windy-kartta tarvitsee Qt WebEngine -lisäosan.\n'
-                'Asenna sovelluksen .deb-paketti tai requirements.txt:n riippuvuudet.\n'
-                'Voit avata saman rajauksen selaimeen alla olevasta painikkeesta.' if network else 'Windy · kartta (verkkohaku pois testissä)')
-            label.setWordWrap(True); label.setStyleSheet('color:#e7c8b3;padding:24px;')
-            layout.addWidget(label)
+            self.fallback_label=QLabel()
+            self.fallback_label.setWordWrap(True)
+            self.fallback_label.setStyleSheet('color:#e7c8b3;padding:24px;')
+            layout.addWidget(self.fallback_label)
         self.retry_button = QPushButton('Yritä uudelleen')
         self.retry_button.clicked.connect(self.retry)
         self.retry_button.hide()
@@ -69,11 +71,30 @@ class WindyView(QWidget):
         self.browser_button.clicked.connect(self.open_browser)
         self.browser_button.setEnabled(False)
         layout.addWidget(self.browser_button)
+        self._update_source_labels()
+
+    def _update_source_labels(self):
+        brand, kind, loading, title, accessible = _SOURCE_LABELS[self._source]
+        self.browser_button.setText(f'Avaa {brand} selaimessa')
+        if self.view:
+            self.view.setAccessibleName(accessible)
+            if self._loading_url or not self._failed_url:
+                self.status.setText(f'Ladataan {loading}…')
+        else:
+            self.fallback_label.setText(
+                f'{title} tarvitsee Qt WebEngine -lisäosan.\n'
+                'Asenna sovelluksen .deb-paketti tai requirements.txt:n riippuvuudet.\n'
+                'Voit avata saman näkymän selaimeen alla olevasta painikkeesta.'
+                if self._network else f'{brand} · {kind} (verkkohaku pois testissä)')
 
     def load(self,place,zoom,layer,*,force=False):
         if self._stopped:
             return
-        url=map_url(place,zoom,layer)
+        self._source = ('windy','map')
+        self._update_source_labels()
+        self._load_url(map_url(place,zoom,layer),force=force)
+
+    def _load_url(self,url,*,force=False):
         self.url=url
         self.browser_button.setEnabled(True)
         self._force_pending = self._force_pending or force
@@ -98,6 +119,7 @@ class WindyView(QWidget):
         self._loading_url = self.url
         self._loaded_url = ''
         self._failed_url = ''
+        self._loading_label = _SOURCE_LABELS[self._source][3]
         self.loading_started()
         self.view.load(QUrl(self.url))
 
@@ -107,7 +129,7 @@ class WindyView(QWidget):
         if not self._loading_url:
             self._loading_url = self.url
             self._loaded_url = ''
-        self.status.setText('Ladataan Windyn karttaa…')
+        self.status.setText(f'Ladataan {_SOURCE_LABELS[self._source][2]}…')
         self.status.show()
         self.retry_button.hide()
 
@@ -121,7 +143,8 @@ class WindyView(QWidget):
         self.status.setVisible(not ok)
         self.retry_button.setVisible(not ok)
         if not ok:
-            self.status.setText('Windyn kartta ei latautunut. Tarkista yhteys, yritä uudelleen tai avaa selaimessa.')
+            title = self._loading_label or _SOURCE_LABELS[self._source][3]
+            self.status.setText(f'{title} ei latautunut. Tarkista yhteys, yritä uudelleen tai avaa selaimessa.')
         # One navigation at a time keeps loadFinished tied to its requested URL.
         # Changes made during loading use the latest place and layer afterwards.
         self._schedule_load()
@@ -163,3 +186,24 @@ class WindyView(QWidget):
             sip.delete(self.page)
             sip.delete(self.profile)
             self.view = None
+
+
+class WeatherWebView(WindyView):
+    """Shared map browser and Windy's own map-free hourly forecast embed."""
+
+    def _update_source_labels(self):
+        super()._update_source_labels()
+        forecast = self._source == ('windy','graph')
+        if self.view:
+            # Match Windy's own 187 px forecast iframe. A tall viewport also
+            # exposes its unused map background beneath the forecast strip.
+            self.view.setMaximumHeight(187 if forecast else 16777215)
+        self.layout().setAlignment(Qt.AlignmentFlag.AlignTop if forecast else Qt.AlignmentFlag(0))
+
+    def load_source(self,provider,mode,place,zoom=9,layer='temp',foreca_url='',*,force=False):
+        if self._stopped:
+            return
+        url = source_url(provider,mode,place,zoom,layer,foreca_url)
+        self._source = (provider,mode)
+        self._update_source_labels()
+        self._load_url(url,force=force)
