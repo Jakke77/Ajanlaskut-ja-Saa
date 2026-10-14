@@ -16,7 +16,7 @@ from PyQt6.QtWidgets import (QApplication, QCheckBox, QDialog, QDialogButtonBox,
 from .forecast import Forecast, ForecastCache, LOCATION, TZ, UTC
 from .providers import (PROVIDERS, NAMES, Place, read_place, provider_caches, slots, aligned, common_scales)
 from zoneinfo import ZoneInfo
-from .windy_view import WindyView
+from .windy_view import WindyView, WeatherWebView
 import json
 
 WIDTH, HEIGHT = 720, 460
@@ -172,6 +172,7 @@ class WeatherWidget(QWidget):
         self.forecast = self.forecasts.get(self.selected)
         self.network_enabled = network
         self.windy = None
+        self.weather_web = None
         self.expanded = None
         self.pending_refresh = False
         self.portal = None
@@ -208,7 +209,70 @@ class WeatherWidget(QWidget):
             self.timer.start(60_000)
             QTimer.singleShot(0, self.refresh)
         self.update_accessibility()
-        if self.selected == "windy" and not integrated: self.load_windy()
+        if self.uses_web_view and not integrated: self.load_web_view()
+
+    @property
+    def available_view_modes(self):
+        return ('graph',) if self.selected == 'yr' else ('graph', 'map')
+
+    @property
+    def view_mode(self):
+        modes = self.settings.value('weather_views', {})
+        default = 'map' if self.selected == 'windy' else 'graph'
+        mode = modes.get(self.selected, default) if isinstance(modes, dict) else default
+        return mode if mode in self.available_view_modes else default
+
+    @property
+    def uses_web_view(self):
+        return self.view_mode == 'map' or self.selected == 'windy'
+
+    @property
+    def web_view(self):
+        if not self.uses_web_view:
+            return None
+        return self.windy if self.selected == 'windy' and self.view_mode == 'map' else self.weather_web
+
+    @property
+    def foreca_source_url(self):
+        return self.caches['foreca'].read().get('source_url', '')
+
+    def set_view_mode(self, mode):
+        if mode not in self.available_view_modes:
+            raise ValueError('Tämä sääpalvelu ei tue valittua näkymää.')
+        if mode == self.view_mode:
+            return False
+        saved = self.settings.value('weather_views', {})
+        modes = {key: ('map' if key == 'windy' else 'graph') for key in (*PROVIDERS, 'windy')}
+        if isinstance(saved, dict):
+            modes.update(saved)
+        modes[self.selected] = mode
+        self.settings.setValue('weather_views', modes)
+        self.settings.sync()
+        self.sync_web_view()
+        self.update_accessibility(); self.update(); self.changed.emit()
+        if self.tray:
+            self.tray.setContextMenu(self.make_menu())
+        return True
+
+    def add_view_actions(self, menu):
+        for mode in self.available_view_modes:
+            title = ('Tuntiennuste' if self.selected == 'windy' else 'Ennustegraafi') if mode == 'graph' else 'Sääkartta' if self.selected == 'windy' else 'Sadetutka'
+            action = menu.addAction(title)
+            action.setCheckable(True)
+            action.setChecked(mode == self.view_mode)
+            action.triggered.connect(lambda checked, value=mode: self.set_view_mode(value))
+
+    def sync_web_view(self):
+        for view in (self.windy, self.weather_web):
+            if view and view is not self.web_view:
+                view.hide()
+        if self.uses_web_view:
+            self.load_web_view()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if hasattr(self, 'options') and self.uses_web_view:
+            self.load_web_view()
 
     def apply_options(self, options):
         visible, position = self.isVisible(), self.pos()
@@ -283,8 +347,10 @@ class WeatherWidget(QWidget):
         self.refresh(automatic=True)
 
     def refresh(self, automatic=False):
-        if self.selected == "windy" and not automatic and not self.stopping:
-            self.load_windy(force=True)
+        if not self.network_enabled or self.stopping:
+            return
+        if self.uses_web_view and not automatic:
+            self.load_web_view(force=True)
         if self.stopping or (self.worker and self.worker.isRunning()):
             return
         self.worker = FetchThread(self.caches, self.place.key, self.selected if self.selected in PROVIDERS else "yr", self)
@@ -320,7 +386,9 @@ class WeatherWidget(QWidget):
             x,y,w,h=rect
             if self.integrated and x>400:x+=width-WIDTH
             button.setGeometry(*(round(v*scale) for v in (x,y,w,h)))
-        if self.windy and self.windy.parentWidget() is self:self.windy.setGeometry(round(36*scale),round(92*scale),round((width-72)*scale),round((height-145)*scale))
+        for view in (self.windy, self.weather_web):
+            if view and view.parentWidget() is self:
+                view.setGeometry(round(36*scale),round(92*scale),round((width-72)*scale),round((height-145)*scale))
 
     def resizeEvent(self,event):
         if hasattr(self,'options'):self.layout_controls()
@@ -332,16 +400,33 @@ class WeatherWidget(QWidget):
 
     def select_provider(self, key):
         if key not in (*PROVIDERS,'windy'): return
-        self.selected = key
         self.settings.setValue('provider',key)
+        self.selected = key
         self.cache = self.caches.get(key,self.caches['yr'])
         self.forecast = self.forecasts.get(key)
         self.error = self.errors.get(key,'')
-        if key == 'windy': self.load_windy()
-        elif self.windy: self.windy.hide()
+        self.sync_web_view()
         self.update_accessibility(); self.update(); self.changed.emit()
 
+    def load_web_view(self, *, force=False):
+        if self.stopping or not self.uses_web_view:
+            return
+        if self.selected == 'windy' and self.view_mode == 'map':
+            self.load_windy(force=force)
+            return
+        if self.weather_web is None:
+            self.weather_web = WeatherWebView(self, network=self.network_enabled)
+        self.layout_controls()
+        self.weather_web.load_source(self.selected, self.view_mode, self.place,
+            self.options['windy_zoom'], self.options['windy_layer'], self.foreca_source_url, force=force)
+        if self.expanded and self.expanded.isVisible():
+            self.expanded.sync()
+        else:
+            self.weather_web.show()
+
     def load_windy(self, *, force=False):
+        if self.stopping or self.selected != 'windy' or self.view_mode != 'map':
+            return
         if not self.windy:
             self.windy = WindyView(self,network=self.network_enabled)
         self.layout_controls()
@@ -366,6 +451,8 @@ class WeatherWidget(QWidget):
         self.scales = common_scales(self.forecasts.values(),self.times)
         if key == self.selected:
             self.forecast, self.error = forecast, error
+            if self.selected == 'foreca' and self.view_mode == 'map':
+                self.load_web_view()
         self.update_accessibility(); self.update(); self.changed.emit()
 
     def received(self, forecast):
@@ -383,7 +470,7 @@ class WeatherWidget(QWidget):
         self.errors = {}
         self.cache = self.caches.get(self.selected,self.caches["yr"])
         self.forecast, self.error = self.forecasts.get(self.selected), ''
-        if self.selected=='windy': self.load_windy()
+        if self.uses_web_view: self.load_web_view()
         self.times = slots()
         self.scales = common_scales(self.forecasts.values(),self.times)
         self.update_accessibility(); self.update(); self.changed.emit()
@@ -424,12 +511,14 @@ class WeatherWidget(QWidget):
         QMessageBox.information(self,'Sijaintihaku',message)
 
     def update_accessibility(self):
-        text = self.place.name + '. ' + NAMES.get(self.selected,'WINDY · kartta') + '. '
-        if self.forecast:
+        text = self.place.name + '. ' + NAMES.get(self.selected,'WINDY') + '. '
+        if self.uses_web_view:
+            text += 'Tuntiennuste.' if self.view_mode == 'graph' else 'Sääkartta.' if self.selected == 'windy' else 'Sadetutka.'
+        elif self.forecast:
             text += '; '.join(f'Klo {h.time.astimezone(ZoneInfo(self.place.timezone)):%H}: '
                 f'{h.temperature:.1f} °C, sade {h.rain if h.rain is not None else "ei tietoa"} mm, tuuli {h.wind:.1f} m/s'
                 for h in self.forecast.hours[:12])
-        else: text += 'Sääkartta.' if self.selected=='windy' else self.error or 'Haetaan ennustetta.'
+        else: text += self.error or 'Haetaan ennustetta.'
         self.setAccessibleName(text)
 
     def paintEvent(self, event):
@@ -488,18 +577,28 @@ class WeatherWidget(QWidget):
         draw_text(p,title,36,38,20,accent,True,max_width=width-72 if expanded else getattr(self,'header_title_width',466)+width-WIDTH)
         zone = getattr(self, 'display_zone', ZoneInfo(self.place.timezone))
         first, last = times[0].astimezone(zone),times[-1].astimezone(zone)
-        subtitle = 'Ennusteaika valitaan kartan aikajanalta' if self.selected=='windy' else f'{first:%d.%m. %H} – {last:%d.%m. %H} · {len(times)} tuntia · {zone.key}'
+        if self.uses_web_view:
+            subtitle = ('Tuntiennuste ja ennusteaika palvelun omalla aikajanalla' if self.view_mode == 'graph'
+                else 'Ennusteaika valitaan kartan aikajanalta' if self.selected == 'windy'
+                else 'Sateen havainnot ja animaatio palvelun omassa sadetutkassa')
+        else:
+            subtitle = f'{first:%d.%m. %H} – {last:%d.%m. %H} · {len(times)} tuntia · {zone.key}'
         draw_text(p,subtitle,36,58,10,muted or '#b6b0bd',max_width=width-72)
-        draw_text(p,NAMES.get(self.selected,'WINDY · KARTTA'),36,83,11,accent,True)
+        source_name = NAMES.get(self.selected, 'WINDY')
+        if self.uses_web_view:
+            source_name += ' · ' + ('TUNTIENNUSTE' if self.view_mode == 'graph' else 'KARTTA' if self.selected == 'windy' else 'SADETUTKA')
+        draw_text(p,source_name,36,83,11,accent,True)
         for i,key in enumerate((*PROVIDERS,'windy')):
             p.setPen(Qt.PenStyle.NoPen)
             p.setBrush(QColor(accent if key==self.selected else palette.border if palette else '#66545c'))
             p.drawEllipse(QPointF(width-87+i*14,78),3,3)
-        if self.selected=='windy':
+        if self.uses_web_view:
             if self.expanded and self.expanded.isVisible():
-                draw_text(p,'Kartta on avoinna isossa ikkunassa',width/2-135,230,16,text if palette else '#f7ccb3')
-            draw_text(p,'Lämpötila · tuulihiukkaset' if self.options['windy_layer']=='temp' else 'Windyn sääkartta',36,height-33,10,muted or '#d8b5a2')
-            draw_text(p,'Windy.com · kartalla oma ennusteaika ja väriskaala',36,height-16,9,muted or '#ad98a6')
+                draw_text(p,'Näkymä on avoinna isossa ikkunassa',width/2-135,230,16,text if palette else '#f7ccb3')
+            elif expanded:
+                draw_text(p,'Avaa '+('tuntiennuste' if self.view_mode == 'graph' else 'kartta')+' sääsivulta',64,164,18,text)
+            detail = 'Windy.com · tuntiennuste valitulle paikalle' if self.view_mode == 'graph' else ('Windy.com · kartalla oma ennusteaika ja väriskaala' if self.selected == 'windy' else source_name.split(' · ')[0]+' · palvelun oma sadetutka ja aikajana')
+            draw_text(p,detail,36,height-16,9,muted or '#ad98a6')
             return
         hours = aligned(self.forecast,times)
         xs = [64+i*(width-136)/(len(times)-1) for i in range(len(times))]
@@ -588,7 +687,9 @@ class WeatherWidget(QWidget):
             self.move(event.globalPosition().toPoint() - self.drag_offset)
         scale=min(self.width()/WIDTH,self.height()/HEIGHT)
         x=event.position().x()/scale;virtual_width=self.width()/scale
-        if self.forecast:
+        if self.uses_web_view:
+            self.setToolTip('')
+        elif self.forecast:
             i=round((x-64)/((virtual_width-136)/(len(self.times)-1)))
             hours = aligned(self.forecast,self.times)
             if 0 <= i < 12 and hours[i]:
@@ -627,6 +728,7 @@ class WeatherWidget(QWidget):
         menu.addAction("Hae paikka…", self.open_place)
         menu.addAction("Käytä laitteen sijaintia…", self.locate)
         menu.addAction("Seuraava sääpalvelu", lambda: self.switch_provider(1))
+        self.add_view_actions(menu)
         menu.addAction("Asetukset…", self.open_settings)
         for key, label in (("locked", "Lukitse sijainti"), ("on_top", "Pidä päällimmäisenä")):
             action = menu.addAction(label)
@@ -638,6 +740,8 @@ class WeatherWidget(QWidget):
                  'foreca':self.caches['foreca'].read().get('source_url','https://www.foreca.fi/'),
                  'fmi':f'https://www.ilmatieteenlaitos.fi/saa?coordinate={self.place.latitude},{self.place.longitude}',
                  'windy':self.windy.url if self.windy else 'https://www.windy.com/'}
+        if self.web_view and self.web_view.url:
+            links[self.selected] = self.web_view.url
         menu.addAction('Avaa sääpalvelun sivu',lambda: QDesktopServices.openUrl(QUrl(links[self.selected])))
         menu.addAction("Säätiedot ja lisenssi…", self.show_attribution)
         menu.addSeparator()
@@ -655,7 +759,8 @@ class WeatherWidget(QWidget):
             'Ilmatieteen laitos: avoin data · <a href="https://www.ilmatieteenlaitos.fi/avoin-data">fmi.fi</a><br>'
             'Foreca: julkisen Foreca.fi-sivun tuntiennuste; epävirallinen sovitin.<br>'
             'Forecan data ei kuulu tämän ohjelman MIT-lisenssiin.<br>'
-            'Paikkahaku: Open-Meteo / GeoNames. Windy: virallinen karttaupotus.<br><br>'
+            'Paikkahaku: Open-Meteo / GeoNames. Windy: viralliset kartta- ja tuntiennusteupotukset.<br>'
+            'Forecan ja Ilmatieteen laitoksen sadetutkat ovat palvelujen omia sivuja; niiden tiedot ja käyttöehdot säilyvät.<br><br>'
             'Käyrät käyttävät samoja asteikkoja: widgetissä 12 tuntia, isossa ikkunassa 24 tuntia.<br>'
             'Sademäärä on alkavan tunnin kertymä; puuttuva arvo näkyy aukkona.<br>'
             'Lämpötilat ovat ennusteita, eivät sääaseman havaintoja.<br>'
@@ -673,6 +778,7 @@ class WeatherWidget(QWidget):
         if self.portal: self.portal.stop()
         if self.expanded: self.expanded.close()
         if self.windy: self.windy.stop()
+        if self.weather_web: self.weather_web.stop()
         self.save_position()
         if self.tray:
             self.tray.hide()

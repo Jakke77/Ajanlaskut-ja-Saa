@@ -96,7 +96,7 @@ class Controller(QObject):
                 item.show()
                 if key=='weather':
                     item.ensure_on_screen()
-                    if item.selected=='windy':item.load_windy()
+                    if item.uses_web_view:item.load_web_view()
                 else:item.clamp()
                 self.layers.sync()
             else:item.hide()
@@ -295,7 +295,7 @@ class Controller(QObject):
         self.stopping=True;self.layers.shutdown();self.tick_timer.stop();self.daily.shutdown()
         self.weather.shutdown()
         page=self.window.page_widgets['weather']
-        if page.windy:page.windy.stop()
+        page.stop_web_views()
         if self.tray:self.tray.hide()
         if self.server:self.server.close()
 

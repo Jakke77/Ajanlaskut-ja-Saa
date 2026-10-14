@@ -46,19 +46,19 @@ varmuuskopiolla tätä varten.
 
 ## Valmiin deb-paketin asentaminen
 
-Lataa [ajanlaskut-ja-saa_1.8.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.2/ajanlaskut-ja-saa_1.8.2_all.deb)
+Lataa [ajanlaskut-ja-saa_1.9.1_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.9.1/ajanlaskut-ja-saa_1.9.1_all.deb)
 ja halutessasi tarkista sen SHA256SUMS samasta
-[packages/v1.8.2-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.8.2).
+[packages/v1.9.1-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Avaa pääte latauskansioon:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.8.2_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.9.1_all.deb
 ```
 
 Tämä päivittää **järjestelmäasennuksen**, joka käynnistyy komennolla
 `/usr/bin/ajanlaskut-ja-saa`. Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta,
 päivitä myös se alla olevalla [deb-asennuksen käyttöönottoketjulla](#komennon-käyttöönotto-deb-asennuksesta).
-Ketju rakentaa nyt 1.8.2-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
+Ketju rakentaa nyt 1.9.1-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
 Sen jälkeen käytä `codex-ajanlasku run` -komentoa. Asennukset käyttävät samaa
 asetustiedostoa, joten merkintöjä ei tarvitse siirtää.
 
@@ -73,8 +73,12 @@ aja myös alla oleva käyttöönottoketju, jos käynnistät sen kautta.
 Sulje vanha ohjelma **Lopeta sovellus** -komennolla ja käynnistä sen jälkeen
 uusi. Myös zipistä ajettu `python3 main.py` voi ohjata käynnistyksen jo avoinna
 olevaan vanhaan ohjelmaan, koska molemmat käyttävät samaa asetustiedostoa.
-Uuden ohjelman otsikossa lukee **Ajanlaskut ja Sää 1.8.2**.
+Uuden ohjelman otsikossa lukee **Ajanlaskut ja Sää 1.9.1**.
 Kuvaketoiminnot ovat **Asetukset → vieritä alas → Sovelluskuvakkeet**.
+
+**Sadekarttojen koko:** versio 1.9.1 avaa Forecan ja Ilmatieteen laitoksen kartat sisältöalueen kokoisina. Sivuston otsikot ja sivuvalikot eivät enää vie kartan tilaa. Kartan omat säätimet ja lähdemerkinnät säilyvät.
+
+**Sadekartat ja tuntiennuste:** versiosta 1.9.0 lähtien valitse **Sää → Palvelu → Näkymä**. Forecalla ja Ilmatieteen laitoksella on oma sadekartta; Windyllä voi valita kartan tai kartattoman tuntiennusteen. Sama valinta on sääwidgetin oikean painikkeen valikossa.
 
 **Windy-kartta:** versio 1.8.1 korjaa kartan näkyviin tullessa tapahtuvan latauksen ja uudelleenyrityksen. Päivitä myös pääikkunan kartta **Sää → Päivitä** -painikkeella tai kartan **Yritä uudelleen** -painikkeella.
 
@@ -100,7 +104,7 @@ Jos palaat versioon 1.4.0 tai aiempaan, valitse Kupari tai Halla.
 Jos `/usr/bin/ajanlaskut-ja-saa --version` näyttää esimerkiksi **1.8.1** mutta
 `codex-ajanlasku run --version` näyttää **1.6.0**, deb on päivittänyt vain
 järjestelmäasennuksen. Ubuntu 26.10 Dark puuttuu vanhasta käyttäjäasennuksesta.
-Versio 1.8.2 lisää **Ohje → Tietoa sovelluksesta** -toiminnon, josta näet
+Versiosta 1.8.2 lähtien on **Ohje → Tietoa sovelluksesta** -toiminnon, josta näet
 käynnissä olevan ohjelman version ja asennuskansion.
 
 Saat jo asennetun järjestelmäversion näkyviin näin:
@@ -139,7 +143,7 @@ Kalenterimerkinnät säilyvät; älä poista asetuskansiota.
 
 GitHubiin yhdistetty muutos tulee koneelle, kun uusi lähdepaketti julkaistaan
 omaan päivityskansioon. Lataa nimenomaan
-[1.8.2-lähdepaketti](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.8.2/Ajanlaskut-ja-Saa-1.8.2-lahdekoodi.zip)
+[1.9.1-lähdepaketti](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.9.1/Ajanlaskut-ja-Saa-1.9.1-lahdekoodi.zip)
 GitHubiin kirjautuneena. Repon oletushaaran ZIP sisältää julkaistuja asennuspaketteja;
 se ei ole sama tiedosto kuin lähdepaketti. Avaa pääte latauskansioon ja suorita:
 
@@ -148,7 +152,7 @@ se ei ole sama tiedosto kuin lähdepaketti. Avaa pääte latauskansioon ja suori
   umask 022
   ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
   ajanlasku_lahde="$(mktemp -d)" &&
-  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-1.8.2-lahdekoodi.zip "$ajanlasku_lahde" &&
+  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-1.9.1-lahdekoodi.zip "$ajanlasku_lahde" &&
   /usr/bin/python3 "$ajanlasku_lahde/Ajanlaskut-ja-Saa/packaging/build.py" \
     --publish-channel "$ajanlasku_kanava" &&
   "$HOME/.local/bin/codex-ajanlasku" update &&

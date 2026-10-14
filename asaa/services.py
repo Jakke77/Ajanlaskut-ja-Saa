@@ -38,6 +38,7 @@ class SettingsBridge:
 class SharedWeather(WeatherWidget):
     """Original weather graph hosted by the new application's controller."""
     windy_reload_requested = pyqtSignal()
+    web_reload_requested = pyqtSignal()
 
     def __init__(self, controller, network=True):
         self.controller = controller
@@ -64,6 +65,7 @@ class SharedWeather(WeatherWidget):
         self.apply_options({**self.options, **{k: options[k] for k in ('scale', 'opacity', 'locked', 'on_top', 'font', 'widget_text_scale', 'widget_clock_scale', 'windy_zoom', 'windy_layer')}, 'theme': 'ubuntu'})
         self.apply_widget_theme()
         self.setAccessibleName('Sääwidget · ' + self.place.name)
+        self.sync_web_view()
 
     def apply_widget_theme(self):
         """Repaint the chosen palette without reconfiguring forecast or windows."""
@@ -98,12 +100,14 @@ class SharedWeather(WeatherWidget):
         if not self.network_enabled or self.stopping: return
         # Both visible maps can recover while the separate forecast fetch is
         # still running. A timer tick must not repeatedly replace a live map.
-        if self.selected == 'windy' and not automatic:
-            self.windy_reload_requested.emit()
-            self.load_windy(force=True)
+        if self.uses_web_view and not automatic:
+            self.web_reload_requested.emit()
+            if self.selected == 'windy' and self.view_mode == 'map':
+                self.windy_reload_requested.emit()
+            self.load_web_view(force=True)
         if self.worker and self.worker.isRunning(): return
         self._last_fetch = datetime.now(UTC)
-        super().refresh(automatic or self.selected == 'windy')
+        super().refresh(automatic or self.uses_web_view)
 
     def open_expanded(self): self.controller.open_page('weather')
     def open_settings(self): self.controller.open_page('settings')
@@ -112,6 +116,7 @@ class SharedWeather(WeatherWidget):
         menu = QMenu(self)
         menu.addAction('Avaa sää sovelluksessa', self.open_expanded)
         menu.addAction('Vaihda sääpalvelua', lambda: self.switch_provider(1))
+        self.add_view_actions(menu)
         menu.addAction('Hae paikka…', self.open_place)
         menu.addAction('Päivitä ennuste', self.refresh)
         menu.addAction('Widgetin teema…', lambda: self.controller.open_page('widgets'))
@@ -138,6 +143,23 @@ class SharedWeather(WeatherWidget):
     def load_windy(self, *, force=False):
         # A hidden desktop surface does not initiate an extra embedded map.
         if self.isVisible(): super().load_windy(force=force)
+
+    def load_web_view(self, *, force=False):
+        if self.isVisible(): super().load_web_view(force=force)
+
+    def select_provider(self, key):
+        try:
+            return super().select_provider(key)
+        except OSError as error:
+            self.controller.storage_error(error)
+            return False
+
+    def set_view_mode(self, mode):
+        try:
+            return super().set_view_mode(mode)
+        except OSError as error:
+            self.controller.storage_error(error)
+            return False
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)

@@ -25,6 +25,7 @@ DEFAULTS = {
     'calendar_extras_scope': 'star', 'calendar_extra_cell': 'none',
     'seconds': True, 'locked': False, 'on_top': False, 'zone': 'Europe/Helsinki',
     'refresh_minutes': 77, 'provider': 'foreca', 'star_epoch': '2026-07-01',
+    'weather_views': {'yr': 'graph', 'foreca': 'graph', 'fmi': 'graph', 'windy': 'map'},
     'star_side': 'left', 'clock_weather': True, 'sound': False,
     'windy_zoom': 9, 'windy_layer': 'temp', 'autostart': False,
     'place': {'name': 'Pöllönkangas, Oulu', 'latitude': 65.0701, 'longitude': 25.5071, 'timezone': 'Europe/Helsinki'},
@@ -61,6 +62,9 @@ class State:
             # Files written before clock-theme settings used calendar-specific palettes.
             if 'time_theme' not in old_settings: settings['time_theme'] = 'calendar'
             settings['widgets'] = {**DEFAULTS['widgets'], **settings.get('widgets', {})}
+            old_views = old_settings.get('weather_views', {})
+            if not isinstance(old_views, dict): raise ValueError('Virheelliset sään näyttötavat')
+            settings['weather_views'] = {**DEFAULTS['weather_views'], **old_views}
             # Existing installations keep their selected windows until explicitly merged.
             if 'combined' not in old_settings.get('widgets', {}): settings['widgets']['combined'] = False
             profiles = copy.deepcopy(DEFAULT_PROFILES)
@@ -138,6 +142,12 @@ class State:
         for key in ('seconds', 'locked', 'on_top', 'clock_weather', 'sound', 'autostart', 'wallpaper_shuffle', 'wallpaper_follow_theme', 'icon_follow_theme', 'calendar_extras_visible'):
             if type(settings[key]) is not bool: raise ValueError('Virheellinen asetus: ' + key)
         if settings['provider'] not in ('yr', 'foreca', 'fmi', 'windy'): raise ValueError('Tuntematon sääpalvelu')
+        views = settings['weather_views']
+        if not isinstance(views, dict) or set(views) != set(DEFAULTS['weather_views']):
+            raise ValueError('Virheelliset sään näyttötavat')
+        for provider, mode in views.items():
+            if not isinstance(mode, str) or mode not in (('graph',) if provider == 'yr' else ('graph', 'map')):
+                raise ValueError('Tuntematon sään näyttötapa')
         if settings['star_side'] not in ('left', 'right', 'month'): raise ValueError('Virheellinen varjon puoli')
         if settings['windy_layer'] not in ('temp', 'wind', 'rain', 'clouds'): raise ValueError('Virheellinen karttakerros')
         from .weather.providers import Place
