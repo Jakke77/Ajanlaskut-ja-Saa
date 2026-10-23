@@ -202,7 +202,9 @@ class DesktopSurface(QWidget):
             item = self.controller.calendars.convert(self.system, now.date())
             date_label = item.label
             weekday = self.controller.calendars.day_words(item, self.options['star_side'])
-            phase = f'ISO-viikko {now.isocalendar().week}' if self.system == 'civil' else item.phase
+            from .astronomy import moon_at
+            try: phase = moon_at(now).label
+            except ValueError: phase = item.phase
         except ValueError:
             date_label, weekday, phase = 'Ajanlasku ei ole vielä alkanut', '', ''
         tip = []
@@ -248,6 +250,9 @@ class DesktopSurface(QWidget):
                 value = (f'{datetime.fromisoformat(upcoming[0]["due"]).astimezone(self.controller.calendars.zone):%d.%m. %H:%M} · '+upcoming[0]['title']) if upcoming else 'Ei odottavia muistutuksia.'
                 self.text(p, value.splitlines()[0], y+27, 14, height=31)
             tip.append(value)
+        try:
+            if item.names: tip.append('Nimipari · '+item.names.label)
+        except UnboundLocalError: pass
         self.setToolTip('\n'.join(tip))
         self.setAccessibleName(CLOCK_TITLES[self.system]+'\n'+'\n'.join(tip))
 

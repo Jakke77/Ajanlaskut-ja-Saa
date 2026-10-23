@@ -59,7 +59,8 @@ QPushButton:focus, QToolButton:focus {{ border: 2px solid {theme.accent}; }}
 QPushButton:checked, QPushButton#primary {{ background: {theme.accent}; color: {theme.background}; font-weight: bold; }}
 QPushButton:disabled {{ color: {theme.muted}; }}
 QPushButton#nav {{ border: 0; text-align: left; padding: 13px 18px; }}
-QComboBox, QFontComboBox, QSpinBox, QLineEdit, QTextEdit, QTimeEdit {{ background: {theme.surface}; color: {theme.text}; border: 1px solid {theme.border}; border-radius: 6px; padding: 7px; selection-background-color: {theme.accent}; selection-color: {theme.background}; }}
+QComboBox, QFontComboBox, QSpinBox, QLineEdit, QTextEdit, QTimeEdit, QDateEdit {{ background: {theme.surface}; color: {theme.text}; border: 1px solid {theme.border}; border-radius: 6px; padding: 7px; selection-background-color: {theme.accent}; selection-color: {theme.background}; }}
+QHeaderView::section {{ background: {theme.surface}; color: {theme.text}; padding: 6px; border: 1px solid {theme.border}; }}
 QComboBox QAbstractItemView, QMenu {{ background: {theme.surface}; color: {theme.text}; }}
 QMenu::item {{ padding: 8px 18px; }} QMenu::item:selected {{ background: {theme.border}; }}
 QCheckBox {{ spacing: 8px; }}

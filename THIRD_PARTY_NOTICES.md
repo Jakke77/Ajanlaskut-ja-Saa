@@ -15,11 +15,30 @@ ei binääriä. Lisenssit ovat
 `vendor/pymeeus-0.5.12.dist-info/licenses/COPYING.LESSER` (LGPLv3-lisäehdot).
 Lähde: https://github.com/architest/pymeeus
 
+Versio 1.10.0 käyttää samaa muuttamatonta kirjastoa myös Kuun ja Auringon
+paikkoihin, kuunvaiheisiin ja talvipäivänseisaukseen. Sovelluksen oma koodi
+muuntaa TT-/UTC-ajat, laskee paikallisen horisontin ylitykset ja esittää
+tulokset aikavyöhykkeineen. Nousuajat ovat arvioita tasaiselle horisontille.
+
 Kirjastot asennettiin PyPI:n versionoiduista julkaisuista paikalliseen kansioon,
 eivätkä ne muuta järjestelmän Python-asennusta. Käyttäjä voi korvata tai muokata
 näitä lähdekirjastoja ja käyttää järjestelmän asennettua kirjastoa. Sovelluksen
-oman koodin MIT-lisenssi ei muuta kirjastojen lisenssejä. Kalenterien nimet ja
-laskentatulokset eivät ole tämän sovelluksen keksimiä uusia ajanlaskusääntöjä.
+oman koodin MIT-lisenssi ei muuta kirjastojen lisenssejä. Convertdate-kirjaston
+kansainvälisten rinnakkaiskalenterien laskentasäännöt tulevat kirjastosta.
+
+## Suomalainen perinnekalenteri ja keksityt nimet
+
+Kuukausien perinnetietojen lähde: Jussi Katajala, *Suomalainen kalenteri*
+(sivun päivitysmerkintä 5.12.2010),
+https://www.katajala.net/viikinkiaika/ajanlasku/suomalainen_kalenteri.html
+Lyhyet kuukausikuvaukset on kirjoitettu tätä sovellusta varten; sivuston HTML:ää
+tai kuvia ei toimiteta mukana. Lähde kuvaa Vaahtokuun mutta ei sen tarkkaa
+laskentasääntöä. Talvipäivänseisaukseen ja uusiinkuihin perustuva muunnos on
+sovelluksen oma, selvästi merkitty laskennallinen tulkinta.
+
+`assets/calendar-names.json` sisältää tätä sovellusta varten keksityt pysyvät
+mies-/naisnimiparit. Ne eivät ole virallisen suomalaisen nimipäiväkalenterin
+kopio tai väite historiallisista nimistä.
 
 ## Alkuperäiset sovellukset
 

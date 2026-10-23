@@ -16,6 +16,7 @@ class Day:
     month: int
     day: int
     civil: date
+    zone: str = 'Europe/Helsinki'
 
     @property
     def month_name(self):
@@ -35,9 +36,15 @@ class Day:
 
     @property
     def phase(self):
-        if self.system == 'shadow': return shadow.moon_label(self.day)
-        if self.system == 'star': return star.StarDate(self.year, self.month, self.day).phase
-        return WEEKDAYS[self.weekday]
+        from .astronomy import phase_label
+        return phase_label(self.civil, self.zone)
+
+    @property
+    def names(self):
+        if self.system not in ('shadow', 'star'):
+            return None
+        from .namedays import names_at
+        return names_at(self.system, self.month, self.day)
 
 
 class Calendars:
@@ -50,13 +57,13 @@ class Calendars:
         return datetime.now(self.zone)
 
     def convert(self, system, civil):
-        if system == 'civil': return Day(system, civil.year, civil.month - 1, civil.day, civil)
+        if system == 'civil': return Day(system, civil.year, civil.month - 1, civil.day, civil, self.zone.key)
         if system == 'shadow':
             item = shadow.from_gregorian(civil)
         elif system == 'star':
             item = star.StarDate.from_ordinal((civil - self.star_epoch).days)
         else: raise ValueError('Tuntematon ajanlasku')
-        return Day(system, item.year, item.month, item.day, civil)
+        return Day(system, item.year, item.month, item.day, civil, self.zone.key)
 
     def civil_date(self, system, year, month, day):
         if system == 'shadow': return shadow.to_gregorian(shadow.CalendarDate(year, month, day))

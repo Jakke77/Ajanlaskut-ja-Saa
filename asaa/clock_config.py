@@ -7,8 +7,8 @@ SYSTEMS = ('shadow', 'star', 'civil')
 PROFILE_KEYS = ('combined', 'shadow', 'star', 'civil')
 CLOCK_TITLES = {'shadow': 'Varjoaika', 'star': 'Tähtiaika', 'civil': 'Gregoriaaninen'}
 FIELD_LABELS = {
-    'clock': 'Kello', 'date': 'Ajanlaskun päivämäärä', 'weekday': 'Päivän nimi',
-    'phase': 'Kuunvaihe / kierronvaihe / ISO-viikko',
+    'clock': 'Kello', 'date': 'Ajanlaskun päivämäärä', 'weekday': 'Viikonpäivän nimi',
+    'phase': 'Todellinen kuunvaihe ja valaistus',
     'civil_date': 'Tavallinen päivämäärä', 'zone': 'Aikavyöhyke',
     'weather': 'Kolmen päivän sää', 'note': 'Päivän kalenterimerkintä',
     'reminder': 'Seuraava muistutus',

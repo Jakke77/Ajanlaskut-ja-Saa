@@ -50,6 +50,36 @@ merkintöjen tunnisteita tai muistutusaikoja. Persialainen laskenta on rajattu
 PyMeeus 0.5.12:n lähdekoodit ja lisenssit; järjestelmässä asennettuja vastaavia
 kirjastoja voi käyttää niiden sijaan. Kalenterimuunnokset eivät käytä verkkoa.
 
+## Kuu, nimiparit ja päivän valo · 1.10.0
+
+`astronomy` käyttää samaa PyMeeus-lähdekirjastoa. TT-ephemeridit muunnetaan
+UTC-hetkiksi; paikallisen päivän rajat otetaan IANA-aikavyöhykkeestä.
+Nousu-/laskuhaut käyttävät interpoloituja tuntikoordinaatteja, todellisen
+UTC-hetken tähtiaikaa, Kuun topokeskistä parallaksia, yläreunaa ja vakioitua
+refraktiota. Viiden minuutin välin molemmat ääriarvot tarkennetaan ennen
+horisontin ylitysten hakua. Päivät voivat kestää 23, 24 tai 25 tuntia, eikä
+vain nousun tai laskun puuttumista tulkita koko päivän kaamokseksi.
+Kellot käyttävät samaa minuuttivälimuistia, valitut päivät paikallista keskipäivää.
+
+`namedays` lukee versionoidun `assets/calendar-names.json`-nimilistan.
+Varjoajan 390 ja Tähtiajan 510 nimiparia toistuvat omassa kuukauden/päivän
+kohdassaan. Syntymäpäivähaku jatkaa nimikiertoa modulo-laskulla taaksepäin;
+se ei muuta vuoden yksi rajaa, ajanlaskujen päiväyksiä tai merkintöjen avaimia.
+
+`finnish_calendar` on erillinen, selvästi nimetty moderni tulkinta Katajalan
+kuvauksesta. Joulukuu sisältää talvipäivänseisauksen, ja 13 kuunkierron vuosi
+saa Vaahtokuun helmikuun jälkeen. Uudetkuut määrittävät Helsingin siviilipäivät.
+PyMeeusin vaihehaun siemenet otetaan alle kuunkierron välein, jotta lähin
+edellinen uusikuu ei jää etsimättä vuosirajan lähellä. Tätä ei lisätä
+Varjoajan tai Tähtiajan muunnossääntöihin.
+
+`celestial_ui` laskee päivä- ja kuukausitaulukot keskeytettävässä QThreadissä.
+Tulokset sisältävät päivä-/paikka-/aikavyöhykeavaimen ja vanhat vastaukset
+hylätään. QObject-slotit katkaisevat jonossa olevat vastaukset vastaanottajan
+tuhoutuessa; sammutus keskeyttää ja odottaa vain omia työntekijöitä.
+Nimihaku ei kirjoita syntymäpäivää asetuksiin. Suomalaisen kalenterin merkinnät
+avaavat yhteisen NoteDialogin ja käyttävät olemassa olevia siviilipäivän avaimia.
+
 ## Widgettiteemat ja luonnosten tallennus · 1.6.0–1.6.1
 
 Kaikilla kahdeksalla widgetillä on oma teemavalinta. Yhteinen kello ja kolme
