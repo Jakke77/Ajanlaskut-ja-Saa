@@ -1,0 +1,19 @@
+{
+  "version": "1.10.0",
+  "source_files": 1877,
+  "source_zip_bytes": 13289267,
+  "deb_bytes": 11289016,
+  "checksums": {
+    "ajanlaskut-ja-saa_1.10.0_all.deb": "858ac7685fef4d4615bb4bb31e6be1f897414c80d706517d56d175206d066350",
+    "Ajanlaskut-ja-Saa-1.10.0-lahdekoodi.zip": "e0eaec96044c56a99da3d8314e4807c9588bf276a07f2fbcb923b0fcfe5ba162"
+  },
+  "package_metadata": [
+    "Package: ajanlaskut-ja-saa",
+    "Version: 1.10.0",
+    "Architecture: all"
+  ],
+  "source_zip_matches_source": true,
+  "deb_matches_source": true,
+  "safe_updater_extract_matches_source": true,
+  "extracted_version_matches": true
+}

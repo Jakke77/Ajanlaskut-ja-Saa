@@ -1,0 +1,17 @@
+{
+  "version": "1.10.0",
+  "offline": true,
+  "month_rows": 31,
+  "moon": "Kasvava kuu · 91%\nKuun ikä 12.8 vrk\nTämänhetkinen vaihe",
+  "sun": "Nousu 08:36 · Lasku 17:27\nPäivän pituus 8 h 51 min",
+  "moon_times": "Kuun nousu 16:47\nKuun lasku 04:09",
+  "upcoming_phases": "SEURAAVAT KUUNVAIHEET\nTäysikuu 26.10. 06:12 · Viimeinen neljännes 01.11. 22:28 · Uusikuu 09.11. 09:02 · Ensimmäinen neljännes 17.11. 13:48",
+  "minimum_window": [
+    1020,
+    720
+  ],
+  "all_navigation_visible": true,
+  "finnish_note_shared_with_civil_calendar": true,
+  "sample_birthday": "1985-02-14",
+  "sample_folk_date": "2028-02-25"
+}
