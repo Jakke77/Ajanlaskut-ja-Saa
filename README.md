@@ -1,6 +1,6 @@
 # Ajanlaskut ja Sää
 
-**Uusin asennuspaketti: [1.9.1 · Sadekartat widgetin kokoisiksi](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).**
+**Uusin asennuspaketti: [1.10.0 · Kuu, nimikalenterit ja päivän valo](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -11,6 +11,47 @@ Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, tavallinen kalenteri ja s
 yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
+
+## Kuu, nimikalenterit ja päivän valo · versio 1.10.0
+
+Kellot ja yleiskatsaus näyttävät nyt saman todellisen kuunvaiheen ja valaistun
+osuuden. Kalenterista valitun päivän vaihe lasketaan klo 12 kalenterin
+aikavyöhykkeellä. Varjoajan 390 ja Tähtiajan 510 päivän päiväykset säilyvät;
+niiden omia symbolisia vaiheita ei enää esitetä oikean Kuun tietona.
+
+**Nimikalenterit → Oma nimi:** valitse syntymäpäivä tai muu päivä. Varjoajalla
+on 390 ja Tähtiajalla 510 pysyvää nimiparia: miehen ja naisen nimi jokaiselle
+päivälle. Varjoajan nimet ovat tummasävyisiä, Tähtiajan nimet valon ja avaruuden
+henkisiä. Haku toimii myös ennen ajanlaskujen alkupäiviä jatkamalla nimikiertoa
+taaksepäin. Nimet ovat tätä sovellusta varten keksittyjä, eivät virallisia
+nimipäiviä. Nimipari näkyy myös kalenterin päivän tiedoissa ja kellon vihjeessä.
+
+**Nimikalenterit → Suomalainen kuukalenteri** perustuu
+[Katajalan perinnekalenterin kuvaukseen](https://www.katajala.net/viikinkiaika/ajanlasku/suomalainen_kalenteri.html).
+Toteutus on nimenomaisesti **sovelluksen laskennallinen tulkinta**: joulukuu
+sisältää talvipäivänseisauksen. Peräkkäisten joulukuiden väliin jää 12 tai 13
+kuukautta; 13 kuukauden vuodessa **Vaahtokuu** sijoittuu helmikuun jälkeen.
+Kuukausi alkaa uudenkuun Helsingin päivämääränä ja kestää 29 tai 30 päivää.
+Lähdesivu ei määritä tätä tarkkaa sääntöä. Mukana on 390 itse keksittyä
+suomalaishenkistä nimiparia; ne eivät ole historiallisia nimipäiviä. Kekri
+kuvataan sadonkorjuun juhlana ilman keksittyä kiinteää historiallista päivää.
+Päivän merkinnät ja muistutukset käyttävät samaa tavallista päivämäärää kuin
+muissa kalentereissa.
+
+**Valo ja aurinko:** Auringon ja Kuun nousu- ja laskuajat, päivän pituus,
+kolme hämärärajaa, kuun kuva, seuraavat neljä päävaihetta ja kuukauden valoajat.
+Valitse päivä taulukosta tai hae paikka. Paikka on yhteinen sääsivun kanssa;
+ajat esitetään paikan aikavyöhykkeellä kesäaika huomioiden. Kaamos, yötön yö ja
+päivät, joina Kuulla on vain nousu tai lasku, näytetään erikseen.
+
+Tähtitiedot lasketaan ilman verkkohakua mukana olevalla PyMeeus-kirjastolla
+vuosille 1900–2100. Nousuajat ovat arvioita tasaiselle horisontille ja
+tavanomaiselle ilmakehälle; maasto ja sää voivat muuttaa havaittuja aikoja.
+Kalenterit-sivulla on suorat linkit kaikkiin uusiin näkymiin.
+
+![Valoajat ja Kuun vaihe Oulussa 23.10.2026](previews/daylight.png)
+![Nimihaku esimerkkipäivällä 14.2.1985](previews/calendar-names.png)
+![Suomalaisen kalenterin Vaahtokuu; sovelluksen laskennallinen tulkinta](previews/finnish-lunar-calendar.png)
 
 ## Sadekartat widgetin kokoisiksi · versio 1.9.1
 
@@ -147,7 +188,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.9.1-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).
+[Lataa uusin 1.10.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -189,7 +230,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.9.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.9.1).
+[packages/v1.10.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0
@@ -369,7 +410,7 @@ kolme erillistä kelloa säilyttäen niiden asetukset ja paikat. Sääwidgettiä
 Omissa kelloteemoissa Varjoaika käyttää Kuparia, Tähtiaika vihreäkultaista
 Astraalia ja Gregoriaaninen sinistä Aamunkajoa. Teema ja päiväys vaihtuvat,
 mutta paneelin paikka ja koko pysyvät samoina. Sisällöistä valitaan kello,
-päivämäärä, päivän nimi, symbolinen vaihe / ISO-viikko, tavallinen päiväys,
+päivämäärä, viikonpäivän nimi, todellinen kuunvaihe ja valaistus, tavallinen päiväys,
 aikavyöhyke, sää, päivän merkintä ja seuraava muistutus. Valinnat ovat erillisiä
 yhteiselle widgetille ja kullekin vanhalle kellolle. Esikatselu ei vielä tallenna mitään.
 
@@ -384,7 +425,8 @@ valitun siviilipäivän keskipäivälle, ei paikallisen auringonlaskun mukaan.
 Islamilainen päiväys ei ole kuuhavaintoihin tai Umm al-Quraan perustuva.
 Persialainen tähtitieteellinen laskenta on rajattu vuosille 1900–2100;
 alueen ulkopuolella näytetään puuttuva tieto, ei keksittyä päiväystä.
-Tähtiajan oma 510 päivän kalenteri ja sen symboliset vaiheet säilyvät ennallaan.
+Tähtiajan oma 510 päivän päiväys säilyy. Versiosta 1.10.0 lähtien näkyvä
+kuunvaihe perustuu oikeaan Kuuhun.
 
 ## Taustakuvat · versio 1.1.0
 
@@ -481,8 +523,9 @@ upotukset ja Forecan/Ilmatieteen laitoksen karttasivut avautuvat omissa
 tallentamattomissa selainprofiileissa.
 
 Varjoaika ja Tähtiaika ovat kuvitteellisia rinnakkaiskalentereita. Varjoajan alkupäivä on
-28.9.2026, Tähtiajan 1.7.2026. Kuuvaiheiden nimet ovat symbolisia, eivät
-tähtitieteellisiä havaintoja. Kellot näyttävät tavallista paikallista aikaa.
+28.9.2026, Tähtiajan 1.7.2026. Versiosta 1.10.0 lähtien näkyvät kuunvaiheet
+ovat laskennallisia tähtitietoja; vanhoissa versioissa ne olivat symbolisia.
+Kellot näyttävät tavallista paikallista aikaa.
 
 ## Testit ja paketti
 

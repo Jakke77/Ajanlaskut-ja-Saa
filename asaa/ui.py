@@ -118,7 +118,10 @@ class OverviewPage(QWidget):
             try:
                 item=self.controller.calendars.convert(system,now.date())
                 self.date_labels[system].setText(item.label)
-                self.note_labels[system].setText(item.phase)
+                from .astronomy import moon_at
+                try:phase=moon_at(now).label
+                except ValueError:phase=item.phase
+                self.note_labels[system].setText(phase+('\n'+item.names.label if item.names else ''))
             except ValueError:
                 self.date_labels[system].setText('Ennen ajanlaskun alkua');self.note_labels[system].setText('')
         lines=self.controller.daily.lines()
@@ -175,6 +178,11 @@ class CalendarPage(QWidget):
         self.extras_visible.toggled.connect(self.toggle_extras);extras_row.addWidget(self.extras_visible)
         extras_row.addStretch(1);extras_row.addWidget(button('Valitse lisäkalenterit…',self.configure_extras))
         layout.addLayout(extras_row)
+        tools=QHBoxLayout()
+        tools.addWidget(button('Oma nimesi ajanlaskuissa →',self.open_names))
+        tools.addWidget(button('Suomalainen kuukalenteri →',self.open_folk_calendar))
+        tools.addWidget(button('Kuu, valo ja aurinko →',self.open_sunmoon))
+        layout.addLayout(tools)
         split=QHBoxLayout();frame,grid_content=card();self.grid=QGridLayout();self.grid.setSpacing(7);grid_content.addLayout(self.grid)
         split.addWidget(frame,3)
         detail,content=card();detail.setMinimumWidth(240);detail.setMaximumWidth(310)
@@ -193,6 +201,17 @@ class CalendarPage(QWidget):
         try:self.controller.configure({'calendar_extras_visible':checked})
         except (ValueError,OSError) as error:
             self.extras_changed();self.controller.storage_error(error)
+    def open_folk_calendar(self):
+        page=self.controller.window.page_widgets['names']
+        page.show_folk(self.selected)
+        self.controller.open_page('names')
+    def open_names(self):
+        page=self.controller.window.page_widgets['names']
+        page.set_day(self.selected);page.tabs.setCurrentIndex(0)
+        self.controller.open_page('names')
+    def open_sunmoon(self):
+        self.controller.window.page_widgets['sunmoon'].set_day(self.selected)
+        self.controller.open_page('sunmoon')
     def configure_extras(self):
         from .almanac_ui import AlmanacDialog
         AlmanacDialog(self.controller,self).exec()
@@ -248,6 +267,7 @@ class CalendarPage(QWidget):
             cell.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding)
             cell.setCheckable(True);cell.setChecked(item.civil==self.selected)
             cell.setToolTip(f'{item.label}\n{item.civil:%d.%m.%Y}\n{self.controller.state.note(item.civil)}')
+            if item.names:cell.setToolTip(cell.toolTip()+'\n'+item.names.label)
             extra_lines=almanac.lines(self.controller.options,self.system,item.civil)
             if extra_lines:cell.setToolTip(cell.toolTip()+'\n\n'+'\n\n'.join(extra_lines))
             if item.civil==today and item.civil!=self.selected:cell.setStyleSheet(f'border:2px solid {theme.accent};font-weight:bold;')
@@ -264,7 +284,8 @@ class CalendarPage(QWidget):
     def render_detail(self):
         item=self.controller.calendars.convert(self.system,self.selected)
         self.day_heading.setText(item.label)
-        lines=[f'{self.selected:%d.%m.%Y}',item.phase]
+        lines=[f'{self.selected:%d.%m.%Y}',item.phase+f'\nKlo 12 · {self.controller.options["zone"]}']
+        if item.names:lines.append('NIMIPARI\n'+item.names.label)
         for system in ('shadow','star'):
             if system!=self.system:
                 try:lines.append(self.controller.calendars.convert(system,self.selected).label)
@@ -558,10 +579,10 @@ class MainWindow(QMainWindow):
         self.about_action=self.help_menu.addAction('Tietoa sovelluksesta',controller.show_about)
         root=QWidget();self.setCentralWidget(root);outer=QHBoxLayout(root);outer.setContentsMargins(0,0,0,0);outer.setSpacing(0)
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(218)
-        side=QVBoxLayout(sidebar);side.setContentsMargins(18,24,18,20);side.setSpacing(9)
+        side=QVBoxLayout(sidebar);side.setContentsMargins(18,24,18,20);side.setSpacing(5)
         side.addWidget(label('AJANLASKUT\nJA SÄÄ','eyebrow'));side.addWidget(label('Oma hetki. Omat kalenterit.','muted',True));side.addSpacing(22)
         self.navigation={};group=QButtonGroup(self);group.setExclusive(True)
-        for key,title in [('overview','◉  Yleiskatsaus'),('calendar','▦  Kalenterit'),('clocks','◷  Ajanlaskuwidgetit'),('weather','☁  Sää'),('widgets','◫  Työpöytäwidgetit'),('wallpapers','▧  Taustakuvat'),('settings','⚙  Asetukset')]:
+        for key,title in [('overview','◉  Yleiskatsaus'),('calendar','▦  Kalenterit'),('sunmoon','☼  Valo ja aurinko'),('names','✧  Nimikalenterit'),('clocks','◷  Ajanlaskuwidgetit'),('weather','☁  Sää'),('widgets','◫  Työpöytäwidgetit'),('wallpapers','▧  Taustakuvat'),('settings','⚙  Asetukset')]:
             item=button(title,lambda _,k=key:self.show_page(k));item.setObjectName('nav');item.setCheckable(True);group.addButton(item);side.addWidget(item);self.navigation[key]=item
         side.addStretch(1);self.theme_title=label('','eyebrow',True);side.addWidget(self.theme_title)
         controller.settings_changed.connect(self.sync_theme);self.sync_theme()
@@ -571,7 +592,8 @@ class MainWindow(QMainWindow):
         self.pages=QStackedWidget();self.page_widgets={};self.page_indices={}
         from .wallpaper_ui import WallpapersPage
         from .clock_ui import ClocksPage
-        for key,page in [('overview',OverviewPage(controller)),('calendar',CalendarPage(controller)),('clocks',ClocksPage(controller)),('weather',WeatherPage(controller)),('widgets',WidgetsPage(controller)),('wallpapers',WallpapersPage(controller)),('settings',SettingsPage(controller))]:
+        from .celestial_ui import CelestialPage, NamesPage
+        for key,page in [('overview',OverviewPage(controller)),('calendar',CalendarPage(controller)),('sunmoon',CelestialPage(controller)),('names',NamesPage(controller)),('clocks',ClocksPage(controller)),('weather',WeatherPage(controller)),('widgets',WidgetsPage(controller)),('wallpapers',WallpapersPage(controller)),('settings',SettingsPage(controller))]:
             self.page_widgets[key]=page
             scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setWidget(page)
             self.page_indices[key]=self.pages.addWidget(scroll)

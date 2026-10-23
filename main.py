@@ -9,7 +9,7 @@ def main():
     parser=argparse.ArgumentParser(description='Ajanlaskut ja Sää')
     parser.add_argument('--widgets-only',action='store_true',help='Näytä vain valitut työpöytäwidgetit')
     parser.add_argument('--no-widgets',action='store_true',help='Avaa sovellus ilman työpöytäwidgetejä')
-    parser.add_argument('--page',choices=['overview','calendar','clocks','weather','widgets','settings','wallpapers'])
+    parser.add_argument('--page',choices=['overview','calendar','sunmoon','names','clocks','weather','widgets','settings','wallpapers'])
     parser.add_argument('--offline',action='store_true',help='Käytä vain paikallista säävälimuistia')
     parser.add_argument('--data-dir',type=Path,help='Erillinen asetusten ja kalenterin hakemisto')
     parser.add_argument('--self-test',action='store_true',help='Eristetty testi ilman verkkohakuja')

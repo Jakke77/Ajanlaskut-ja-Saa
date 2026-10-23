@@ -281,7 +281,7 @@ class Controller(QObject):
                     mode=json.loads(raw).get('mode')
                     if mode=='widgets':self.restore_widgets()
                     elif mode in ('main','overview'):self.open_page('overview')
-                    elif mode in ('weather','calendar','widgets','settings','wallpapers','clocks'):self.open_page(mode)
+                    elif mode in ('weather','calendar','sunmoon','names','widgets','settings','wallpapers','clocks'):self.open_page(mode)
                 except (ValueError,AttributeError):pass
                 conn.disconnectFromServer()
             connection.readyRead.connect(read);connection.disconnected.connect(connection.deleteLater);read()
@@ -296,6 +296,7 @@ class Controller(QObject):
         self.weather.shutdown()
         page=self.window.page_widgets['weather']
         page.stop_web_views()
+        self.window.page_widgets['sunmoon'].stop()
         if self.tray:self.tray.hide()
         if self.server:self.server.close()
 

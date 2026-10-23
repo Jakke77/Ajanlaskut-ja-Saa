@@ -1,5 +1,36 @@
 # Tarkistukset
 
+## Kuu, nimikalenterit ja päivän valo · 23.10.2026 · 1.10.0
+
+- Lopullinen yksikkö- ja Qt-testisarja: 332 testiä läpäisi. Lisäksi uusi
+  näkymä renderöitiin oikealla Qt:llä ja yhteisen päivän merkinnän tallennus
+  tarkistettiin eristetyssä, verkkohakuja tekemättömässä sovellusinstanssissa.
+- Yhteinen kuunvaihe korjaa 19.10.2026-kuvien ristiriidan. Varjoajan, Tähtiajan
+  ja tavallisen kalenterin valitun päivän vaihe on sama. Oikeat Qt-kellopinnat
+  näyttävät saman hetkellisen vaiheen ja omat nimiparinsa vihjeessä.
+- Kuun lokakuun 2026 päävaiheet verrattiin US Naval Observatoryn UTC-taulukkoon:
+  poikkeama alle kaksi minuuttia. Oulun 23.10.2026 Auringon ja Kuun nousu-/laskuajat
+  sekä siviilihämärä täsmäsivät USNO:n minuuttilukemiin. New Yorkin 23 tunnin
+  päivältä 8.3.2026 nousu ja lasku täsmäsivät; Kuulta puuttui nousu, mutta lasku
+  oli oikein eikä päivää merkitty kokonaan horisontin alapuoliseksi.
+- Helsingin 23/25 tunnin päivät, Tromssan yötön yö ja kaamos sekä talven
+  siviilihämärä tarkistettiin. Tuleva täysikuu näytetään Helsingin talviajassa,
+  ei nykyhetken kiinteällä UTC-siirtymällä.
+- Vuosien 1899–2101 talvipäivänseisauksen edellinen uusikuu ja 12/13 kuukauden
+  vuodet tarkistettiin. Vaahtokuu seuraa helmikuuta, kuukausissa on 29 tai 30
+  päivää eikä kuukausien tai vuosien välille jää aukkoja. Vuoden 2023 joulukuun
+  siemenhaun rajatapaus on erillinen regressiotesti.
+- Nimiluettelo sisältää 390 Varjoajan, 510 Tähtiajan ja 390 suomalaisen kalenterin
+  pysyvää nimiparia. Kummankin sukupuolen nimet ovat oman kalenterinsa sisällä
+  yksilöllisiä. Syntymäpäivähaku toimii ennen alkupäiviä muuttamatta päiväysmuunnosta.
+- Oikea Qt-käyttöliittymä avasi nimihaun, Vaahtokuun ja kuukauden valoajat.
+  Syntymäpäivähaku ei kirjoita asetuksia. Vanhat vastaukset eivät vaihda uuden
+  päivän tietoja, eikä kesken laskennan sulkeminen jätä työntekijää käyntiin.
+  Uusien sivujen asettelu tarkistettiin myös 1020×720-ikkunassa.
+- Kirjastot ja niiden lisenssit säilyivät mukana muuttamattomina. Tähtilaskenta
+  ei tarvitse uusia paketteja, API-avaimia tai verkkohakua. Sääsivun aiemmat
+  verkkopalvelut säilyvät erillisinä.
+
 ## Forecan ja FMI:n kartta widgetin kokoiseksi · 14.10.2026 · 1.9.1
 
 - 306 yksikkö- ja Qt-testiä läpäisi. Uudet karttatestit kattavat palvelun oman

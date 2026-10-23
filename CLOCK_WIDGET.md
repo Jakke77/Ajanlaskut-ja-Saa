@@ -103,4 +103,6 @@ Kuusi oikeaa rinnakkaiskalenteria ovat erillistä lisätietoa Tähtiajan valitus
 päivästä, eivät uusi sääntö sen 510 päivän kierrolle. Master-valinta piilottaa
 sekä lisätiedot, päiväruutujen lisäpäiväyksen että lisäkalenterien tooltipit.
 Kukin kalenteri valitaan erikseen; näyttöpaikka on Tähtiaika tai kaikki kalenterit.
-Kellojen symboliset kuuvaiheet eivät muutu tähtitieteellisiksi kuuvaiheiksi.
+Versiosta 1.10.0 lähtien kellojen kuunvaihe ja valaistus lasketaan oikealle
+hetkelle; ne ovat samat eri ajanlaskuissa. Varjoajan ja Tähtiajan omat päiväykset
+säilyvät. Nimiparit näkyvät kalenterissa ja kellon vihjeessä.
