@@ -76,7 +76,10 @@ class WindowsDeliveryTests(unittest.TestCase):
             def sizeFromContents(self, kind, option, size, widget=None):
                 result = super().sizeFromContents(kind, option, size, widget)
                 if kind == QStyle.ContentsType.CT_PushButton:
-                    return QSize(max(112, result.width()), result.height())
+                    long_tools = ('Oma nimesi ajanlaskuissa', 'Suomalainen kuukalenteri',
+                                  'Kuu, valo ja aurinko')
+                    minimum = 346 if widget and widget.text().startswith(long_tools) else 112
+                    return QSize(max(minimum, result.width()), result.height())
                 return result
 
         with patch.object(blood_ui, 'IS_WINDOWS', True, create=True), \
@@ -133,6 +136,10 @@ class WindowsDeliveryTests(unittest.TestCase):
                 self.assertEqual(page.selector.currentData(), 'blood')
                 assert_page_fits(page)
                 assert_grid_text_fits(page.blood_calendar)
+                for width in (1560, 1400, 1350, 1300, 1200, 1100, 1020):
+                    case.window.resize(width, 720); self.app.processEvents()
+                    assert_page_fits(page)
+                    assert_grid_text_fits(page.blood_calendar)
             finally:
                 case.tearDown(); self.app.setStyle('Fusion')
 

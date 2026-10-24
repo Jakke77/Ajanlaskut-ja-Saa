@@ -2,7 +2,7 @@
 import copy
 from datetime import date, datetime, time
 from zoneinfo import available_timezones
-from PyQt6.QtCore import Qt, QTimer, QRectF, QTime, QUrl
+from PyQt6.QtCore import Qt, QTimer, QRectF, QTime, QUrl, QEvent
 from PyQt6.QtGui import QPainter, QFont, QDesktopServices
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QFrame, QLabel, QPushButton, QToolButton,
     QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QScrollArea, QComboBox,
@@ -288,8 +288,22 @@ class CalendarPage(QWidget):
     def select_blood_day(self,day):
         self.selected=day;self.render()
     def blood_layout(self,enabled):
-        side_detail=enabled and self.width()>=1180
-        horizontal_tools=not enabled or self.width()>=900
+        # A wide native toolbar can make this scroll page wider than its
+        # viewport. Use available space so its minimum cannot lock it wide.
+        parent=self.parentWidget()
+        if parent is not getattr(self,'_calendar_viewport',None):
+            previous=getattr(self,'_calendar_viewport',None)
+            if previous is not None:previous.removeEventFilter(self)
+            self._calendar_viewport=parent
+            if parent is not None:parent.installEventFilter(self)
+        available=parent.width() if parent is not None else self.width()
+        tools=self.calendar_tools
+        margins=tools.contentsMargins()
+        spacing=max(0,tools.spacing())
+        tools_minimum=(sum(tools.itemAt(i).minimumSize().width() for i in range(tools.count()))
+                       + max(0,tools.count()-1)*spacing + margins.left()+margins.right())
+        side_detail=enabled and available>=1180
+        horizontal_tools=not enabled or available>=max(900,tools_minimum)
         mode=(enabled,side_detail,horizontal_tools)
         if getattr(self,'_calendar_layout_mode',None)==mode:return
         self._calendar_layout_mode=mode
@@ -305,6 +319,11 @@ class CalendarPage(QWidget):
     def resizeEvent(self,event):
         super().resizeEvent(event)
         if hasattr(self,'calendar_split') and self.system=='blood':self.blood_layout(True)
+    def eventFilter(self,watched,event):
+        if (watched is getattr(self,'_calendar_viewport',None)
+                and event.type()==QEvent.Type.Resize and self.system=='blood'):
+            self.blood_layout(True)
+        return super().eventFilter(watched,event)
     def render(self):
         while self.grid.count():
             old=self.grid.takeAt(0)
