@@ -85,6 +85,51 @@ class VeriUiTests(unittest.TestCase):
         self.assertIn('symbolinen', self.page.rules.text())
         self.assertIn('Suomen paikallista aikaa', self.page.rules.text())
 
+    def test_777th_day_changes_to_year_two_at_the_same_cutover(self):
+        self.controller.now = blood_time.EPOCH + timedelta(days=777, seconds=-1)
+        self.page.today()
+        self.assertIn('VUOSI 0001', self.page.week_heading.text())
+        self.assertIn('111. VIIKKO / 111', self.page.week_heading.text())
+        self.assertIn('vuoden päivä 777/777', self.page.current.text())
+        self.assertIn('Vuoden päivä 777/777', self.page.selected_label.text())
+        self.controller.now += timedelta(seconds=1)
+        self.controller.clock_changed.emit()
+        self.assertIn('VUOSI 0002', self.page.week_heading.text())
+        self.assertIn('1. VIIKKO / 111', self.page.week_heading.text())
+        self.assertIn('vuoden päivä 1/777', self.page.current.text())
+        pair = blood_time.from_date(blood_time.EPOCH_DATE).names
+        self.assertIn(pair.male, self.page.selected_names.text())
+        self.assertIn(pair.female, self.page.selected_names.text())
+        self.assertIn(pair.male, self.page.selected_names.accessibleName())
+        self.assertIn(pair.female, self.page.selected_names.accessibleName())
+
+    def test_year_navigation_preserves_position_and_selected_names(self):
+        self.page.set_day(blood_time.EPOCH_DATE + timedelta(days=120))
+        names = self.page.selected_names.text()
+        self.page.next_year.click()
+        self.assertEqual(self.page.selected, blood_time.EPOCH_DATE + timedelta(days=897))
+        self.assertIn('VUOSI 0002', self.page.week_heading.text())
+        self.assertIn('121/777', self.page.selected_label.text())
+        self.assertEqual(self.page.selected_names.text(), names)
+        self.page.previous_year.click()
+        self.assertEqual(self.page.selected, blood_time.EPOCH_DATE + timedelta(days=120))
+        self.controller.now += timedelta(days=2)
+        self.controller.clock_changed.emit()
+        self.assertEqual(self.page.selected_names.text(), names)
+        for index, item in enumerate(self.page.day_buttons):
+            position = blood_time.from_date(self.page.week_start + timedelta(days=index))
+            self.assertIn(position.names.male, item.toolTip())
+            self.assertIn(position.names.female, item.toolTip())
+
+    def test_year_boundaries_are_named_separately_from_week_boundaries(self):
+        self.controller.now = blood_time.EPOCH
+        self.page.today()
+        self.assertIn('03.07.2026 01:07:07', self.page.next_change.text())
+        expected = blood_time.boundary(blood_time.EPOCH_DATE + timedelta(days=777))
+        self.assertIn(expected.strftime('%d.%m.%Y %H:%M:%S'), self.page.next_year_change.text())
+        self.assertIn('777 päivää', self.page.rules.text())
+        self.assertIn('111 viikkoa', self.page.rules.text())
+
     def test_seven_actual_stars_render_and_accessibility_reports_directions(self):
         view = self.page.sky
         view.resize(650, 340)

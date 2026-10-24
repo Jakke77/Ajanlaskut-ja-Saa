@@ -13,19 +13,20 @@ FIELD_LABELS = {
     'weather': 'Kolmen päivän sää', 'note': 'Päivän kalenterimerkintä',
     'reminder': 'Seuraava muistutus',
     'otava': 'Otavan todellinen asento · Oulu',
+    'nameday': 'Päivän nimipari',
 }
 
 
-def default_profile(weather=False, civil_date=True, otava=False):
+def default_profile(weather=False, civil_date=True, otava=False, nameday=False):
     return {'clock': True, 'date': True, 'weekday': True, 'phase': True,
             'civil_date': civil_date, 'zone': True, 'weather': weather,
-            'note': False, 'reminder': False, 'otava': otava}
+            'note': False, 'reminder': False, 'otava': otava, 'nameday': nameday}
 
 
 DEFAULT_PROFILES = {
-    'combined': default_profile(True, otava=True), 'shadow': default_profile(True),
+    'combined': default_profile(True, otava=True, nameday=True), 'shadow': default_profile(True),
     'star': default_profile(), 'civil': default_profile(civil_date=False),
-    'blood': default_profile(otava=True),
+    'blood': default_profile(otava=True, nameday=True),
 }
 
 
@@ -33,7 +34,7 @@ def clock_layout(profile, *, analog=False):
     """Stable slots; hidden fields collapse, changing calendars never changes size."""
     y = 56
     blocks = []
-    for field, height in [('clock', 346 if analog else 90), ('date', 46), ('weekday', 34), ('phase', 34),
+    for field, height in [('clock', 346 if analog else 90), ('date', 46), ('weekday', 34), ('nameday', 66), ('phase', 34),
                           ('reference', 36), ('otava', 138), ('weather', 206), ('note', 66), ('reminder', 64)]:
         enabled = (profile['civil_date'] or profile['zone']) if field == 'reference' else profile[field]
         if enabled:

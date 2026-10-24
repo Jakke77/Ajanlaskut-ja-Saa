@@ -1,5 +1,28 @@
 # Tarkistukset
 
+## Veri Ajan 777 päivän vuodet ja nimiparit · 1.12.1
+
+- Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **390 testiä läpäisi**.
+- Vuoden viimeinen päivä on 777/777 ja viikko 111/111; seuraavana paikallisena
+  klo 01:07:07 alkavat vuosi 0002, päivä 1/777 ja viikko 1/111. Ensimmäinen
+  vuoden vaihtuminen on 11.8.2028. Viikon seitsemän päivän rytmi jatkuu katkeamatta.
+- Vuoden raja lasketaan paikallisista päivämääristä. Myös 777×24+1 tunnin
+  vuoden kesto kesä-/talviajan eri puolilla on erillinen regressiotesti.
+- Staattisessa UTF-8-luettelossa on 777 nimiparia: 777 yksilöllistä miehen ja
+  777 yksilöllistä naisen nimeä, pituus 4–12 kirjainta. Sukupuolten nimijoukot
+  eivät leikkaa. Jokainen pari toistuu vastaavalla vuoden päivällä seuraavana
+  777 päivän vuonna. Nimiankkurit suojaavat pysyviä päiväsijoituksia.
+- Syntymäpäivähaku toimii myös ennen alkupäivää selvästi nimikierron
+  sovituksena. Se ei muuta päivämäärää, merkintöjä tai asetuksia.
+- Oikea Qt tarkisti vuoden vaihtumisen etusivulla, kalenterissa ja
+  widgetissä, nimiparin kaksi näkyvää riviä, niiden piilotuksen ja asetuksen
+  säilymisen. Widgetin koko pysyy samana vuoden vaihtuessa.
+- Veri Ajan ja Nimikalenterit-sivun nimet, vuosiselaus, päivän vihjeet,
+  syntymäpäivähaku ja siirtymä nimihakuun tarkistettiin myös 1020×720-koossa.
+  Otavan taivaskuva käyttää yhä nykyhetkeä historiallisen valinnan rinnalla.
+- Uudet nimet toimitetaan `assets/blood-names.json`-tiedostossa sekä
+  Ubuntu- että Windows-pakettiin. Uusia riippuvuuksia tai verkkohakuja ei tarvita.
+
 ## Veri Aika, Oulun Otava ja Veriyö · 24.10.2026 · 1.12.0
 
 - Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **370 testiä läpäisi**.

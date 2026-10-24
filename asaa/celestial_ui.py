@@ -15,6 +15,7 @@ from .astronomy import (moon_at, moon_on, solar_day, lunar_day, phase_events,
                         event_label, duration_label)
 from . import finnish_calendar as folk
 from .namedays import names_for_day, names_at, cycle_position
+from . import blood_time, blood_names
 from .models import shadow, star
 from .theme import THEMES
 from .ui import button, card, label
@@ -277,14 +278,15 @@ class NamesPage(QWidget):
         row.addWidget(button('Tänään',self.today));row.addStretch(1);layout.addLayout(row)
         self.tabs=QTabWidget();layout.addWidget(self.tabs)
         names=QWidget();name_layout=QVBoxLayout(names);self.name_labels={};self.position_labels={}
-        for key,title in [('shadow','Varjoaika'),('star','Tähtiaika'),('finnish','Suomalainen kuukalenteri')]:
+        for key,title in [('shadow','Varjoaika'),('star','Tähtiaika'),('blood','Veri Aika'),('finnish','Suomalainen kuukalenteri')]:
             frame,content=card();content.addWidget(label(title.upper(),'eyebrow'))
             pair=label('','',True);pair.setStyleSheet('font-size:20px;');content.addWidget(pair)
             position=label('','muted',True);content.addWidget(position)
             self.name_labels[key]=pair;self.position_labels[key]=position;name_layout.addWidget(frame)
         name_layout.addWidget(label('Nimet on keksitty tätä sovellusta varten. Ne eivät ole virallisia tai historiallisia nimipäiviä. '
-            'Varjoajan 390 ja Tähtiajan 510 päivän nimikierto jatkuu syntymäpäivähaussa myös taaksepäin ennen ajanlaskun alkua. '
-            'Sama nimipari palaa aina saman ajanlaskun kuukauden ja päivän kohdalle.','muted',True))
+            'Varjoajan 390, Tähtiajan 510 ja Veri Ajan 777 päivän nimikierto jatkuu syntymäpäivähaussa myös taaksepäin ennen ajanlaskun alkua. '
+            'Veri Ajan nimet saavat vaikutteita veren, elämänkierron ja biologian sanastosta. '
+            'Sama nimipari palaa aina saman ajanlaskun vuoden päivän kohdalle.','muted',True))
         self.tabs.addTab(names,'Oma nimi')
         traditional=QWidget();content=QVBoxLayout(traditional)
         navigation=QHBoxLayout();navigation.addWidget(button('‹ Edellinen kuu',lambda:self.step(-1)))
@@ -322,6 +324,12 @@ class NamesPage(QWidget):
             title=(shadow.MONTH_NAMES if system=='shadow' else star.MONTHS)[month]
             self.name_labels[system].setText(f'Miehen nimi: {pair.male}\nNaisen nimi: {pair.female}')
             self.position_labels[system].setText(f'{number}. {title} · nimikierron kohta')
+        blood = blood_time.from_date(day)
+        pair = blood_names.names_for_day(day)
+        self.name_labels['blood'].setText(f'Miehen nimi: {pair.male}\nNaisen nimi: {pair.female}')
+        position = f'777 päivän nimikierto · kohta {blood.day_of_year}/777'
+        self.position_labels['blood'].setText(position + (' · ennen ajanlaskun alkua' if blood.ordinal < 0 else
+                                                       f' · vuosi {blood.year:04d}, viikko {blood.week_of_year}/111'))
         while self.folk_grid.count():
             item=self.folk_grid.takeAt(0)
             if item.widget():item.widget().hide();item.widget().deleteLater()
