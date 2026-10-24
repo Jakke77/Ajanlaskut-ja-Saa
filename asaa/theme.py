@@ -22,6 +22,7 @@ THEMES = {
     'ubuntu2610_dark': Theme('#000000', '#2C001E', '#5E2750', '#E95420', '#FFFFFF', '#AEA79F', 'ubuntu'),
     'blood': Theme('#070508', '#160b12', '#56303c', '#f0788b', '#f5eaf0', '#bfa9b4', 'blood'),
 }
+BLOOD_THEME = THEMES['blood']
 THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu',
                'ubuntu2610_dark': 'Ubuntu 26.10 Dark', 'blood': 'Veriyö'}
 THEME_LABELS = {'copper': 'Kupari · Pöllönkankaan sää', 'frost': 'Halla · yön sininen',
@@ -33,15 +34,17 @@ THEME_LABELS.update({key: THEME_NAMES[key] for key in WINDOWS_THEMES})
 
 
 def refresh_windows_themes():
-    from .windows_appearance import windows_colors
+    from .windows_appearance import windows_colors, high_contrast
     colors = {key: Theme(**windows_colors(key)) for key in WINDOWS_THEMES}
+    colors['blood'] = colors['windows_system'] if IS_WINDOWS and high_contrast() else BLOOD_THEME
     changed = any(THEMES.get(key) != value for key, value in colors.items())
     THEMES.update(colors)
+    if 'CALENDAR_THEMES' in globals(): CALENDAR_THEMES['blood'] = THEMES['blood']
     return changed
 
 
 def available_themes():
-    return WINDOWS_THEMES if IS_WINDOWS else tuple(key for key in THEMES if key not in WINDOWS_THEMES)
+    return (*WINDOWS_THEMES, 'blood') if IS_WINDOWS else tuple(key for key in THEMES if key not in WINDOWS_THEMES)
 
 
 refresh_windows_themes()
@@ -56,7 +59,7 @@ CALENDAR_THEMES = {
 CALENDAR_THEME_NAMES = {'shadow': 'Kupari', 'star': 'Astraali', 'civil': 'Aamunkajo', 'blood': 'Veriyö'}
 
 def apply_theme(app, options):
-    if options['theme'] in WINDOWS_THEMES:
+    if IS_WINDOWS or options['theme'] in WINDOWS_THEMES:
         refresh_windows_themes()
     theme = THEMES[options['theme']]
     font=QFont(options['font']);font.setPixelSize(13);app.setFont(font)

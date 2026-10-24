@@ -1,5 +1,6 @@
 """Windows package artwork and explicit, read-only wallpaper selection."""
 import importlib.util
+from dataclasses import asdict
 import os
 from pathlib import Path
 from types import SimpleNamespace
@@ -35,6 +36,7 @@ class WindowsDeliveryTests(unittest.TestCase):
             page = WindowsAppearancePage(controller)
             try:
                 self.assertTrue(page.wallpapers)
+                self.assertEqual(page.wallpapers[page.wallpaper.currentIndex()].theme, 'blood')
                 self.assertIsNotNone(page.preview.pixmap())
                 self.assertFalse(page.preview.pixmap().isNull())
                 self.assertFalse(opened.called)
@@ -48,6 +50,41 @@ class WindowsDeliveryTests(unittest.TestCase):
             finally:
                 page.close(); page.deleteLater()
                 self.app.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+
+    def test_veriyo_is_available_in_windows_pickers_and_persists(self):
+        from tempfile import TemporaryDirectory
+        from asaa import theme
+        from asaa.platform_support import WINDOWS_THEMES
+        from asaa.state import State
+        from asaa.widget_themes import widget_theme_choices
+        with patch.object(theme, 'IS_WINDOWS', True):
+            self.assertEqual(set(theme.available_themes()), {*WINDOWS_THEMES, 'blood'})
+            self.assertIn('blood', {key for _, key in widget_theme_choices('combined')})
+            with TemporaryDirectory() as folder:
+                state = State(Path(folder) / 'state.json')
+                state.configure({'theme': 'blood', 'time_theme': 'blood',
+                                 'widget_themes': {'blood': 'blood', 'combined': 'blood'},
+                                 'clock_displays': {'blood': {'mode': 'otava_both'}}})
+                self.assertEqual(State(state.path).settings, state.settings)
+
+    def test_high_contrast_overrides_then_restores_veriyo_without_changing_selection(self):
+        from asaa import theme, windows_appearance
+        from asaa.widget_themes import widget_theme
+        colors = dict(background='#000000', surface='#000000', border='#ffffff',
+                      accent='#ffff00', text='#ffffff', muted='#ffffff', motif='windows')
+        with patch.object(theme, 'IS_WINDOWS', True), \
+                patch.object(windows_appearance, 'windows_colors', return_value=colors), \
+                patch.object(windows_appearance, 'high_contrast', return_value=True):
+            try:
+                self.assertTrue(theme.refresh_windows_themes())
+                self.assertEqual(asdict(theme.THEMES['blood']), colors)
+                self.assertEqual(theme.CALENDAR_THEMES['blood'], theme.THEMES['blood'])
+            finally:
+                with patch.object(windows_appearance, 'high_contrast', return_value=False):
+                    theme.refresh_windows_themes()
+        self.assertEqual(theme.THEMES['blood'], theme.BLOOD_THEME)
+        self.assertEqual(theme.CALENDAR_THEMES['blood'], theme.BLOOD_THEME)
+        theme.refresh_windows_themes()
 
 
 if __name__ == '__main__': unittest.main()
