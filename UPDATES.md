@@ -11,6 +11,12 @@ Otavakello** ja **Asetukset → Teema → Veri Aika · Veriyö**. Viikko alkaa
 26.6.2026 klo 01:07:07 Suomen aikaa ja toistuu seitsemän paikallisen päivän välein.
 Kaksi uutta taustakuvaa löytyvät Taustakuvat-sivulta.
 
+Viides kuvaketeema ylittää vanhan käyttäjäpäivittimen 2000 tiedoston rajan.
+Deb-asennus toimii suoraan. Käyttäjäasennuksessa päivitä myös päivityskansion
+helper alla olevalla järjestelmäasennuksen käyttöönottoketjulla tai uuden
+lähde-ZIPin mukana tulevalla `packaging/build.py --publish-channel` -komennolla.
+Version 1.12.0 helper hyväksyy enintään 4096 tiedostoa säilyttäen tavumäärä- ja polkutarkistukset.
+
 Jos sovellusvalikon kuvake avaa vanhan version, lopeta vanha prosessi ja avaa:
 
 ```bash

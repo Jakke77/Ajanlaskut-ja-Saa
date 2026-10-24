@@ -40,6 +40,17 @@ class UpdateTests(unittest.TestCase):
         self.release();self.assertEqual(self.manager.update(),'1.2.1')
         self.assertFalse(self.manager.current.exists());self.assertFalse((self.manager.data/'applications').exists())
         self.assertEqual(self.state.read_bytes(),self.state_bytes)
+    def test_five_icon_theme_release_can_exceed_the_old_file_limit(self):
+        _,archive=self.release(extra=[(f'Ajanlaskut-ja-Saa/icons/{i}.svg','<svg/>') for i in range(2310)])
+        target=self.root/'extracted';target.mkdir()
+        self.assertEqual(updates.extract(archive,target),'1.2.1')
+        self.assertEqual(len(list((target/'icons').iterdir())),2310)
+        self.assertEqual(self.state.read_bytes(),self.state_bytes)
+    def test_file_count_limit_still_rejects_before_extracting_any_files(self):
+        _,archive=self.release(extra=[(f'Ajanlaskut-ja-Saa/icons/{i}.svg','<svg/>') for i in range(updates.MAX_FILES)])
+        target=self.root/'extracted';target.mkdir()
+        with self.assertRaisesRegex(ValueError,'liian suuri'):updates.extract(archive,target)
+        self.assertEqual(list(target.iterdir()),[])
     def test_install_and_idempotent_upgrade(self):
         self.assertEqual(self.install(),(True,'1.2.1'));target=self.manager.current.resolve()
         self.assertEqual(self.manager.installed()['version'],'1.2.1')

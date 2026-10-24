@@ -2,11 +2,13 @@
 
 ## Veri Aika, Oulun Otava ja Veriyö · 24.10.2026 · 1.12.0
 
-- Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **368 testiä läpäisi**.
+- Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **370 testiä läpäisi**.
   Viikkorajan testi kattaa sekunnit ennen klo 01:07:07 ja sen jälkeen,
   Suomen kesä- ja talviajan 167/169 tunnin viikot sekä toisessa
   aikavyöhykkeessä näytettävän kellon. Ennen vuorokausirajaa myös
   widgetin merkintä pysyy Veri Ajan alkupäivän mukaisena.
+  Laaja Qt-hyväksyntä läpäisi myös kaikki yhdeksän widgettiä, eri fontti-,
+  koko-, teema- ja näyttötapayhdistelmät sekä tallennus- ja palautusvirheet.
 - Oikean Qt-ohjaimen hyväksyntä tarkisti etusivun, viikkokalenterin,
   Kalenterit-valikon ohjauksen, kellon näyttötapojen tallentumisen,
   vanhojen asetusten täydentymisen ja erikseen piilotettavan tähtikuvan.
@@ -30,6 +32,9 @@
   Yr:n 24 ja FMI:n 26 tuntiennusteen TLS-haut mukana olevilla CA-varmenteilla
   läpäisivät. [Windows-ajo 40094226230](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40094226230).
   High contrast ohittaa tarvittaessa Veriyö-värit säilyttäen käyttäjän valinnan.
+- Käyttäjäasennuksen purkajan tiedostoraja on nyt 4096, jotta viides
+  kuvaketeema mahtuu mukaan. Yli 2000 tiedoston julkaisu ja rajan ylittävä
+  paketti testattiin; polku-, tiedostotyyppi- ja tavumäärärajat säilyvät.
 - Windowsin paikallinen ristipaketti tarkistettiin erikseen: x64 PE-käynnistin,
   kahdeksan lukittua lataustarkistetta, ZIP:n CRC sekä kaikkien 187
   lähdetiedoston vertailu. Jaetut Veri Ajan moduulit ja taustakuvat ovat

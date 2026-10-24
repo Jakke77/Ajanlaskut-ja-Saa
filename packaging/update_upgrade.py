@@ -25,6 +25,7 @@ MARKER = '# Ajanlaskut ja Sää · paikallinen käyttäjäasennus\n'
 REQUIRED = ('main.py','asaa/__init__.py','asaa/app.py','asaa/state.py','asaa/calendar.py','assets/icon.svg','LICENSE')
 MAX_ARCHIVE = 60_000_000
 MAX_EXPANDED = 120_000_000
+MAX_FILES = 4096  # Five icon themes plus application, tests and bundled artwork.
 
 def atomic(path, content, mode=0o600):
     path = Path(path);path.parent.mkdir(parents=True,exist_ok=True)
@@ -64,7 +65,7 @@ def extract(archive, stage):
     """No links, special files, traversal, duplicate paths or unbounded extraction."""
     with ZipFile(archive) as stream:
         entries=stream.infolist()
-        if len(entries)>2000 or sum(item.file_size for item in entries)>MAX_EXPANDED:
+        if len(entries)>MAX_FILES or sum(item.file_size for item in entries)>MAX_EXPANDED:
             raise ValueError('Julkaisu on liian suuri')
         seen=set()
         for item in entries:
