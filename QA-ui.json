@@ -1,0 +1,16 @@
+{
+  "version": "1.12.2",
+  "example_time": "2026-10-24T21:07:07+03:00",
+  "names": 1554,
+  "days": 777,
+  "columns": 7,
+  "rows": 5,
+  "small_window": [
+    1020,
+    720
+  ],
+  "horizontal_overflow": 0,
+  "calendar_switches_preserve_state": true,
+  "network": false,
+  "disposable_storage": true
+}

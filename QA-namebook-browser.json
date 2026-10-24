@@ -1,0 +1,27 @@
+{
+  "initial": 1554,
+  "lastDay": [
+    "Oksan",
+    "Oksanna"
+  ],
+  "leadingZeroDay": [
+    "Rubino",
+    "Rubina"
+  ],
+  "lastWeekCount": 14,
+  "meaningSearchCount": 252,
+  "emptyCount": 0,
+  "emptyMessage": true,
+  "resetCount": 1554,
+  "nameSearch": [
+    "Rubino",
+    "Rubinon",
+    "Rubinona",
+    "Rubinorin",
+    "Rubinorina"
+  ],
+  "overflow": false,
+  "width": 500,
+  "browser": "Qt WebEngine Chromium",
+  "full_catalog_names": 1554
+}
