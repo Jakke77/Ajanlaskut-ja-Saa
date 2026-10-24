@@ -1,0 +1,20 @@
+Qt acceptance exit code: 0
+
+PASS: clock selection, rotation, live draft preview, all content fields, calendar visibility and merge; weather untouched
+PASS: Ubuntu draft/save, shared palette/wallpaper, clock-only isolation, fonts, calendars, seconds and transparent background
+PASS: all 8 independent widget themes, shared followers, cross-page drafts, save failures and apply-to-all
+PASS: weather palette change preserves forecast/provider, timers, geometry and rotation without network or Windy reload
+PASS: clock display/digit drafts, persistence, field merges, failed writes and unrelated weather/wallpaper preservation
+PASS: digital, analogue and both modes in each palette; actual digit sizing, inheritance, font/calendar/seconds bounds
+PASS: all 8 widget text colors, native pixels, picker cancellation, saved inheritance, draft merges and failed-write retry
+PASS: independent digit colors for all 4 clocks, immediate previews, widget-color inheritance and quiet weather/wallpaper preservation
+PASS: font controls persist, three font families and all size limits fit without resizing or moving widgets
+PASS: independent windows, main/maximized/minimized/dialog priority; on-top preference preserved
+PASS: all 8 widgets resize independently, all edges/corners, locked positions, persistence, reset and Escape
+PASS: gallery, all widget shortcuts, desktop/lock separation, 77-minute slideshows and undo; no real GNOME writes
+PASS: wallpaper popup mouse choices work; missing Dia targets explain their limit, drafts survive refresh/reopen
+PASS: wallpaper success/error feedback stays visible at 1440x800; named theme action differs from selected gallery image
+PASS: Halla/Kupari follow by default, keep policy persists, desktop/lock scope and unchanged clock/widget geometry
+PASS: no startup/font/rotation wallpaper writes; failed settings/backend save restores both theme and backgrounds
+PASS: shared appearance, all 9 widgets, calendars, persistence and single-instance routing
+PASS: deliberate exit keeps widget selections unchanged

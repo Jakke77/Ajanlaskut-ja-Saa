@@ -1,0 +1,15 @@
+{
+  "version": "1.12.0",
+  "offline": true,
+  "example_time": "2026-10-24T15:30:15+03:00",
+  "minimum_window": [
+    1020,
+    720
+  ],
+  "all_10_navigation_visible": true,
+  "real_sky_stars": 7,
+  "widget_modes": "otava_both",
+  "day": "2. päivä · 18. viikko",
+  "old_state_migration": "covered by test_veri_integration",
+  "host_user_files_changed": false
+}
