@@ -13,11 +13,12 @@ from pathlib import Path
 import random
 import tempfile
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import Request
 from zoneinfo import ZoneInfo
 
 from .. import VERSION
 from ..platform_support import locked_file, weather_cache_directory
+from .network import urlopen, network_error, backoff_current, NETWORK_REVISION
 TZ = ZoneInfo("Europe/Helsinki")
 UTC = timezone.utc
 URL = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=65.0701&lon=25.5071"
@@ -155,7 +156,7 @@ class ForecastCache:
                 due = instant(state.get("next_request", ""))
             except (TypeError, ValueError):
                 due = now
-            if now < due:
+            if now < due and backoff_current(state):
                 cached = self.cached(now)
                 if cached:
                     return cached
@@ -197,11 +198,7 @@ class ForecastCache:
                 self.save(state)
                 return result
             except (OSError, URLError, ValueError, KeyError, TypeError, EOFError) as exc:
-                error = "Sääpalveluun ei saada yhteyttä"
-                if isinstance(exc, HTTPError):
-                    error += f" (HTTP {exc.code})"
-                elif isinstance(exc, ValueError):
-                    error = "Sääpalvelun ennustetta ei voitu lukea"
+                error = network_error(exc, 'Yr / MET Norway')
                 delay = timedelta(minutes=15)
                 if isinstance(exc, HTTPError) and exc.code in (429, 503):
                     retry = exc.headers.get("Retry-After", "")
@@ -214,7 +211,9 @@ class ForecastCache:
                             pass
                 if isinstance(exc, HTTPError):
                     exc.close()
-                state.update(url=self.url, error=error, next_request=(now + delay).isoformat())
+                state.update(url=self.url, error=error, next_request=(now + delay).isoformat(),
+                             network_revision=NETWORK_REVISION,
+                             http_status=exc.code if isinstance(exc, HTTPError) else None)
                 self.save(state)
                 cached = self.cached(now)
                 if cached:

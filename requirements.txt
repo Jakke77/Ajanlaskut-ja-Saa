@@ -1,2 +1,3 @@
 PyQt6>=6.8,<7
 PyQt6-WebEngine>=6.8,<7
+certifi>=2026.10.23; sys_platform == 'win32'

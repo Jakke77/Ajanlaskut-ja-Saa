@@ -47,15 +47,23 @@ jobs:
           $packageRoot = Get-ChildItem outputs/windows -Directory | Select-Object -First 1
           & "$($packageRoot.FullName)/runtime/python.exe" "$($packageRoot.FullName)/main.py" --self-test
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify Yr and FMI with bundled public CA certificates
+        shell: pwsh
+        run: |
+          $packageRoot = Get-ChildItem outputs/windows -Directory | Select-Object -First 1
+          & "$($packageRoot.FullName)/runtime/python.exe" -m asaa.weather.network_test --providers yr fmi --bundle-only
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Attach package to the private release draft
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $release = gh release view windows-v1.11.0 --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
+          $version = python -c "from asaa import VERSION; print(VERSION)"
+          $tag = "windows-v$version"
+          $release = gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
           if ($LASTEXITCODE -ne 0 -or -not $release.isDraft) { throw 'The expected release draft is missing.' }
-          gh release edit windows-v1.11.0 --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA
+          gh release edit $tag --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $packageZip = Get-ChildItem outputs/windows -Filter '*.zip' | Select-Object -First 1
-          gh release upload windows-v1.11.0 --repo $env:GITHUB_REPOSITORY $packageZip.FullName outputs/windows/SHA256SUMS --clobber
+          gh release upload $tag --repo $env:GITHUB_REPOSITORY $packageZip.FullName outputs/windows/SHA256SUMS --clobber
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

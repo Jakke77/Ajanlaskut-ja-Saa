@@ -12,10 +12,11 @@ from pathlib import Path
 import re
 from urllib.error import HTTPError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import Request
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 from ..platform_support import locked_file
+from .network import urlopen, network_error, backoff_current, NETWORK_REVISION
 from .forecast import (Forecast, ForecastCache, Hour, LOCATION, TZ, UTC, URL,
                       USER_AGENT, atomic_write, cache_directory, instant, number)
 
@@ -250,11 +251,12 @@ class SiteCache:
                 due = instant(state.get('next_request',''))
             except ValueError:
                 due = now
-            if now < due:
+            if now < due and backoff_current(state):
                 cached = self.cached(now)
                 if cached:
                     return cached
                 raise ValueError(state.get('error') or 'Odotetaan sääpalvelun päivitystä')
+            failure = None
             try:
                 with self.opener(self.request(now),timeout=15) as response:
                     body = response.read(2_000_001)
@@ -278,18 +280,22 @@ class SiteCache:
                         body = f'var page_settings = {{t:{epoch}}}; data_1h: {array}'
                 state.update(body=body,fetched=now.isoformat(),error='',next_request=(now+timedelta(minutes=30)).isoformat())
             except (OSError,ValueError,KeyError,TypeError,SyntaxError,ET.ParseError,AttributeError,OverflowError,IndexError) as exc:
+                failure = exc
                 delay = 30*60
                 if isinstance(exc,HTTPError):
                     try: delay = max(delay,int(exc.headers.get('Retry-After','0')))
                     except ValueError: pass
                     exc.close()
-                state.update(error=f'{NAMES[self.provider]}: ennustetta ei voitu hakea',next_request=(now+timedelta(seconds=delay)).isoformat())
+                state.update(error=network_error(exc,NAMES[self.provider]),
+                    next_request=(now+timedelta(seconds=delay)).isoformat(),
+                    network_revision=NETWORK_REVISION,
+                    http_status=exc.code if isinstance(exc,HTTPError) else None)
                 result = None
             state.update(location=self.place.key,provider=self.provider)
             atomic_write(self.path,json.dumps(state,ensure_ascii=False)+'\n')
             result = result or self.cached(now)
             if not result:
-                raise ValueError(state['error'])
+                raise ValueError(state['error']) from failure
             return result
 
 

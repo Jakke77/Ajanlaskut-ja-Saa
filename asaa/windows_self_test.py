@@ -13,7 +13,9 @@ def run_tests(app, preview_dir=None):
     from .app import Controller, request_existing
     from .state import State, DEFAULTS
     from . import platform_support, ui, theme
-    suite = unittest.defaultTestLoader.loadTestsFromName('tests.test_windows_support')
+    suite = unittest.defaultTestLoader.loadTestsFromNames([
+        'tests.test_windows_support', 'tests.test_weather_network',
+        'tests.test_forecast', 'tests.test_providers'])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if not result.wasSuccessful(): return 1
     # The same acceptance route also runs on Linux CI with Windows UI selection.

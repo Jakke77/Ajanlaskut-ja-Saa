@@ -80,6 +80,7 @@ def build(output, cache, zig):
     for filename, command in {
         'Vain-widgetit.cmd': 'start "" "%~dp0Ajanlaskut-ja-Saa.exe" --widgets-only',
         'Tarkista-toiminta.cmd': '"%~dp0runtime\\python.exe" "%~dp0main.py" --self-test\r\npause',
+        'Tarkista-verkkoyhteys.cmd': '"%~dp0runtime\\python.exe" -m asaa.weather.network_test\r\npause',
         'Luo-pikakuvakkeet.cmd': 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Luo-pikakuvakkeet.ps1"\r\npause',
     }.items():
         (stage / filename).write_bytes(('@echo off\r\n' + command + '\r\n').encode('utf-8'))

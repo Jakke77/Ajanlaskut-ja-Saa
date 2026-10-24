@@ -99,6 +99,12 @@ Lähde: https://pypi.org/project/tzdata/2026.2/
 
 Windows-nimi kuuluu Microsoftille. Sovellus on itsenäinen projekti.
 
+Windows 1.11.1 sisältää lisäksi certifi 2026.10.23:n muuttamattoman Mozilla
+CA -varmennekokoelman. Lisenssi MPL 2.0; tekstit ja alkuperätiedot säilytetään
+wheelin `certifi-2026.10.23.dist-info`-kansiossa. Varmenteita lisätään Windowsin
+oman luottamusvaraston rinnalle HTTPS-palvelimien todentamiseen.
+Lähde: https://pypi.org/project/certifi/2026.10.23/
+
 ## wttr.in
 
 Kolmen päivän Varjosää-ennuste: https://wttr.in/

@@ -1,11 +1,11 @@
-# Ajanlaskut ja Sää 1.11.0 · Windows 10
+# Ajanlaskut ja Sää 1.11.1 · Windows 10
 
 Windows 10:n **64-bittinen versio 1809 tai uudempi**. Paketti sisältää oman
 Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 
 ## Käynnistys
 
-1. Pura koko `Ajanlaskut-ja-Saa-1.11.0-Windows10-x64.zip` pysyvään kansioon,
+1. Pura koko `Ajanlaskut-ja-Saa-1.11.1-Windows10-x64.zip` pysyvään kansioon,
    esimerkiksi oman käyttäjäkansiosi Sovellukset-kansioon.
 2. Käynnistä **Ajanlaskut-ja-Saa.exe** puretusta kansiosta.
 3. Halutessasi aja **Luo-pikakuvakkeet.cmd**. Se lisää kaksi pikakuvaketta
@@ -59,6 +59,19 @@ säilyvät. Jos kansion polku muuttui, luo pikakuvakkeet uudelleen ja poista
 automaattikäynnistys käytöstä sekä ota se uudelleen käyttöön uudessa versiossa.
 
 ## Toiminnan tarkistus
+
+**Säähaun yhteydet · 1.11.1:** Windows-paketti sisältää nyt certifin Mozillan
+julkiset juurivarmenteet. Niitä käytetään Windowsin oman varmennevaraston lisäksi,
+jotta Yr:n ja Ilmatieteen laitoksen HTTPS-haku ei jää riippumaan siitä, mitkä
+juurivarmenteet Windowsiin on ennestään asennettu. Palvelimen ja osoitteen
+varmennus pysyy käytössä. Päivitys yrittää vanhat epäonnistuneet haut uudestaan;
+toimiva välimuisti ja palvelimen ilmoittamat hakurajoitukset säilyvät.
+
+**Tarkista-verkkoyhteys.cmd** kokeilee Yr:n, FMI:n ja Forecan oikeita hakuja
+Oulun Oinaansuon koordinaateilla tilapäiskansiossa. Se näyttää haettujen tuntien
+määrän tai virheen syyn. Käyttäjän asetuksiin ja säävälimuistiin ei kirjoiteta.
+Tämä tarkistus tarvitsee verkkoyhteyden. Sovelluksen virheviestit erottavat nyt
+varmennevirheen, aikakatkaisun, osoitteen selvitysvirheen ja HTTP-virhekoodin.
 
 **Tarkista-toiminta.cmd** ajaa eristetyt testit tilapäiskansiossa. Se tarkistaa
 Windows-teemat, kellot, aikavyöhykkeet, kalenterimerkinnät, välimuistin
