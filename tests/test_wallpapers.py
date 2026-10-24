@@ -166,7 +166,8 @@ class WallpaperTests(unittest.TestCase):
         bundle=Path(__file__).resolve().parents[1]/'assets/wallpapers'
         library=WallpaperLibrary(bundle,self.root/'assets-test')
         payload=json.loads((bundle/'catalog.json').read_text())
-        for theme in THEMES:
+        from asaa.platform_support import WINDOWS_THEMES
+        for theme in set(THEMES) - set(WINDOWS_THEMES):
             item=library.for_theme(theme)
             record=next(record for record in payload['wallpapers'] if record['theme']==theme)
             self.assertEqual(image_size(item.path),(record['width'],record['height']))

@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import sys
 import tempfile
+from .platform_support import IS_WINDOWS, windows_command
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -34,6 +35,16 @@ def write_atomic(path,text):
     finally:Path(name).unlink(missing_ok=True)
 
 def set_autostart(enabled):
+    if IS_WINDOWS:
+        import winreg
+        with winreg.CreateKey(winreg.HKEY_CURRENT_USER,
+                             r'Software\Microsoft\Windows\CurrentVersion\Run') as key:
+            if enabled:
+                winreg.SetValueEx(key, 'AjanlaskutJaSaa', 0, winreg.REG_SZ, windows_command(True))
+            else:
+                try: winreg.DeleteValue(key, 'AjanlaskutJaSaa')
+                except FileNotFoundError: pass
+        return
     config=Path(os.environ.get('XDG_CONFIG_HOME',str(Path.home()/'.config')))
     path=config/'autostart/ajanlaskut-ja-saa.desktop'
     text=entry(True)

@@ -5,7 +5,6 @@ import argparse
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
-import fcntl
 import gzip
 import json
 import math
@@ -18,6 +17,7 @@ from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
 from .. import VERSION
+from ..platform_support import locked_file, weather_cache_directory
 TZ = ZoneInfo("Europe/Helsinki")
 UTC = timezone.utc
 URL = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=65.0701&lon=25.5071"
@@ -104,7 +104,7 @@ def parse_forecast(payload: dict, fetched: datetime, now: datetime | None = None
 
 
 def cache_directory() -> Path:
-    return Path(os.environ.get("XDG_CACHE_HOME", str(Path.home() / ".cache"))) / "pollonkangas-saa"
+    return weather_cache_directory()
 
 
 def atomic_write(path: Path, content: str) -> None:
@@ -149,8 +149,7 @@ class ForecastCache:
         now = now or datetime.now(UTC)
         self.directory.mkdir(parents=True, exist_ok=True)
         # Widget and Conky serialize requests and share the same response.
-        with self.path.with_suffix(".lock").open("a") as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
+        with locked_file(self.path.with_suffix('.lock')):
             state = self.read()
             try:
                 due = instant(state.get("next_request", ""))

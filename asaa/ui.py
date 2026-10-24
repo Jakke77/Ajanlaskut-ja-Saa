@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QFrame, QLabel, QPushButton, 
     QTimeEdit, QMessageBox, QLineEdit, QSizePolicy, QButtonGroup, QSplitter)
 from .calendar import NAMES, MONTHS, WEEKDAYS
 from .models import shadow, star
-from .theme import THEMES, THEME_LABELS, paint_panel
+from .theme import THEMES, THEME_LABELS, paint_panel, available_themes
 from .state import DEFAULTS
 from . import almanac
 from . import VERSION
@@ -19,6 +19,7 @@ from .widget_themes import widget_theme, widget_theme_choices, widget_theme_sele
 from .color_control import ColorControl
 from .weather.providers import NAMES as SOURCES, slots, aligned, common_scales
 from .weather.windy_view import WindyView, WeatherWebView
+from .platform_support import IS_WINDOWS
 
 def label(value, name=None, wrap=False):
     item = QLabel(value)
@@ -487,11 +488,14 @@ class SettingsPage(QWidget):
         heading.addWidget(button('Tallenna',self.save,True));layout.addLayout(heading)
         appearance,form_box=card();form_box.addWidget(label('Ulkoasu ja työpöytä','eyebrow'));form=QFormLayout();form.setSpacing(12)
         self.theme=QComboBox()
-        for key,title in THEME_LABELS.items():self.theme.addItem(title,key)
+        for key in available_themes():self.theme.addItem(THEME_LABELS[key],key)
         self.all_widgets_theme=QCheckBox('Käytä valittua teemaa kaikissa widgeteissä')
         self.all_widgets_theme.setToolTip('Tallennettaessa widgettien omat teemavalinnat korvataan yhteisellä teemalla.')
         from .wallpaper_options import ThemeWallpaperOptions,IconThemeActions
-        self.wallpaper_options=ThemeWallpaperOptions(controller)
+        if IS_WINDOWS:
+            from .windows_ui import WindowsThemeOptions
+            self.wallpaper_options=WindowsThemeOptions(controller)
+        else:self.wallpaper_options=ThemeWallpaperOptions(controller)
         self.font=QFontComboBox();self.scale=QSpinBox();self.scale.setRange(60,150);self.scale.setSuffix(' %')
         self.scale.setToolTip('Oletuskoko widgeteille, joille ei ole vedetty omaa kokoa. Palauta yksittäisen widgetin oletuskoko sen oikean painikkeen valikosta.')
         self.text_scale=QSpinBox();self.text_scale.setRange(80,160);self.text_scale.setSuffix(' %')
@@ -513,9 +517,10 @@ class SettingsPage(QWidget):
         self.sound=QCheckBox('Soita huhuilu muistutuksen yhteydessä');self.autostart=QCheckBox('Avaa valitut widgetit kirjautuessa')
         for item in [self.seconds,self.locked,self.top,self.clock_weather,self.sound,self.autostart]:form.addRow('',item)
         form_box.addLayout(form);layout.addWidget(appearance)
-        icons,icon_box=card();self.icon_actions=IconThemeActions(controller)
-        icon_box.addWidget(self.icon_actions);layout.addWidget(icons)
-        layout.addWidget(button('Taustakuvat · työpöytä ja lukitusnäyttö',lambda:controller.open_page('wallpapers')))
+        if not IS_WINDOWS:
+            icons,icon_box=card();self.icon_actions=IconThemeActions(controller)
+            icon_box.addWidget(self.icon_actions);layout.addWidget(icons)
+        layout.addWidget(button('Windowsin ulkoasu' if IS_WINDOWS else 'Taustakuvat · työpöytä ja lukitusnäyttö',lambda:controller.open_page('wallpapers')))
         layout.addWidget(button('Ajanlaskut ja kellojen näkyvä sisältö',lambda:controller.open_page('clocks')))
         layout.addWidget(button('Widgettien omat teemavalinnat',lambda:controller.open_page('widgets')))
         weather,box=card();box.addWidget(label('Aika ja sää','eyebrow'));form=QFormLayout();form.setSpacing(12)
@@ -528,6 +533,9 @@ class SettingsPage(QWidget):
         self.place=label('','muted',True)
         for word,item in [('Aikavyöhyke',self.zone),('Sään hakuväli',self.refresh),('Tähtiajan päivänimet',self.side),('Windyn kerros',self.layer),('Windyn zoomaus',self.zoom),('Yhteinen sääpaikka',self.place)]:form.addRow(word,item)
         box.addLayout(form);box.addWidget(button('Vaihda sääpaikkaa',controller.weather.open_place));layout.addWidget(weather)
+        if IS_WINDOWS:
+            from .windows_ui import add_time_settings
+            add_time_settings(box)
         self.status=label('','muted',True);layout.addWidget(self.status)
         row=QHBoxLayout();row.addWidget(button('Palauta ulkoasun oletukset',self.reset));row.addStretch(1)
         row.addWidget(button('Tallenna asetukset',self.save,True));layout.addLayout(row)
@@ -545,12 +553,11 @@ class SettingsPage(QWidget):
         for item,key in [(self.seconds,'seconds'),(self.locked,'locked'),(self.top,'on_top'),(self.clock_weather,'clock_weather'),(self.sound,'sound'),(self.autostart,'autostart')]:item.setChecked(options[key])
         self.place.setText(options['place']['name'])
     def reset(self):
-        self.theme.setCurrentIndex(0);self.font.setCurrentFont(QFont('Ubuntu'));self.scale.setValue(77);self.opacity.setValue(77)
+        self.theme.setCurrentIndex(self.theme.findData(DEFAULTS['theme']));self.font.setCurrentFont(QFont(DEFAULTS['font']));self.scale.setValue(77);self.opacity.setValue(77)
         self.text_scale.setValue(DEFAULTS['widget_text_scale']);self.clock_scale.setValue(DEFAULTS['widget_clock_scale'])
         self.seconds.setChecked(True);self.locked.setChecked(False);self.top.setChecked(False)
         self.all_widgets_theme.setChecked(False)
-        self.wallpaper_options.behavior.setCurrentIndex(0);self.wallpaper_options.target.setCurrentIndex(0)
-        self.wallpaper_options.icon_behavior.setCurrentIndex(self.wallpaper_options.icon_behavior.findData(False))
+        self.wallpaper_options.reset()
     def save(self):
         changes={'theme':self.theme.currentData(),'font':self.font.currentFont().family(),'scale':self.scale.value(),'opacity':self.opacity.value(),
             'widget_text_scale':self.text_scale.value(),'widget_clock_scale':self.clock_scale.value(),
@@ -583,6 +590,7 @@ class MainWindow(QMainWindow):
         side.addWidget(label('AJANLASKUT\nJA SÄÄ','eyebrow'));side.addWidget(label('Oma hetki. Omat kalenterit.','muted',True));side.addSpacing(22)
         self.navigation={};group=QButtonGroup(self);group.setExclusive(True)
         for key,title in [('overview','◉  Yleiskatsaus'),('calendar','▦  Kalenterit'),('sunmoon','☼  Valo ja aurinko'),('names','✧  Nimikalenterit'),('clocks','◷  Ajanlaskuwidgetit'),('weather','☁  Sää'),('widgets','◫  Työpöytäwidgetit'),('wallpapers','▧  Taustakuvat'),('settings','⚙  Asetukset')]:
+            if IS_WINDOWS and key=='wallpapers':title='▧  Windowsin ulkoasu'
             item=button(title,lambda _,k=key:self.show_page(k));item.setObjectName('nav');item.setCheckable(True);group.addButton(item);side.addWidget(item);self.navigation[key]=item
         side.addStretch(1);self.theme_title=label('','eyebrow',True);side.addWidget(self.theme_title)
         controller.settings_changed.connect(self.sync_theme);self.sync_theme()
@@ -590,7 +598,9 @@ class MainWindow(QMainWindow):
         side.addWidget(button('Lopeta sovellus',controller.quit));outer.addWidget(sidebar)
         content=QWidget();body=QVBoxLayout(content);body.setContentsMargins(26,24,26,18);body.setSpacing(16)
         self.pages=QStackedWidget();self.page_widgets={};self.page_indices={}
-        from .wallpaper_ui import WallpapersPage
+        if IS_WINDOWS:
+            from .windows_ui import WindowsAppearancePage as WallpapersPage
+        else:from .wallpaper_ui import WallpapersPage
         from .clock_ui import ClocksPage
         from .celestial_ui import CelestialPage, NamesPage
         for key,page in [('overview',OverviewPage(controller)),('calendar',CalendarPage(controller)),('sunmoon',CelestialPage(controller)),('names',NamesPage(controller)),('clocks',ClocksPage(controller)),('weather',WeatherPage(controller)),('widgets',WidgetsPage(controller)),('wallpapers',WallpapersPage(controller)),('settings',SettingsPage(controller))]:

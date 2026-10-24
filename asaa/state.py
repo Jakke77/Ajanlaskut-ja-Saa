@@ -10,13 +10,15 @@ import uuid
 from zoneinfo import ZoneInfo
 from .clock_config import SYSTEMS, PROFILE_KEYS, FIELD_LABELS, DEFAULT_PROFILES
 from .almanac import SPECS
+from .platform_support import IS_WINDOWS, WINDOWS_THEMES, app_data_directory
 
 DEFAULTS = {
-    'theme': 'copper', 'font': 'Ubuntu', 'scale': 77, 'opacity': 77,
+    'theme': 'windows_system' if IS_WINDOWS else 'copper',
+    'font': 'Segoe UI' if IS_WINDOWS else 'Ubuntu', 'scale': 77, 'opacity': 77,
     'widget_text_scale': 130, 'widget_clock_scale': 100,
     'wallpaper_directory': '', 'wallpaper_mode': 'single',
     'wallpaper_interval': 77, 'wallpaper_shuffle': True,
-    'wallpaper_follow_theme': True, 'wallpaper_theme_target': 'desktop',
+    'wallpaper_follow_theme': not IS_WINDOWS, 'wallpaper_theme_target': 'desktop',
     'icon_follow_theme': False,
     'time_mode': 'cycle', 'time_system': 'shadow', 'time_systems': list(SYSTEMS),
     'time_interval': 77, 'time_theme': 'shared', 'clock_profiles': copy.deepcopy(DEFAULT_PROFILES),
@@ -34,7 +36,7 @@ DEFAULTS = {
 }
 
 def data_directory():
-    return Path(os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share'))) / 'ajanlaskut-ja-saa'
+    return app_data_directory()
 
 def atomic_json(path, value):
     path = Path(path)
@@ -86,15 +88,15 @@ class State:
         if data.get('version') != 1: raise ValueError('Tuntematon asetustiedosto')
         settings = data['settings']
         ZoneInfo(settings['zone'])
-        if settings['theme'] not in ('copper', 'frost', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon teema')
+        if settings['theme'] not in ('copper', 'frost', 'ubuntu', 'ubuntu2610_dark', *WINDOWS_THEMES): raise ValueError('Tuntematon teema')
         if settings['time_mode'] not in ('fixed', 'cycle', 'random'): raise ValueError('Tuntematon ajanlaskun vaihtotapa')
         if settings['time_system'] not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')
-        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon kelloteema')
+        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu', 'ubuntu2610_dark', *WINDOWS_THEMES): raise ValueError('Tuntematon kelloteema')
         widget_themes = settings.get('widget_themes', {})
         if not isinstance(widget_themes, dict): raise ValueError('Virheelliset widgettiteemat')
         for key, selection in widget_themes.items():
             if (key not in DEFAULTS['widgets'] or not isinstance(selection, str)
-                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'calendar')
+                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'calendar', *WINDOWS_THEMES)
                 or selection == 'calendar' and key not in PROFILE_KEYS):
                 raise ValueError('Tuntematon widgettiteema')
         widget_text_colors = settings.get('widget_text_colors', {})

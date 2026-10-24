@@ -4,6 +4,7 @@ from PyQt6.QtGui import QColor,QDesktopServices
 from PyQt6.QtWidgets import QWidget,QVBoxLayout,QLabel,QPushButton,QSizePolicy
 from .web_sources import map_url, source_url
 from .radar_focus import RadarFocus
+from ..platform_support import IS_WINDOWS
 
 try:
     from PyQt6.QtWebEngineCore import QWebEnginePage,QWebEngineProfile,QWebEngineSettings
@@ -54,21 +55,21 @@ class WindyView(QWidget):
             self.view.setContextMenuPolicy(__import__('PyQt6.QtCore',fromlist=['Qt']).Qt.ContextMenuPolicy.NoContextMenu)
             layout.addWidget(self.view)
             self.status = QLabel('Ladataan Windyn karttaa…')
-            self.status.setStyleSheet('color:#dcc2b0;background:#171720;padding:6px;')
+            if not IS_WINDOWS:self.status.setStyleSheet('color:#dcc2b0;background:#171720;padding:6px;')
             layout.addWidget(self.status)
             self.view.loadStarted.connect(self.loading_started)
             self.view.loadFinished.connect(self.loaded)
         else:
             self.fallback_label=QLabel()
             self.fallback_label.setWordWrap(True)
-            self.fallback_label.setStyleSheet('color:#e7c8b3;padding:24px;')
+            if not IS_WINDOWS:self.fallback_label.setStyleSheet('color:#e7c8b3;padding:24px;')
             layout.addWidget(self.fallback_label)
         self.retry_button = QPushButton('Yritä uudelleen')
         self.retry_button.clicked.connect(self.retry)
         self.retry_button.hide()
         layout.addWidget(self.retry_button)
         self.browser_button = QPushButton('Avaa Windy selaimessa')
-        self.browser_button.setStyleSheet('color:#e8cbb9;background:#211b23;border:1px solid #715246;padding:5px;')
+        if not IS_WINDOWS:self.browser_button.setStyleSheet('color:#e8cbb9;background:#211b23;border:1px solid #715246;padding:5px;')
         self.browser_button.clicked.connect(self.open_browser)
         self.browser_button.setEnabled(False)
         layout.addWidget(self.browser_button)
@@ -83,8 +84,9 @@ class WindyView(QWidget):
                 self.status.setText(f'Ladataan {loading}…')
         else:
             self.fallback_label.setText(
-                f'{title} tarvitsee Qt WebEngine -lisäosan.\n'
-                'Asenna sovelluksen .deb-paketti tai requirements.txt:n riippuvuudet.\n'
+                f'{title} tarvitsee Qt WebEngine -lisäosan.\n' +
+                ('Pura Windows-paketti uudelleen kokonaisuudessaan.\n' if IS_WINDOWS else
+                 'Asenna sovelluksen .deb-paketti tai requirements.txt:n riippuvuudet.\n') +
                 'Voit avata saman näkymän selaimeen alla olevasta painikkeesta.'
                 if self._network else f'{brand} · {kind} (verkkohaku pois testissä)')
 

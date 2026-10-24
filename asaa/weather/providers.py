@@ -3,7 +3,6 @@ from __future__ import annotations
 import ast
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
-import fcntl
 from functools import partial
 import gzip
 import hashlib
@@ -16,6 +15,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
+from ..platform_support import locked_file
 from .forecast import (Forecast, ForecastCache, Hour, LOCATION, TZ, UTC, URL,
                       USER_AGENT, atomic_write, cache_directory, instant, number)
 
@@ -216,7 +216,7 @@ class SiteCache:
 
     def read(self):
         try:
-            state = json.loads(self.path.read_text())
+            state = json.loads(self.path.read_text(encoding='utf-8'))
             return state if state.get('location') == self.place.key and state.get('provider') == self.provider else {}
         except (OSError,ValueError,AttributeError):
             return {}
@@ -244,8 +244,7 @@ class SiteCache:
     def fetch(self, now=None):
         now = now or datetime.now(UTC)
         self.directory.mkdir(parents=True,exist_ok=True)
-        with self.path.with_suffix('.lock').open('a') as lock:
-            fcntl.flock(lock,fcntl.LOCK_EX)
+        with locked_file(self.path.with_suffix('.lock')):
             state = self.read()
             try:
                 due = instant(state.get('next_request',''))

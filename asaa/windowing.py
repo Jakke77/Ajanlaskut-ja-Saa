@@ -3,8 +3,9 @@ from functools import lru_cache
 import ctypes as C
 from PyQt6.QtCore import QObject, QEvent, QTimer, Qt, QRect, QSize
 from PyQt6.QtWidgets import QApplication, QDialog
+from .platform_support import IS_WINDOWS
 
-DESKTOP_FLAGS=Qt.WindowType.Window|Qt.WindowType.FramelessWindowHint
+DESKTOP_FLAGS=(Qt.WindowType.Tool if IS_WINDOWS else Qt.WindowType.Window)|Qt.WindowType.FramelessWindowHint
 
 class ClientData(C.Union):
     _fields_=[('b',C.c_char*20),('s',C.c_short*10),('l',C.c_long*5)]

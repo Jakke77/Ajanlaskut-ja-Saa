@@ -22,6 +22,7 @@ from .clock_config import ClockRotation, SYSTEMS, PROFILE_KEYS
 from .windowing import WindowLayers
 from . import VERSION
 from .about import AboutDialog
+from .platform_support import IS_WINDOWS, WINDOWS_THEMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -54,6 +55,10 @@ class Controller(QObject):
         self.widgets['weather']=self.weather
         from .ui import MainWindow
         self.window=MainWindow(self)
+        self.appearance_watcher=None
+        if IS_WINDOWS:
+            from .windows_appearance import WindowsAppearanceWatcher
+            self.appearance_watcher=WindowsAppearanceWatcher(self)
         self.tick_timer=QTimer(self);self.tick_timer.timeout.connect(self.tick);self.tick_timer.start(1000)
         if QSystemTrayIcon.isSystemTrayAvailable():
             self.tray=QSystemTrayIcon(self.icon,self)
@@ -126,11 +131,11 @@ class Controller(QObject):
         # commit, so a failure restores the icons, background and settings.
         shared_theme_changed=options['theme']!=before['theme']
         def commit_icons():
-            if shared_theme_changed and options['icon_follow_theme']:
+            if shared_theme_changed and options['icon_follow_theme'] and not IS_WINDOWS and options['theme'] not in WINDOWS_THEMES:
                 self.icon_themes.apply(options['theme'],commit=commit)
             else:commit()
         # No startup, fonts, per-widget changes or rotation trigger a write.
-        if shared_theme_changed and options['wallpaper_follow_theme']:
+        if shared_theme_changed and options['wallpaper_follow_theme'] and not IS_WINDOWS and options['theme'] not in WINDOWS_THEMES:
             picture=self.wallpapers.library.for_theme(options['theme'])
             self.wallpapers.apply([picture.path],options['wallpaper_theme_target'],commit=commit_icons)
         else:commit_icons()
@@ -292,6 +297,7 @@ class Controller(QObject):
 
     def shutdown(self):
         if self.stopping:return
+        if self.appearance_watcher:self.appearance_watcher.shutdown()
         self.stopping=True;self.layers.shutdown();self.tick_timer.stop();self.daily.shutdown()
         self.weather.shutdown()
         page=self.window.page_widgets['weather']
@@ -307,6 +313,9 @@ def run(args):
     app=QApplication([sys.argv[0]])
     app.setApplicationDisplayName('Ajanlaskut ja Sää');app.setStyle('Fusion');app.setQuitOnLastWindowClosed(False)
     if args.self_test:
+        if IS_WINDOWS:
+            from .windows_self_test import run_tests
+            return run_tests(app,args.preview_dir)
         from .self_test import run_tests
         return run_tests(app,args.preview_dir)
     path=args.data_dir/'state.json' if args.data_dir else data_directory()/'state.json'

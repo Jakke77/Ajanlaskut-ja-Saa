@@ -74,9 +74,30 @@ https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html#license
 Qt: The Qt Company ja muut tekijät, moduulikohtaiset lisenssit.
 https://www.qt.io/licensing/
 
-Oman koodin MIT-lisenssi ei muuta riippuvuuksien lisenssejä. Tässä toimitetaan
-lähdekoodi, ei PyQt6-/Qt-binaaripakettia. Jos julkaiset myöhemmin asennuspaketin
-tai AppImagen, sisällytä myös riippuvuuksien vaaditut lisenssit ja lähdekooditiedot.
+Oman koodin MIT-lisenssi ei muuta riippuvuuksien lisenssejä. Windows 1.11.0
+toimittaa PyQt6 6.8.1:n, PyQt6-WebEngine 6.8.0:n, Qt 6.8.2:n ja SIP 13.10.2:n
+muuttamattomat Windows-wheelit. Wheelien lisenssit ja metatiedot säilytetään
+`runtime/Lib/site-packages`-kansiossa. Qt WebEnginen Chromiumin
+kolmansien osapuolten tekstit ovat Qt-jakelun mukana.
+
+Julkaisujen lähdekoodit ja lisenssit:
+
+- PyQt6 6.8.1: https://pypi.org/project/PyQt6/6.8.1/#files
+- PyQt6-WebEngine 6.8.0: https://pypi.org/project/PyQt6-WebEngine/6.8.0/#files
+- SIP 13.10.2: https://pypi.org/project/PyQt6-sip/13.10.2/#files
+- Qt 6.8.2: https://download.qt.io/archive/qt/6.8/6.8.2/single/
+
+## Windowsin mukana toimitettava Python ja aikavyöhykkeet
+
+CPython 3.12.10, Python Software Foundation ja muut tekijät. Muuttamaton
+Windows x64 embeddable -jakelu; lisenssi `runtime/LICENSE.txt`.
+Lähdekoodi: https://www.python.org/downloads/release/python-31210/
+
+tzdata 2026.2, Python Software Foundation ja IANA-tietokannan tekijät.
+Lisenssit ja lähdetiedot säilytetään wheelin dist-info-kansiossa.
+Lähde: https://pypi.org/project/tzdata/2026.2/
+
+Windows-nimi kuuluu Microsoftille. Sovellus on itsenäinen projekti.
 
 ## wttr.in
 

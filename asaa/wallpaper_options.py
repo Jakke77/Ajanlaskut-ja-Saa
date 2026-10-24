@@ -80,6 +80,10 @@ class ThemeWallpaperOptions(QWidget):
                 'wallpaper_theme_target':self.target.currentData(),
                 'icon_follow_theme':self.icon_behavior.currentData()}
 
+    def reset(self):
+        self.behavior.setCurrentIndex(0);self.target.setCurrentIndex(0)
+        self.icon_behavior.setCurrentIndex(self.icon_behavior.findData(False))
+
 
 class IconThemeActions(QWidget):
     """Immediate desktop operations never save either page's policy drafts."""

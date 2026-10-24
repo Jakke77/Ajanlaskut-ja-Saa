@@ -192,6 +192,10 @@ class WeatherWidget(QWidget):
         self.expand_button.setIcon(QIcon(str(ROOT / 'assets/expand.svg')))
         self.add_button('Hae', 'Hae ennustepaikka', self.open_place, (550,20,52,28))
         self.locate_button = self.add_button('◎', 'Käytä laitteen sijaintia', self.locate, (608,20,32,28))
+        from ..platform_support import IS_WINDOWS
+        if IS_WINDOWS:
+            self.locate_button.setToolTip('Hae sääpaikka nimellä')
+            self.locate_button.setAccessibleName('Hae sääpaikka nimellä')
         self.add_button('⚙', 'Asetukset', self.open_settings, (648,20,32,28))
         self.apply_options(read_options(settings))
         self.restore_position()
@@ -485,6 +489,10 @@ class WeatherWidget(QWidget):
             self.set_place(dialog.place)
 
     def locate(self):
+        from ..platform_support import IS_WINDOWS
+        if IS_WINDOWS:
+            self.open_place()
+            return
         if self.portal and self.portal.active: return
         answer = QMessageBox.question(self,'Käytä laitteen sijaintia',
             'Saako widget hakea laitteen sijainnin tätä ennustetta varten?\n\n'

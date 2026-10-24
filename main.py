@@ -17,6 +17,9 @@ def main():
     from asaa import VERSION
     parser.add_argument('--version',action='version',version='Ajanlaskut ja Sää '+VERSION)
     args=parser.parse_args()
+    if sys.platform == 'win32':
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Jakke77.AjanlaskutJaSaa')
     if args.self_test:os.environ.setdefault('QT_QPA_PLATFORM','offscreen')
     elif sys.platform.startswith('linux') and os.environ.get('DISPLAY'):os.environ.setdefault('QT_QPA_PLATFORM','xcb')
     from PyQt6.QtCore import QCoreApplication,Qt

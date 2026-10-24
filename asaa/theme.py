@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from math import cos, radians, sin
 from PyQt6.QtCore import Qt, QRectF, QPointF
 from PyQt6.QtGui import QColor, QFont, QPalette, QLinearGradient, QPen
+from .platform_support import IS_WINDOWS, WINDOWS_THEMES
 
 @dataclass(frozen=True)
 class Theme:
@@ -25,6 +26,24 @@ THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu',
 THEME_LABELS = {'copper': 'Kupari · Pöllönkankaan sää', 'frost': 'Halla · yön sininen',
                 'ubuntu': 'Ubuntu · oranssi ja munakoiso',
                 'ubuntu2610_dark': 'Ubuntu 26.10 Dark'}
+THEME_NAMES.update({'windows_system': 'Windows · järjestelmän teema',
+                    'windows_light': 'Windows · vaalea', 'windows_dark': 'Windows · tumma'})
+THEME_LABELS.update({key: THEME_NAMES[key] for key in WINDOWS_THEMES})
+
+
+def refresh_windows_themes():
+    from .windows_appearance import windows_colors
+    colors = {key: Theme(**windows_colors(key)) for key in WINDOWS_THEMES}
+    changed = any(THEMES.get(key) != value for key, value in colors.items())
+    THEMES.update(colors)
+    return changed
+
+
+def available_themes():
+    return WINDOWS_THEMES if IS_WINDOWS else tuple(key for key in THEMES if key not in WINDOWS_THEMES)
+
+
+refresh_windows_themes()
 
 # Clock-only tokens: never replace the shared palette of the standalone weather graph.
 CALENDAR_THEMES = {
@@ -35,6 +54,8 @@ CALENDAR_THEMES = {
 CALENDAR_THEME_NAMES = {'shadow': 'Kupari', 'star': 'Astraali', 'civil': 'Aamunkajo'}
 
 def apply_theme(app, options):
+    if options['theme'] in WINDOWS_THEMES:
+        refresh_windows_themes()
     theme = THEMES[options['theme']]
     font=QFont(options['font']);font.setPixelSize(13);app.setFont(font)
     palette = QPalette()
@@ -43,6 +64,34 @@ def apply_theme(app, options):
                         ('Highlight', theme.accent), ('HighlightedText', theme.background)]:
         palette.setColor(getattr(QPalette.ColorRole, role), QColor(value))
     app.setPalette(palette)
+    if theme.motif == 'windows':
+        from PyQt6.QtWidgets import QStyleFactory
+        dark = QColor(theme.background).lightnessF() < .5
+        styles = {name.lower(): name for name in QStyleFactory.keys()}
+        style = styles.get('windowsvista', 'Fusion') if not dark else 'Fusion'
+        if app.style().objectName().lower() != style.lower():
+            app.setStyle(style)
+        # Native controls handle hover, focus, checkmarks and disabled states.
+        palette.setColor(QPalette.ColorRole.HighlightedText,
+                         QColor('#000000' if QColor(theme.accent).lightnessF() > .6 else '#ffffff'))
+        palette.setColor(QPalette.ColorRole.AlternateBase, QColor(theme.background))
+        palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(theme.surface))
+        palette.setColor(QPalette.ColorRole.ToolTipText, QColor(theme.text))
+        for role in (QPalette.ColorRole.WindowText, QPalette.ColorRole.Text, QPalette.ColorRole.ButtonText):
+            palette.setColor(QPalette.ColorGroup.Disabled, role, QColor(theme.muted))
+        app.setPalette(palette)
+        app.setStyleSheet(f'''
+QLabel#muted {{ color: {theme.muted}; }}
+QLabel#eyebrow {{ color: {theme.text}; font-size: 11px; font-weight: bold; }}
+QLabel#heading {{ font-size: 27px; font-weight: bold; }}
+QLabel#clock {{ font-size: 48px; font-weight: bold; }}
+QFrame#card, QFrame#sidebar {{ background: {theme.surface}; border: 1px solid {theme.border}; }}
+QPushButton#nav {{ text-align: left; padding: 10px 14px; }}
+QPushButton#primary {{ font-weight: bold; }}
+QScrollArea {{ border: 0; }}
+''')
+        return
+    if app.style().objectName().lower() != 'fusion': app.setStyle('Fusion')
     app.setStyleSheet(f'''
 QMainWindow, QDialog {{ background: {theme.background}; }}
 QWidget {{ color: {theme.text}; }}
@@ -76,6 +125,12 @@ QListWidget::item {{ padding: 8px; }}
 
 def paint_panel(p, rect, theme, opacity=1):
     p.save()
+    if theme.motif == 'windows':
+        color = QColor(theme.surface); color.setAlphaF(opacity)
+        border = QColor(theme.border); border.setAlphaF(opacity)
+        p.setBrush(color); p.setPen(QPen(border, 1))
+        p.drawRect(rect.adjusted(.5, .5, -.5, -.5)); p.restore()
+        return
     gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
     for at, value in [(0, theme.surface), (1, theme.background)]:
         color = QColor(value); color.setAlphaF(opacity); gradient.setColorAt(at, color)

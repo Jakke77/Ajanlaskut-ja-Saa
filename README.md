@@ -1,5 +1,9 @@
 # Ajanlaskut ja Sää
 
+**Windows 10 x64 -versio 1.11.0:** [käynnistys, Windowsin omat teemat ja MIKES-aika](WINDOWS.md).
+Purettava paketti sisältää tarvittavat kirjastot. Oletuksena Windowsin järjestelmäteema
+ja Segoe UI; kellot käyttävät Windowsin valmiiksi synkronoimaa aikaa.
+
 **Uusin asennuspaketti: [1.10.0 · Kuu, nimikalenterit ja päivän valo](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai

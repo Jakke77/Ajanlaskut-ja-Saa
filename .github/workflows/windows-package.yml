@@ -1,0 +1,61 @@
+name: Windows package and download
+
+on:
+  push:
+    branches: [codex/windows-10]
+    paths:
+      - 'asaa/**'
+      - 'assets/**'
+      - 'vendor/**'
+      - 'tests/**'
+      - 'packaging/windows/**'
+      - 'packaging/build_windows.py'
+      - 'main.py'
+      - 'WINDOWS.md'
+      - '.github/workflows/windows-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows-package:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download pinned dependencies
+        shell: pwsh
+        run: |
+          python -m pip install ziglang==0.15.2
+          python -m pip download --dest downloads --platform win_amd64 --python-version 312 --implementation cp --abi cp312 --only-binary=:all: -r packaging/windows/requirements.txt
+          python -c "import urllib.request; urllib.request.urlretrieve('https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip', 'downloads/python-3.12.10-embed-amd64.zip')"
+      - name: Build Windows package
+        shell: pwsh
+        run: |
+          $zigPath = python -c "import ziglang; from pathlib import Path; print(Path(ziglang.__file__).with_name('zig.exe'))"
+          python packaging/build_windows.py --output outputs/windows --cache downloads --zig $zigPath
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test packaged Windows runtime
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          $packageRoot = Get-ChildItem outputs/windows -Directory | Select-Object -First 1
+          & "$($packageRoot.FullName)/runtime/python.exe" "$($packageRoot.FullName)/main.py" --self-test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Attach package to the private release draft
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $release = gh release view windows-v1.11.0 --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or -not $release.isDraft) { throw 'The expected release draft is missing.' }
+          gh release edit windows-v1.11.0 --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $packageZip = Get-ChildItem outputs/windows -Filter '*.zip' | Select-Object -First 1
+          gh release upload windows-v1.11.0 --repo $env:GITHUB_REPOSITORY $packageZip.FullName outputs/windows/SHA256SUMS --clobber
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

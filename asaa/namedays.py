@@ -21,7 +21,7 @@ class NamePair:
 @lru_cache(maxsize=1)
 def catalog():
     path = Path(__file__).resolve().parents[1] / 'assets/calendar-names.json'
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding='utf-8'))
     if data['schema'] != 1:
         raise ValueError('Tuntematon nimikalenterin versio.')
     return {key: tuple(NamePair(*pair) for pair in pairs)
