@@ -9,7 +9,7 @@ from PyQt6.QtGui import QColor, QDesktopServices, QPainter, QPainterPath, QPen
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout,
     QDateEdit, QTabWidget, QTableWidget, QTableWidgetItem, QHeaderView,
-    QAbstractItemView)
+    QAbstractItemView, QSizePolicy)
 
 from .astronomy import (moon_at, moon_on, solar_day, lunar_day, phase_events,
                         event_label, duration_label)
@@ -18,6 +18,7 @@ from .namedays import names_for_day, names_at, cycle_position
 from . import blood_time, blood_names
 from .models import shadow, star
 from .theme import THEMES
+from .platform_support import IS_WINDOWS
 from .ui import button, card, label
 
 
@@ -347,6 +348,8 @@ class NamesPage(QWidget):
                 civil=item.period.start+timedelta(days=offset)
                 action=button(f'{offset+1}\n{civil:%d.%m.}',lambda _,d=civil:self.set_day(d))
                 action.setMinimumHeight(58);action.setCheckable(True);action.setChecked(civil==day)
+                if IS_WINDOWS:
+                    action.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Minimum)
                 pair=names_at('finnish',item.period.month,offset);action.setToolTip(pair.label)
                 action.setEnabled(1900<=civil.year<=2100)
                 position=item.period.start.weekday()+offset

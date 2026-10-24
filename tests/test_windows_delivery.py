@@ -8,8 +8,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from PyQt6.QtCore import QEvent
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QEvent, QSize
+from PyQt6.QtWidgets import QApplication, QProxyStyle, QStyle
 
 from asaa.windows_ui import WindowsAppearancePage
 
@@ -43,6 +43,39 @@ class WindowsDeliveryTests(unittest.TestCase):
         self.assertEqual(len(payload['pairs']), 777)
         self.assertIn('asaa/blood_names.py', sources)
         self.assertIn('tests/test_blood_names.py', sources)
+
+    def test_calendar_grids_fit_with_wide_native_button_minimums(self):
+        from asaa import blood_ui, celestial_ui
+        from tests import test_veri_names_ui as fixture
+
+        class WideNativeButtons(QProxyStyle):
+            def sizeFromContents(self, kind, option, size, widget=None):
+                result = super().sizeFromContents(kind, option, size, widget)
+                if kind == QStyle.ContentsType.CT_PushButton:
+                    return QSize(max(112, result.width()), result.height())
+                return result
+
+        with patch.object(blood_ui, 'IS_WINDOWS', True, create=True), \
+                patch.object(celestial_ui, 'IS_WINDOWS', True, create=True):
+            case = fixture.VeriNamesUiTests('test_minimum_window_keeps_veri_calendar_within_the_viewport')
+            case.app = self.app
+            case.setUp()
+            try:
+                case.controller.configure({'theme': 'windows_light', 'wallpaper_follow_theme': False})
+                self.app.setStyle(WideNativeButtons('Fusion'))
+                case.window.resize(1020, 720)
+                for key in ('blood', 'names'):
+                    case.controller.open_page(key); self.app.processEvents()
+                    scroll = case.window.pages.currentWidget()
+                    page = case.window.page_widgets[key]
+                    self.assertEqual(scroll.horizontalScrollBar().maximum(), 0,
+                        f'{key}: viewport={scroll.viewport().width()}, minimum={page.minimumSizeHint().width()}')
+                page = case.window.page_widgets['blood']
+                for item in page.day_buttons:
+                    widest = max(item.fontMetrics().horizontalAdvance(line) for line in item.text().splitlines())
+                    self.assertGreaterEqual(item.contentsRect().width(), widest)
+            finally:
+                case.tearDown(); self.app.setStyle('Fusion')
 
     def test_wallpaper_selection_opens_only_the_selected_local_image(self):
         controller = SimpleNamespace(state=SimpleNamespace(path=ROOT / 'state-not-written.json'))

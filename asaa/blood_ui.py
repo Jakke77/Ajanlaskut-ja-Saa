@@ -3,11 +3,12 @@ from datetime import date, timedelta
 
 from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-                            QGridLayout, QDateEdit, QFrame)
+                            QGridLayout, QDateEdit, QFrame, QSizePolicy)
 
 from . import blood_time
 from .otava_ui import OtavaView
 from .theme import THEMES
+from .platform_support import IS_WINDOWS
 
 
 def _label(text='', name=None):
@@ -86,6 +87,10 @@ class VeriPage(QWidget):
             item = _button('', lambda checked=False, index=index: self.select_index(index))
             item.setCheckable(True)
             item.setMinimumHeight(70)
+            if IS_WINDOWS:
+                # Native Windows recommends a wide minimum for every button;
+                # the calendar's short labels must share the seven-column row.
+                item.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Minimum)
             self.days.addWidget(item, 0, index)
             self.days.setColumnStretch(index, 1)
             self.day_buttons.append(item)
