@@ -207,10 +207,9 @@ class Controller(QObject):
         self.window.show_page(key);self.window.raise_();self.window.activateWindow()
 
     def open_calendar(self,system,day=None):
-        if system == 'blood':
-            if day is not None:self.window.page_widgets['blood'].set_day(day)
-            else:self.window.page_widgets['blood'].today()
-            self.open_page('blood');return
+        if system == 'blood' and day is None:
+            from .blood_time import at
+            day=at(self.calendars.now()).civil
         self.window.page_widgets['calendar'].set_day(system,day)
         self.open_page('calendar')
 

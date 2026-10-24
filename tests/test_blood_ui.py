@@ -53,7 +53,8 @@ class VeriUiTests(unittest.TestCase):
         self.page.set_day(date(2026, 6, 26))
         self.assertEqual(self.page.week_start, date(2026, 6, 26))
         self.assertIn('1. VIIKKO', self.page.week_heading.text())
-        self.assertEqual(len(self.page.day_buttons), 7)
+        self.assertEqual(len(self.page.day_buttons), 35)
+        self.assertEqual(self.page.days.rowCount(), 6)
         self.page.next.click()
         self.assertEqual(self.page.selected, date(2026, 7, 3))
         self.assertIn('2. VIIKKO', self.page.week_heading.text())
@@ -61,10 +62,12 @@ class VeriUiTests(unittest.TestCase):
         self.controller.clock_changed.emit()
         self.assertEqual(self.page.selected, date(2026, 7, 3))
         self.assertEqual(self.page.sky.moment, self.controller.now)
-        self.page.day_buttons[5].click()
+        selected = next(item for item in self.page.day_buttons
+                        if item.property('civil_date') == date(2026, 7, 8))
+        selected.click()
         self.assertEqual(self.page.selected, date(2026, 7, 8))
         self.page.open_day.click()
-        self.assertEqual(self.controller.opened, ('civil', date(2026, 7, 8)))
+        self.assertEqual(self.controller.opened, ('blood', date(2026, 7, 8)))
 
     def test_now_tracks_the_cutover_and_week_at_exact_second(self):
         self.controller.now = blood_time.EPOCH + timedelta(days=7, seconds=-1)
@@ -76,6 +79,15 @@ class VeriUiTests(unittest.TestCase):
         self.assertEqual(self.page.selected, date(2026, 7, 3))
         self.assertIn('1. päivä · 2. viikko', self.page.current.text())
         self.assertIn('10.07.2026 01:07:07', self.page.next_change.text())
+
+    def test_grid_today_resumes_following_the_live_day(self):
+        self.page.set_day(blood_time.EPOCH_DATE)
+        self.assertFalse(self.page.follow_now)
+        self.page.calendar_grid.today_button.click()
+        self.assertTrue(self.page.follow_now)
+        self.controller.now += timedelta(days=1)
+        self.controller.clock_changed.emit()
+        self.assertEqual(self.page.selected, blood_time.at(self.controller.now).civil)
 
     def test_date_selection_does_not_change_live_sky_to_a_historical_time(self):
         self.page.date.setDate(QDate(1980, 1, 2))
@@ -116,8 +128,8 @@ class VeriUiTests(unittest.TestCase):
         self.controller.now += timedelta(days=2)
         self.controller.clock_changed.emit()
         self.assertEqual(self.page.selected_names.text(), names)
-        for index, item in enumerate(self.page.day_buttons):
-            position = blood_time.from_date(self.page.week_start + timedelta(days=index))
+        for item in self.page.day_buttons:
+            position = blood_time.from_date(item.property('civil_date'))
             self.assertIn(position.names.male, item.toolTip())
             self.assertIn(position.names.female, item.toolTip())
 

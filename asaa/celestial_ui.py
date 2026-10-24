@@ -1,6 +1,8 @@
 """Offline celestial calendar, daylight month table and original name finder."""
 from calendar import monthrange
 from datetime import date, datetime, timedelta
+from html import escape
+from pathlib import Path
 import math
 from zoneinfo import ZoneInfo
 
@@ -9,7 +11,7 @@ from PyQt6.QtGui import QColor, QDesktopServices, QPainter, QPainterPath, QPen
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout,
     QDateEdit, QTabWidget, QTableWidget, QTableWidgetItem, QHeaderView,
-    QAbstractItemView, QSizePolicy)
+    QAbstractItemView, QSizePolicy, QLineEdit, QListWidget, QListWidgetItem, QApplication)
 
 from .astronomy import (moon_at, moon_on, solar_day, lunar_day, phase_events,
                         event_label, duration_label)
@@ -286,6 +288,14 @@ class NamesPage(QWidget):
             pair=label('','',True);pair.setStyleSheet('font-size:20px;');content.addWidget(pair)
             position=label('','muted',True);content.addWidget(position)
             self.name_labels[key]=pair;self.position_labels[key]=position;name_layout.addWidget(frame)
+            if key=='blood':
+                self.blood_meanings=label('','',True)
+                self.blood_meanings.setTextFormat(Qt.TextFormat.PlainText)
+                self.blood_meanings.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+                content.addWidget(self.blood_meanings)
+                content.addWidget(label('** tämän keksin :) · Nimen oma vertauskuvallinen merkitys. '
+                    'Sanatausta ja lähteet löytyvät nimikirjasta.','muted',True))
+                content.addWidget(button('Nimien selitykset ja lähteet →',self.show_selected_names))
         name_layout.addWidget(label('Nimet on keksitty tätä sovellusta varten. Ne eivät ole virallisia tai historiallisia nimipäiviä. '
             'Varjoajan 390, Tähtiajan 510 ja Veri Ajan 777 päivän nimikierto jatkuu syntymäpäivähaussa myös taaksepäin ennen ajanlaskun alkua. '
             'Veri Ajan nimet saavat vaikutteita veren, elämänkierron ja biologian sanastosta. '
@@ -308,6 +318,7 @@ class NamesPage(QWidget):
         content.addWidget(self.folk_rules)
         content.addWidget(button('Lähde: Katajala · Suomalainen kalenteri ↗',lambda:QDesktopServices.openUrl(QUrl(folk.SOURCE))))
         self.tabs.addTab(traditional,'Suomalainen kuukalenteri')
+        self.build_blood_book()
         self.tabs.currentChanged.connect(self.sync_title)
         self.date.dateChanged.connect(self.render);controller.settings_changed.connect(self.render)
         controller.notes_changed.connect(self.render)
@@ -317,7 +328,118 @@ class NamesPage(QWidget):
         day=self.controller.calendars.now().date();self.date.setDate(QDate(day.year,day.month,day.day))
 
     def sync_title(self,index):
-        self.heading.setText('Suomalainen kuukalenteri' if index==1 else 'Mikä on nimesi ajanlaskuissa?')
+        self.heading.setText('Suomalainen kuukalenteri' if index==1 else
+            'Veri Ajan nimikirja' if index==2 else 'Mikä on nimesi ajanlaskuissa?')
+
+    def build_blood_book(self):
+        """Browse the permanent name registry without changing the chosen birthday."""
+        book=QWidget();content=QVBoxLayout(book)
+        content.addWidget(label('777 päivän nimikalenteri · 1 554 nimeä','eyebrow',True))
+        content.addWidget(label('Nimen merkitys on erotettu sen sanataustasta. '
+            'Sanataustan lähteet kuvaavat sanoja ja käsitteitä; ne eivät todista keksityn nimen historiallista alkuperää. '
+            '** tämän keksin :) tarkoittaa sovellusta varten laadittua vertauskuvallista merkitystä.','muted',True))
+        self.meaning_search=QLineEdit()
+        self.meaning_search.setPlaceholderText('Hae nimeä, merkitystä, sanataustaa tai vuoden päivää…')
+        self.meaning_search.setAccessibleName('Hae Veri Ajan nimikirjasta')
+        content.addWidget(self.meaning_search)
+        content.addWidget(button('Näytä valitun päivän nimet',self.show_selected_names))
+        self.meaning_count=label('','muted',True);content.addWidget(self.meaning_count)
+        self.meaning_list=QListWidget()
+        self.meaning_list.setAccessibleName('Veri Ajan nimet ja vuoden päivät')
+        self.meaning_list.setMinimumHeight(180);self.meaning_list.setMaximumHeight(260)
+        self.meaning_list.setWordWrap(True)
+        self.meaning_list.setTextElideMode(Qt.TextElideMode.ElideNone)
+        self.meaning_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        content.addWidget(self.meaning_list)
+        frame,details=card();content.addWidget(frame)
+        self.meaning_name=label('','heading',True);details.addWidget(self.meaning_name)
+        self.meaning_day=label('','muted',True);details.addWidget(self.meaning_day)
+        self.meaning_text=label('','',True)
+        self.meaning_text.setTextFormat(Qt.TextFormat.PlainText)
+        self.meaning_text.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse |
+                                                  Qt.TextInteractionFlag.TextSelectableByKeyboard)
+        details.addWidget(self.meaning_text)
+        self.meaning_background=label('','',True)
+        self.meaning_background.setTextFormat(Qt.TextFormat.PlainText)
+        self.meaning_background.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse |
+                                                        Qt.TextInteractionFlag.TextSelectableByKeyboard)
+        details.addWidget(self.meaning_background)
+        self.meaning_sources=label('','muted',True)
+        self.meaning_sources.setTextFormat(Qt.TextFormat.RichText)
+        self.meaning_sources.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        self.meaning_sources.setOpenExternalLinks(True);details.addWidget(self.meaning_sources)
+        self.meaning_copy=button('Kopioi nimen selitys',self.copy_meaning)
+        details.addWidget(self.meaning_copy)
+        self.meaning_print=button('Avaa tulostettava nimikirja',self.open_printable_meanings)
+        content.addWidget(self.meaning_print)
+        self.meaning_clipboard_text=''
+        self._blood_meanings=blood_names.meanings()
+        self.meaning_search.textChanged.connect(self.filter_meanings)
+        self.meaning_list.currentItemChanged.connect(self.show_meaning)
+        self.tabs.addTab(book,'Veri Ajan nimikirja')
+        self.filter_meanings()
+
+    def filter_meanings(self,*_):
+        query=self.meaning_search.text().strip().casefold()
+        current=self.meaning_list.currentItem()
+        selected=current.data(Qt.ItemDataRole.UserRole) if current else None
+        self.meaning_list.blockSignals(True);self.meaning_list.clear()
+        chosen=None
+        for entry in self._blood_meanings:
+            search=f'{entry.name} {entry.meaning} {entry.background} {entry.day_of_year}'.casefold()
+            if query and query not in search:continue
+            gender='miehen nimi' if entry.gender=='male' else 'naisen nimi'
+            item=QListWidgetItem(f'{entry.name}{" **" if entry.invented else ""} · vuoden päivä {entry.day_of_year}/777 · {gender}')
+            item.setData(Qt.ItemDataRole.UserRole,entry.name)
+            item.setToolTip(entry.label)
+            self.meaning_list.addItem(item)
+            if entry.name==selected:chosen=item
+        self.meaning_list.blockSignals(False)
+        self.meaning_count.setText(f'{self.meaning_list.count()} / {len(self._blood_meanings)} nimeä')
+        if self.meaning_list.count():
+            self.meaning_list.setCurrentItem(chosen or self.meaning_list.item(0))
+        else:self.show_meaning(None)
+
+    def show_meaning(self,item,*_):
+        self.meaning_copy.setEnabled(item is not None)
+        if item is None:
+            self.meaning_name.setText('Nimeä ei löytynyt')
+            for target in (self.meaning_day,self.meaning_text,self.meaning_background,self.meaning_sources):target.clear()
+            self.meaning_sources.setToolTip('')
+            self.meaning_clipboard_text=''
+            return
+        entry=blood_names.meaning_for_name(item.data(Qt.ItemDataRole.UserRole))
+        gender='Miehen nimi' if entry.gender=='male' else 'Naisen nimi'
+        self.meaning_name.setText(entry.name)
+        self.meaning_day.setText(f'{gender} · Veri Ajan vuoden päivä {entry.day_of_year}/777')
+        self.meaning_text.setText('NIMEN MERKITYS\n'+entry.label+
+            ('\n** tämän keksin :)' if entry.invented else ''))
+        self.meaning_background.setText('SANATAUSTA\n'+entry.background)
+        color=THEMES[self.controller.options['theme']].accent
+        links='<br>'.join(f'<a style="color: {escape(color,quote=True)}" href="{escape(source.url,quote=True)}">{escape(source.title)}</a>'
+                         for source in entry.sources)
+        self.meaning_sources.setText('SANATAUSTAN LÄHTEET<br>'+links)
+        self.meaning_sources.setToolTip('\n'.join(source.url for source in entry.sources))
+        source_text='\n'.join(f'{source.title}: {source.url}' for source in entry.sources)
+        self.meaning_clipboard_text=f'{entry.name}\n{self.meaning_day.text()}\n\n{self.meaning_text.text()}\n\n'+\
+            f'SANATAUSTA\n{entry.background}\n\nSANATAUSTAN LÄHTEET\n{source_text}'
+
+    def copy_meaning(self):
+        if self.meaning_clipboard_text:QApplication.clipboard().setText(self.meaning_clipboard_text)
+
+    def open_printable_meanings(self):
+        path=Path(__file__).resolve().parents[1]/'assets/namebooks/veri-ajan-nimikirja.html'
+        return QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
+
+    def show_selected_names(self):
+        selected=blood_names.names_for_day(as_date(self.date)).male
+        self.meaning_search.clear()
+        for index in range(self.meaning_list.count()):
+            item=self.meaning_list.item(index)
+            if item.data(Qt.ItemDataRole.UserRole)==selected:
+                self.meaning_list.setCurrentItem(item);self.meaning_list.scrollToItem(item)
+                break
+        self.tabs.setCurrentIndex(2)
 
     def render(self,*_):
         day=as_date(self.date);epoch=date.fromisoformat(self.controller.options['star_epoch'])
@@ -330,6 +452,8 @@ class NamesPage(QWidget):
         blood = blood_time.from_date(day)
         pair = blood_names.names_for_day(day)
         self.name_labels['blood'].setText(f'Miehen nimi: {pair.male}\nNaisen nimi: {pair.female}')
+        self.blood_meanings.setText('\n'.join(f'{name} – {blood_names.meaning_for_name(name).label}'
+                                             for name in (pair.male,pair.female)))
         position = f'777 päivän nimikierto · kohta {blood.day_of_year}/777'
         self.position_labels['blood'].setText(position + (' · ennen ajanlaskun alkua' if blood.ordinal < 0 else
                                                        f' · vuosi {blood.year:04d}, viikko {blood.week_of_year}/111'))
@@ -359,6 +483,7 @@ class NamesPage(QWidget):
         except ValueError as error:
             self.folk_period=None;self.name_labels['finnish'].setText(str(error));self.position_labels['finnish'].clear()
             self.folk_heading.setText('Päivä ei ole laskenta-alueella');self.folk_info.setText(str(error));self.folk_names.clear()
+        self.show_meaning(self.meaning_list.currentItem())
 
     def set_day(self,day):self.date.setDate(QDate(day.year,day.month,day.day))
 

@@ -1,5 +1,34 @@
 # Tarkistukset
 
+## Veri Ajan ruutukalenteri ja nimikirja · 1.12.2
+
+- Koko Ubuntu-lähteen yksikkö- ja Qt-sarja: **419 testiä läpäisi**.
+- Seitsemän sarakkeen ja viiden viikon ruudukon 23 selausjaksoa kattavat
+  kaikki 777 päivää täsmälleen kerran; vuoden viimeisessä jaksossa on yksi
+  viikko. Jakson/vuoden vaihto, paikallinen klo 01:07:07 raja, päivävalinta,
+  merkinnät ja vuosien 1900–2100 rajat ovat Qt-testeissä.
+- Kalenterit-valikon Veri Aika pysyy kalenterisivulla. Valitun päivän nimet
+  ja merkitykset näkyvät saman päivän tiedoissa. Leveässä ikkunassa tiedot
+  ovat oikealla ja pienessä alla. 1560×1000 ja 1020×720 tarkistettiin ilman
+  vaakavieritystä. Vanha kuukausikalenteri palautuu toiseen ajanlaskuun vaihtaessa.
+- Kaikilla 1 554 alkuperäisellä nimellä on pysyvä, yksilöllinen selitys.
+  Alkuperäinen nimiluettelo säilyi tavulleen samana. Jokainen selitys on
+  sidottu oikeaan nimeen, sukupuoleen ja vuoden päivään. Puuttuva, toistuva,
+  väärään päivään sidottu tai lähteetön tietue hylätään.
+- Symboliset nimimerkitykset on merkitty kirjaimellisella `**`-merkillä.
+  37 nimiryhmän sanatausta erotetaan runollisesta merkityksestä. Taustojen
+  18 lähdesivua luettiin ja niiden sanasto tarkistettiin; samankaltaisesta
+  nimestä ei päätellä historiallista alkuperää. Kopioitu selitys säilyttää
+  sekä merkinnän `** tämän keksin :)` että erilliset lähdeosoitteet.
+- HTML- ja Markdown-nimikirja kattavat samat 777 nimiparia. Mukana olevat
+  tiedostot vastaavat täsmälleen generaattorin tulosta. HTML toimii ilman
+  ulkoisia resursseja; Qt Chromium tarkisti haun, viikon/päivän suodatuksen,
+  tyhjän tuloksen, haun tyhjennyksen ja 500 pikselin näkymän. Tulostustyyli
+  sisältää koko nimikirjan ja näyttää lähdeosoitteet.
+- Pääikkunan ruutukalenteri ja nimikirja renderöitiin oikealla Qt:lla
+  tilapäisessä asetuskansiossa ilman säähakuja. Kalenterin selaus ja
+  nimihaku eivät muuta asetuksia, kalenterimerkintöjä tai syntymäpäivää.
+
 ## Veri Ajan 777 päivän vuodet ja nimiparit · 1.12.1
 
 - Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **390 testiä läpäisi**.
