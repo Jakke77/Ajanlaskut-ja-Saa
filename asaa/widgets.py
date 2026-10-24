@@ -157,7 +157,7 @@ class DesktopSurface(QWidget):
     def open_calendar(self):
         self.controller.open_calendar(self.system if self.system != 'daily' else 'civil')
 
-    def text(self, painter, value, y, size, color=None, bold=False, x=22, width=None, center=False, height=None, clock=False):
+    def text(self, painter, value, y, size, color=None, bold=False, x=22, width=None, center=False, height=None, clock=False, fit=False):
         factor=(clock_digit_scale(self.options,self.key,selection=self.clock_display_override)
                 if clock else self.options['widget_text_scale'])/100
         pixels=round(size*factor)
@@ -165,7 +165,7 @@ class DesktopSurface(QWidget):
         height=height or max(20,pixels*1.65)
         font = QFont(self.options['font']);font.setBold(bold);font.setPixelSize(pixels)
         metrics=QFontMetricsF(font)
-        while pixels>6 and (metrics.height()>height or (clock and metrics.horizontalAdvance(value)>width)):
+        while pixels>6 and (metrics.height()>height or ((clock or fit) and metrics.horizontalAdvance(value)>width)):
             pixels-=1;font.setPixelSize(pixels);metrics=QFontMetricsF(font)
         default_color = (clock_digit_color(self.options, self.key, self.theme,
                          selection=self.clock_display_override) if clock else self.theme.text)
@@ -200,6 +200,7 @@ class DesktopSurface(QWidget):
         p.end()
 
     def paint_clock(self, p, now, theme):
+        item = None
         try:
             item = self.controller.calendars.at(self.system, now)
             date_label = item.label
@@ -226,7 +227,16 @@ class DesktopSurface(QWidget):
                     self.text(p, value, y+5, 53, bold=True, center=True, height=85, clock=True)
             elif field in ('date', 'weekday', 'phase'):
                 value = {'date':date_label, 'weekday':weekday, 'phase':phase}[field]
-                self.text(p, value, y+3, 19 if field=='date' else 14, theme.accent if field=='date' else theme.muted, center=True, height=height-8)
+                self.text(p, value, y+3, 19 if field=='date' else 14, theme.accent if field=='date' else theme.muted, center=True, height=height-8, fit=field=='date')
+            elif field == 'nameday':
+                pair = item.names if item is not None else None
+                if pair:
+                    self.text(p,'Mies: '+pair.male,y+3,14,theme.text,center=True,height=26,fit=True)
+                    self.text(p,'Nainen: '+pair.female,y+33,14,theme.text,center=True,height=26,fit=True)
+                    value = 'Nimipari · '+pair.label
+                else:
+                    value = 'Ei nimiparia tässä ajanlaskussa.'
+                    self.text(p,value,y+3,12,theme.muted,center=True,height=26,fit=True)
             elif field == 'reference':
                 value = ' · '.join(([f'{now:%d.%m.%Y}'] if self.profile['civil_date'] else []) + ([self.options['zone']] if self.profile['zone'] else []))
                 self.text(p, value, y+2, 12, theme.muted, center=True, height=28)
@@ -254,7 +264,7 @@ class DesktopSurface(QWidget):
                 tip.extend(lines)
             elif field == 'note':
                 self.text(p, 'PÄIVÄN MERKINTÄ', y, 11, theme.accent, height=23)
-                value = self.controller.state.note(item.civil if self.system=='blood' else now.date()) or 'Ei merkintää tälle päivälle.'
+                value = self.controller.state.note(item.civil if self.system=='blood' and item is not None else now.date()) or 'Ei merkintää tälle päivälle.'
                 self.text(p, value.splitlines()[0], y+27, 14, height=31)
             elif field == 'reminder':
                 self.text(p, 'SEURAAVA MUISTUTUS', y, 11, theme.accent, height=23)
@@ -262,9 +272,8 @@ class DesktopSurface(QWidget):
                 value = (f'{datetime.fromisoformat(upcoming[0]["due"]).astimezone(self.controller.calendars.zone):%d.%m. %H:%M} · '+upcoming[0]['title']) if upcoming else 'Ei odottavia muistutuksia.'
                 self.text(p, value.splitlines()[0], y+27, 14, height=31)
             tip.append(value)
-        try:
-            if item.names: tip.append('Nimipari · '+item.names.label)
-        except UnboundLocalError: pass
+        if item is not None and item.names and not self.profile['nameday']:
+            tip.append('Nimipari · '+item.names.label)
         if self.clock_mode in ('otava','otava_both'):
             tip.append('Otavakello: tähtikuvio on symbolinen sekuntiviisari, yksi kierros minuutissa.')
         if self.profile['otava']:

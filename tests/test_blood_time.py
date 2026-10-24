@@ -11,7 +11,8 @@ class BloodTimeTests(unittest.TestCase):
         self.assertEqual(blood.EPOCH.isoformat(), '2026-06-26T01:07:07+03:00')
         item = blood.at(blood.EPOCH)
         self.assertEqual((item.ordinal, item.week, item.weekday), (0, 1, 0))
-        self.assertEqual(item.label, '1. päivä · 1. viikko')
+        self.assertEqual(item.label, '1. päivä · 1. viikko · vuosi 0001')
+        self.assertEqual((item.year, item.day_of_year, item.week_of_year), (1, 1, 1))
         self.assertEqual(item.system, 'blood')
 
     def test_one_microsecond_before_epoch_is_explicitly_before_start(self):
@@ -40,6 +41,54 @@ class BloodTimeTests(unittest.TestCase):
             self.assertEqual(item.ordinal, (day - date(2026, 6, 26)).days)
             self.assertEqual(item.week, item.ordinal // 7 + 1)
         self.assertEqual(blood.from_date(date(2027, 6, 26)).week, 53)
+
+    def test_authored_year_has_exactly_111_complete_weeks(self):
+        self.assertEqual((blood.DAYS_PER_YEAR, blood.WEEKS_PER_YEAR), (777, 111))
+        for offset in range(blood.DAYS_PER_YEAR):
+            item = blood.from_date(blood.EPOCH_DATE + timedelta(days=offset))
+            self.assertEqual(item.year, 1)
+            self.assertEqual(item.day_of_year, offset + 1)
+            self.assertEqual(item.week_of_year, offset // 7 + 1)
+            self.assertEqual(item.weekday, offset % 7)
+
+    def test_year_rollover_uses_the_exact_local_cutover_after_777_days(self):
+        rollover = blood.boundary(date(2028, 8, 11))
+        before = blood.at(rollover - timedelta(microseconds=1))
+        after = blood.at(rollover)
+        self.assertEqual((before.year, before.day_of_year, before.week_of_year,
+                          before.weekday), (1, 777, 111, 6))
+        self.assertEqual((after.year, after.day_of_year, after.week_of_year,
+                          after.weekday), (2, 1, 1, 0))
+        self.assertEqual(after.week, 112)  # Continuous API remains compatible.
+        self.assertIn('vuosi 0002', after.label)
+        self.assertEqual(after.names, blood.at(blood.EPOCH).names)
+
+    def test_gregorian_anniversary_and_leap_day_do_not_end_the_authored_year(self):
+        for day in (date(2027, 1, 1), date(2027, 6, 26), date(2028, 2, 29),
+                    date(2028, 6, 26)):
+            with self.subTest(day=day):
+                item = blood.from_date(day)
+                self.assertEqual(item.year, 1)
+                self.assertEqual(item.day_of_year, (day - blood.EPOCH_DATE).days + 1)
+
+    def test_next_year_is_strictly_future_before_and_at_the_boundary(self):
+        first = blood.boundary(date(2028, 8, 11))
+        second = blood.boundary(date(2030, 9, 27))
+        self.assertEqual(blood.next_year(blood.EPOCH), first)
+        self.assertEqual(blood.next_year(first - timedelta(microseconds=1)), first)
+        self.assertEqual(blood.next_year(first), second)
+        self.assertEqual(blood.next_week(first - timedelta(microseconds=1)), first)
+        for zone in (timezone.utc, ZoneInfo('Asia/Tokyo')):
+            self.assertEqual(blood.next_year(first.astimezone(zone)), second)
+
+    def test_year_duration_counts_local_days_instead_of_fixed_utc_seconds(self):
+        start = blood.boundary(date(2030, 9, 27))
+        end = blood.next_year(start)
+        self.assertEqual(end.date(), date(2032, 11, 12))
+        self.assertEqual((end.date() - start.date()).days, 777)
+        self.assertEqual((end.hour, end.minute, end.second), (1, 7, 7))
+        self.assertEqual(end.timestamp() - start.timestamp(), (777 * 24 + 1) * 3600)
+        self.assertEqual((blood.at(start).year, blood.at(end).year), (3, 4))
 
     def test_week_duration_changes_across_dst_but_wall_time_stays_fixed(self):
         for day, hours in ((date(2027, 3, 26), 167), (date(2026, 10, 23), 169)):
@@ -70,7 +119,7 @@ class BloodTimeTests(unittest.TestCase):
         self.assertEqual(blood.from_date(selected).day_name, '1. päivä')
 
     def test_naive_datetimes_and_wrong_input_types_are_not_inferred(self):
-        for function in (blood.at, blood.next_week):
+        for function in (blood.at, blood.next_week, blood.next_year):
             with self.assertRaises(ValueError):
                 function(datetime(2026, 6, 26, 1, 7, 7))
         with self.assertRaises(TypeError):

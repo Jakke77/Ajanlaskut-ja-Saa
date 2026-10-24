@@ -135,8 +135,9 @@ class OverviewPage(QWidget):
                 self.date_labels[system].setText(item.label)
                 if system=='blood':
                     from .blood_time import next_week
-                    self.note_labels[system].setText('Alku 26.6.2026 klo 01:07:07 · Suomen aikaa\n'
-                        f'Seuraava viikko {next_week(now):%d.%m. %H:%M:%S %Z}\nOtava näyttää Oulun taivaan todellisen asennon.')
+                    self.note_labels[system].setText(f'Vuoden päivä {item.day_of_year}/777 · 111 viikkoa vuodessa\n'
+                        +item.names.label+'\n'
+                        +f'Seuraava viikko {next_week(now):%d.%m. %H:%M:%S %Z}\nOtava · Oulun todellinen tähtitaivas')
                     continue
                 from .astronomy import moon_at
                 try:phase=moon_at(now).label

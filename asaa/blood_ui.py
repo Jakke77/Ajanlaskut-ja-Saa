@@ -1,4 +1,4 @@
-"""Veri Aika: an uninterrupted week calendar and Oulu's live Otava sky."""
+"""Veri Aika: 777-day years, authored daily names and Oulu's live Otava sky."""
 from datetime import date, timedelta
 
 from PyQt6.QtCore import QDate, Qt
@@ -60,6 +60,15 @@ class VeriPage(QWidget):
         self.date.dateChanged.connect(self.date_changed)
         controls.addWidget(self.date)
         layout.addLayout(controls)
+        years = QHBoxLayout()
+        self.previous_year = _button('‹ Edellinen vuosi', lambda: self.step_year(-1))
+        self.next_year = _button('Seuraava vuosi ›', lambda: self.step_year(1))
+        years.addWidget(self.previous_year)
+        years.addStretch(1)
+        years.addWidget(_label('777 päivää · 111 viikkoa', 'muted'))
+        years.addStretch(1)
+        years.addWidget(self.next_year)
+        layout.addLayout(years)
 
         frame = QFrame()
         frame.setObjectName('card')
@@ -82,6 +91,12 @@ class VeriPage(QWidget):
             self.day_buttons.append(item)
         self.selected_label = _label('')
         content.addWidget(self.selected_label)
+        self.selected_names = _label('')
+        self.selected_names.setStyleSheet('font-size:20px;')
+        self.selected_names.setAccessibleName('Valitun päivän nimipari')
+        content.addWidget(self.selected_names)
+        self.name_lookup = _button('Oma nimi Veri Ajassa →', self.open_name_lookup)
+        content.addWidget(self.name_lookup)
         self.open_day = _button('Avaa päivän merkinnät →',
                                 lambda: controller.open_calendar('civil', self.selected))
         content.addWidget(self.open_day)
@@ -95,10 +110,15 @@ class VeriPage(QWidget):
         layout.addWidget(_label('Dubhe · Merak · Phecda · Megrez · Alioth · Mizar · Alkaid', 'muted'))
         self.next_change = _label('', 'eyebrow')
         layout.addWidget(self.next_change)
+        self.next_year_change = _label('', 'muted')
+        layout.addWidget(self.next_year_change)
         self.rules = _label('ALKU 26.6.2026 KLO 01:07:07 · EUROPE/HELSINKI\n'
                             'Päivä vaihtuu klo 01:07:07 Suomen aikaa. Seitsemän päivän jälkeen alkaa uusi viikko '
-                            'samassa kellonajassa. Viikot jatkuvat vuodenvaihteen ja alun vuosipäivän yli. '
+                            'samassa kellonajassa. Veri Ajan vuodessa on 777 päivää eli tasan 111 viikkoa. '
+                            'Seuraava vuosi alkaa 777 paikallisen päivän jälkeen; vuoden päivät ja viikot alkavat silloin uudestaan ykkösestä. '
                             'Kesä- ja talviaika noudattavat Suomen paikallista aikaa.\n'
+                            'Jokaisella vuoden päivällä on oma pysyvä miehen ja naisen nimipari. Veren, elämänkierron '
+                            'ja biologian sanastosta innoittuneet nimet on keksitty sovellusta varten. '
                             'Veri Aika on sovelluksen oma ajanlasku. Otavakellon sekuntiviisarina kiertävä '
                             'tähtikuvio on symbolinen; tämän sivun tähtitaivas näyttää Otavan todellisen asennon.',
                             'muted')
@@ -131,12 +151,22 @@ class VeriPage(QWidget):
     def step(self, weeks):
         self.set_day(self.selected + timedelta(days=7 * weeks))
 
+    def step_year(self, years):
+        self.set_day(self.selected + timedelta(days=blood_time.DAYS_PER_YEAR * years))
+
+    def open_name_lookup(self):
+        page = self.controller.window.page_widgets['names']
+        page.set_day(self.selected)
+        page.tabs.setCurrentIndex(0)
+        self.controller.open_page('names')
+
     def select_index(self, index):
         self.set_day(self.week_start + timedelta(days=index))
 
     def render(self):
         selected = blood_time.from_date(self.selected)
-        self.week_heading.setText(f'{selected.week}. VIIKKO' if selected.ordinal >= 0 else 'ENNEN VERI AJAN ALKUA')
+        self.week_heading.setText(f'VUOSI {selected.year:04d} · {selected.week_of_year}. VIIKKO / 111'
+                                  if selected.ordinal >= 0 else 'ENNEN VERI AJAN ALKUA')
         end = self.week_start + timedelta(days=6)
         self.week_dates.setText(f'{self.week_start:%d.%m.%Y} – {end:%d.%m.%Y} · viikon alku klo 01:07:07')
         today = blood_time.at(self.controller.calendars.now()).civil
@@ -148,20 +178,30 @@ class VeriPage(QWidget):
             item.setChecked(day == self.selected)
             item.setStyleSheet(f'border:2px solid {theme.accent};' if day == today and day != self.selected else '')
             begin, finish = blood_time.boundary(day), blood_time.boundary(day + timedelta(days=1))
-            item.setToolTip(f'{blood_time.from_date(day).label}\n'
+            position = blood_time.from_date(day)
+            item.setToolTip(f'{position.label}\nVuoden päivä {position.day_of_year}/777\n'
+                            f'{position.names.label}\n'
                             f'{begin:%d.%m.%Y %H:%M:%S %Z} – {finish:%d.%m.%Y %H:%M:%S %Z}\n'
                             + self.controller.state.note(day))
         self.selected_label.setText(f'VALITTU PÄIVÄ · {selected.label}\n'
+                                   f'Vuoden päivä {selected.day_of_year}/777 · '
                                    f'{self.selected:%d.%m.%Y} klo 01:07:07 alkaen')
+        names = f'Miehen nimi: {selected.names.male}\nNaisen nimi: {selected.names.female}'
+        self.selected_names.setText(names)
+        self.selected_names.setAccessibleName('Valitun päivän nimipari\n' + names)
         self.previous.setEnabled(self.selected - timedelta(days=7) >= date(1900, 1, 1))
         self.next.setEnabled(self.selected + timedelta(days=7) <= date(2100, 12, 31))
+        self.previous_year.setEnabled(self.selected - timedelta(days=blood_time.DAYS_PER_YEAR) >= date(1900, 1, 1))
+        self.next_year.setEnabled(self.selected + timedelta(days=blood_time.DAYS_PER_YEAR) <= date(2100, 12, 31))
 
     def tick(self):
         now = self.controller.calendars.now()
         current = blood_time.at(now)
-        self.current.setText('JUURI NYT · ' + current.label)
+        self.current.setText(f'JUURI NYT · {current.label} · vuoden päivä {current.day_of_year}/777')
         next_week = blood_time.next_week(now)
         self.next_change.setText(f'SEURAAVA VIIKKO · {next_week:%d.%m.%Y %H:%M:%S %Z}')
+        next_year = blood_time.next_year(now)
+        self.next_year_change.setText(f'SEURAAVA VUOSI · {next_year:%d.%m.%Y %H:%M:%S %Z}')
         if current.civil != self._shown_day:
             self._shown_day = current.civil
             if self.follow_now:

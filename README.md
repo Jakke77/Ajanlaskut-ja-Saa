@@ -1,9 +1,8 @@
 # Ajanlaskut ja Sää
 
-**Uusin Ubuntu-paketti: [1.12.0 · Veri Aika ja Otavakello](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).**
-Windows 10 x64: [1.12.0:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.0).
+**Uusin Ubuntu-paketti: [1.12.1 · Veri Aika ja Otavakello](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.1).**
+Windows: [1.12.1:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.1).
 **Windows-versio sisältää oman Pythonin ja Qt:n.** Katso [Windowsin käynnistys ja ominaisuudet](WINDOWS.md).
-
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -15,14 +14,29 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
-## Veri Aika ja Otavakello · versio 1.12.0
+## Veri Aika: 777 päivän vuodet ja omat nimet · versio 1.12.1
 
 **Veri Aika** löytyy suoraan sivuvalikosta sekä **Kalenterit → Veri Aika**.
 Alkuhetki on **26.6.2026 klo 01:07:07 Suomen aikaa**. Päivä vaihtuu klo
-01:07:07, ja joka seitsemäs päivä alkaa uusi viikko. Viikot jatkuvat yli
-vuodenvaihteen ja alun vuosipäivän; ajanlaskuun ei ole keksitty kuukausia.
+01:07:07, ja joka seitsemäs päivä alkaa uusi viikko. **Vuodessa on 777 päivää
+eli 111 täyttä viikkoa.** Vuoden päivät 1–777 ja viikot 1–111 alkavat uudelleen
+ykkösestä vuoden vaihtuessa. Vuosi 0002 alkaa 11.8.2028 klo 01:07:07, ei
+gregoriaanisen vuoden tai alkupäivän vuosipäivän kohdalla. Kuukausia ei ole.
 Suomen kesä- ja talviaika huomioidaan. Ennen alkua valittu päivä merkitään
 selvästi ajanlaskua edeltäväksi. Viikkonäkymästä voi avata yhteisen päivän merkinnät.
+
+**777 omaa nimiparia:** jokaisella vuoden päivällä on pysyvä miehen ja naisen
+nimi. Nimet ammentavat verestä, verenkierrosta, soluista ja elämän sanastosta:
+esimerkiksi **Rubino / Rubina**, **Hemero / Hemera**, **Sereno / Serena** ja
+**Fibriano / Fibria**. Ne ovat tätä sovellusta varten keksittyjä nimiä.
+Sama pari palaa saman vuodenpäivän kohdalle seuraavana 777 päivän vuonna.
+
+Nimet näkyvät **Veri Aika** -sivulla, päivän vihjeessä ja etusivulla.
+**Nimikalenterit → Oma nimi** löytää parin myös omasta syntymäpäivästä ja
+jatkaa nimikiertoa ennen ajanlaskun alkua. Widgetin nimet saa näkyviin tai pois
+**Ajanlaskuwidgetit → Näkyvä sisältö → Päivän nimipari** -valinnasta;
+yhteisessä ja Veri Ajan kellossa ne ovat oletuksena näkyvissä.
+Kalenterissa voi selata myös 777 päivää edelliseen tai seuraavaan vuoteen.
 
 Etusivulla, Veri Ajan kalenterissa ja kellon **Otavan todellinen asento · Oulu**
 -sisältökentässä näkyy seitsemän tähden kuvio oikeassa asennossaan Oulun
@@ -227,7 +241,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.12.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).
+[Lataa uusin 1.12.1-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.1).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -269,7 +283,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.12.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).
+[packages/v1.12.1-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.1).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0
