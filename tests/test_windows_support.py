@@ -56,7 +56,7 @@ class WindowsSupportTests(unittest.TestCase):
             executable = Path(folder) / 'Ajanlaskut-ja-Saa.exe'; executable.touch()
             with patch.object(platform, '__file__', str(module)):
                 self.assertEqual(platform.windows_command(True),
-                                 subprocess.list2cmdline([str(executable), '--widgets-only']))
+                                 subprocess.list2cmdline([str(executable.resolve()), '--widgets-only']))
 
     def test_time_configuration_is_read_without_claiming_a_live_sync(self):
         registry = SimpleNamespace(HKEY_LOCAL_MACHINE=object(),
