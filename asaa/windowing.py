@@ -1,7 +1,7 @@
 """Independent desktop windows, foreground priority and per-widget edge sizing."""
 from functools import lru_cache
 import ctypes as C
-from PyQt6.QtCore import QObject, QEvent, QTimer, Qt, QRect, QSize
+from PyQt6.QtCore import QObject, QEvent, QTimer, Qt, QRect, QSize, QPoint
 from PyQt6.QtWidgets import QApplication, QDialog
 from .platform_support import IS_WINDOWS
 
@@ -115,15 +115,53 @@ class WidgetFrame(QObject):
     def __init__(self,widget,controller,key):
         super().__init__(widget);self.widget,self.controller,self.key=widget,controller,key
         self.edges=Qt.Edge(0);self.start=None;self.origin=None
+        self.preferred=QRect(widget.geometry());self._handle=None
+        self.display_timer=QTimer(self);self.display_timer.setSingleShot(True)
+        self.display_timer.setInterval(350);self.display_timer.timeout.connect(self.restore_display_geometry)
+        self._screens=set()
+        app=controller.app
+        for screen in app.screens():self.watch_screen(screen)
+        app.screenAdded.connect(self.watch_screen);app.screenRemoved.connect(self.display_changed)
         widget.setMouseTracking(True);widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         widget.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
         widget.installEventFilter(self)
     def size(self,default):
         saved=self.controller.state.widget_size(self.key)
-        return QSize(*saved) if saved else default
+        result=QSize(*saved) if saved else default
+        self.preferred.setSize(result)
+        return result
+    def remember_position(self):
+        self.preferred.moveTopLeft(self.widget.pos())
+    def watch_screen(self,screen):
+        if screen in self._screens:return
+        self._screens.add(screen)
+        for signal in (screen.geometryChanged,screen.availableGeometryChanged,screen.logicalDotsPerInchChanged):
+            signal.connect(self.display_changed)
+        self.display_changed()
+    def display_changed(self,*args):
+        self.cancel_resize()
+        for attribute in ('offset','drag_offset'):
+            if hasattr(self.widget,attribute):setattr(self.widget,attribute,None)
+        # Native display changes may arrive as a series during full-screen games.
+        # They must never become a new user size or overwrite the saved position.
+        self.display_timer.start()
+    def restore_display_geometry(self):
+        if self.controller.stopping or self.start is not None or not self.widget.isVisible():return
+        position=self.controller.state.geometry(self.key)
+        rect=QRect(self.preferred)
+        if position:rect.moveTopLeft(QPoint(*position[:2]))
+        self.widget.setGeometry(rect)
+        if self.key=='weather':self.widget.ensure_on_screen()
+        else:self.widget.clamp()
+    def cancel_resize(self):
+        if self.start is None:return
+        rect=self.start;self.start=None;self.edges=Qt.Edge(0);self.origin=None
+        self.widget.releaseMouse();self.widget.setGeometry(rect)
     def persist(self):
         widget=self.widget
-        try:self.controller.state.save_widget_geometry(self.key,(widget.x(),widget.y()),(widget.width(),widget.height()))
+        try:
+            self.controller.state.save_widget_geometry(self.key,(widget.x(),widget.y()),(widget.width(),widget.height()))
+            self.preferred=QRect(widget.geometry())
         except OSError as error:self.controller.storage_error(error)
     def reset(self):
         try:self.controller.state.clear_widget_size(self.key)
@@ -141,8 +179,14 @@ class WidgetFrame(QObject):
     def eventFilter(self,watched,event):
         kind=event.type();widget=self.widget
         if kind==QEvent.Type.Show:
+            handle=widget.windowHandle()
+            if handle is not None and handle is not self._handle:
+                self._handle=handle;handle.screenChanged.connect(self.display_changed)
             QTimer.singleShot(0,lambda:skip_taskbar(widget))
             self.controller.layers.timer.start(0)
+            self.display_timer.start()
+        elif kind==QEvent.Type.DevicePixelRatioChange:
+            self.display_changed()
         elif kind==QEvent.Type.MouseButtonPress and event.button()==Qt.MouseButton.LeftButton:
             edges=resize_edges(event.position(),widget.size())
             if edges:
@@ -151,17 +195,19 @@ class WidgetFrame(QObject):
         elif kind==QEvent.Type.MouseMove:
             edges=self.edges or resize_edges(event.position(),widget.size());widget.setCursor(self.cursor(edges))
             if self.start is not None:
+                if not event.buttons()&Qt.MouseButton.LeftButton:
+                    self.cancel_resize();return False
                 widget.setGeometry(resized_rect(self.start,event.globalPosition().toPoint()-self.origin,
                     self.edges,widget.minimumSize(),QSize(min(widget.maximumWidth(),16384),min(widget.maximumHeight(),16384))))
                 event.accept();return True
         elif kind==QEvent.Type.MouseButtonRelease and self.start is not None:
             if event.button()!=Qt.MouseButton.LeftButton:return False
-            widget.releaseMouse();self.start=None;self.edges=Qt.Edge(0)
+            self.start=None;self.edges=Qt.Edge(0);self.origin=None;widget.releaseMouse()
             if self.key=='weather':widget.ensure_on_screen()
             else:widget.clamp()
             self.persist();event.accept();return True
         elif kind==QEvent.Type.KeyPress and event.key()==Qt.Key.Key_Escape and self.start is not None:
-            widget.setGeometry(self.start);widget.releaseMouse();self.start=None;self.edges=Qt.Edge(0);return True
-        elif kind==QEvent.Type.Hide and self.start is not None:
-            widget.releaseMouse();self.start=None;self.edges=Qt.Edge(0)
+            self.cancel_resize();return True
+        elif kind in (QEvent.Type.Hide,QEvent.Type.UngrabMouse,QEvent.Type.WindowDeactivate):
+            self.cancel_resize()
         return False

@@ -1,10 +1,12 @@
 # Ajanlaskut ja Sää
 
-**Windows 10 x64 -versio 1.11.1:** [käynnistys, Windowsin omat teemat ja MIKES-aika](WINDOWS.md).
+**Windows 10 x64 -versio 1.11.2:** [käynnistys, Windowsin omat teemat ja MIKES-aika](WINDOWS.md).
 Purettava paketti sisältää tarvittavat kirjastot. Oletuksena Windowsin järjestelmäteema
 ja Segoe UI; kellot käyttävät Windowsin valmiiksi synkronoimaa aikaa.
 Versio 1.11.1 sisältää julkiset HTTPS-juurivarmenteet Yr:n ja FMI:n ennustehakuja varten,
 tarkemmat yhteysvirheet ja aiemmin epäonnistuneiden hakujen uuden yrityksen päivitettäessä.
+Versio 1.11.2 palauttaa widgettien valitut koot ja paikat näytön resoluution tai
+DPI-skaalauksen vaihtuessa esimerkiksi koko näytön pelin yhteydessä.
 
 **Uusin asennuspaketti: [1.10.0 · Kuu, nimikalenterit ja päivän valo](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).

@@ -1,11 +1,11 @@
-# Ajanlaskut ja Sää 1.11.1 · Windows 10
+# Ajanlaskut ja Sää 1.11.2 · Windows 10
 
 Windows 10:n **64-bittinen versio 1809 tai uudempi**. Paketti sisältää oman
 Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 
 ## Käynnistys
 
-1. Pura koko `Ajanlaskut-ja-Saa-1.11.1-Windows10-x64.zip` pysyvään kansioon,
+1. Pura koko `Ajanlaskut-ja-Saa-1.11.2-Windows10-x64.zip` pysyvään kansioon,
    esimerkiksi oman käyttäjäkansiosi Sovellukset-kansioon.
 2. Käynnistä **Ajanlaskut-ja-Saa.exe** puretusta kansiosta.
 3. Halutessasi aja **Luo-pikakuvakkeet.cmd**. Se lisää kaksi pikakuvaketta
@@ -59,6 +59,14 @@ säilyvät. Jos kansion polku muuttui, luo pikakuvakkeet uudelleen ja poista
 automaattikäynnistys käytöstä sekä ota se uudelleen käyttöön uudessa versiossa.
 
 ## Toiminnan tarkistus
+
+**Widgetit ja koko näytön pelit · 1.11.2:** sovellus käsittelee näytön resoluution,
+käytettävissä olevan työpöytäalueen ja DPI-skaalauksen muutokset. Widgetin valittu
+koko palautetaan näyttötilan muutoksen rauhoituttua. Paikka sovitetaan tarvittaessa
+tilapäisesti pienemmälle työpöydälle; normaali paikka palautuu näyttötilan palatessa.
+Näyttötilan muutos ei tallenna suurentunutta kokoa tai tilapäistä paikkaa asetuksiin.
+Pelin aktivoituminen tai hiiren kaappauksen katkeaminen peruu keskeneräisen koonmuutoksen.
+Reunoista muuttaminen, yksilöllisten kokojen tallennus ja oletuskoon palautus säilyvät.
 
 **Säähaun yhteydet · 1.11.1:** Windows-paketti sisältää nyt certifin Mozillan
 julkiset juurivarmenteet. Niitä käytetään Windowsin oman varmennevaraston lisäksi,

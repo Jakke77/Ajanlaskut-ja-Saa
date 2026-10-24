@@ -142,6 +142,7 @@ class DesktopSurface(QWidget):
         }
         position = self.controller.state.geometry(self.key) or preset.get(self.key, (area.left()+130, area.top()+110))
         self.move(*position[:2]); self.clamp()
+        self.frame.remember_position()
 
     def clamp(self):
         if self.preview: return

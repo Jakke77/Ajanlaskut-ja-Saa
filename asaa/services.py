@@ -81,6 +81,9 @@ class SharedWeather(WeatherWidget):
         self.move(*position[:2]);self.ensure_on_screen()
 
     def save_position(self):
+        # Closing during a game's temporary display mode must not save the
+        # OS-clamped position. Actual pointer moves already save on release.
+        if self.stopping:return
         saved=self.controller.state.geometry('weather')
         try:self.controller.state.geometry('weather',[self.x(),self.y()]+(saved[2:] if saved else []))
         except OSError as error:

@@ -287,6 +287,10 @@ class WeatherWidget(QWidget):
             self.setMinimumSize(round(WIDTH*.6),round(HEIGHT*.6))
             saved=self.controller.state.widget_size('weather')
             size=saved or [round(WIDTH*self.options['scale']/100),round(HEIGHT*self.options['scale']/100)]
+            if getattr(self,'frame',None):
+                from PyQt6.QtCore import QSize
+                size=self.frame.size(QSize(*size))
+                size=[size.width(),size.height()]
             self.resize(*size)
         else:
             self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, self.options["on_top"])
