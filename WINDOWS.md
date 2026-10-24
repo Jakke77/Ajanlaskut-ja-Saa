@@ -1,11 +1,11 @@
-# Ajanlaskut ja Sää 1.12.0 · Windows 10
+# Ajanlaskut ja Sää 1.12.1 · Windows 10
 
 Windows 10:n **64-bittinen versio 1809 tai uudempi**. Paketti sisältää oman
 Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 
 ## Käynnistys
 
-1. Pura koko `Ajanlaskut-ja-Saa-1.12.0-Windows10-x64.zip` pysyvään kansioon,
+1. Pura koko `Ajanlaskut-ja-Saa-1.12.1-Windows10-x64.zip` pysyvään kansioon,
    esimerkiksi oman käyttäjäkansiosi Sovellukset-kansioon.
 2. Käynnistä **Ajanlaskut-ja-Saa.exe** puretusta kansiosta.
 3. Halutessasi aja **Luo-pikakuvakkeet.cmd**. Se lisää kaksi pikakuvaketta
@@ -14,12 +14,19 @@ Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 **Vain-widgetit.cmd** avaa valitut työpöytäwidgetit. Ilmoitusalueen kuvakkeesta
 saat pääikkunan takaisin. **Lopeta sovellus** sulkee myös widgetit.
 
-## Veri Aika ja Otavakello · 1.12.0
+## Veri Aika ja Otavakello · 1.12.1
 
-Sivupalkin **Veri Aika** näyttää seitsemän päivän viikot. Alkupiste on
+Sivupalkin **Veri Aika** näyttää 777 päivän vuodet eli 111 seitsemän päivän viikkoa. Alkupiste on
 **26.6.2026 klo 01:07:07 Suomen aikaa**; päivä ja uusi viikko vaihtuvat aina
 klo 01:07:07 paikallista Suomen aikaa myös kesä- ja talviaikana. Viikot jatkuvat
-alkupisteestä eteenpäin. Ajanlasku on sovelluksen oma luova kalenteri.
+alkupisteestä eteenpäin. Vuosi vaihtuu aina 777 paikallisen päivän jälkeen;
+vuoden viimeinen viikko on 111. viikko. Ajanlasku on sovelluksen oma luova kalenteri.
+
+Vuoden jokaiselle päivälle on pysyvä miehen ja naisen nimipari. Keksityt nimet
+saavat vaikutteita verestä, elämänkierron ja biologian sanastosta sekä
+mielikuvituksesta. Nimiparit toistuvat vuoden mukana, ja syntymäpäivän
+nimen voi tarkistaa **Nimikalenterit → Oma nimi** -näkymästä. Ne ovat
+sovelluksen omia nimiä, eivät virallisen nimipäiväkalenterin tietoja.
 
 Kalenterin, etusivun ja widgetin Otava lasketaan Oulun taivaalle oikean
 kellonajan mukaan. **Ajanlaskuwidgetit → Näyttötapa → Otavakello** on

@@ -1,6 +1,7 @@
 """Windows package artwork and explicit, read-only wallpaper selection."""
 import importlib.util
 from dataclasses import asdict
+import json
 import os
 from pathlib import Path
 from types import SimpleNamespace
@@ -29,6 +30,19 @@ class WindowsDeliveryTests(unittest.TestCase):
         self.assertIn('assets/wallpapers/catalog.json', files)
         for path in (ROOT / 'assets/wallpapers').rglob('*.png'):
             self.assertIn(path.relative_to(ROOT).as_posix(), files)
+
+    def test_package_includes_the_complete_veri_names_database(self):
+        spec = importlib.util.spec_from_file_location('windows_names_builder', ROOT / 'packaging/build_windows.py')
+        builder = importlib.util.module_from_spec(spec); spec.loader.exec_module(builder)
+        sources = {path.relative_to(ROOT).as_posix(): path for path in builder.source_files()}
+        database = sources['assets/blood-names.json']
+        self.assertTrue(database.is_file())
+        self.assertGreater(database.stat().st_size, 0)
+        payload = json.loads(database.read_text(encoding='utf-8'))
+        self.assertEqual(payload['year_days'], 777)
+        self.assertEqual(len(payload['pairs']), 777)
+        self.assertIn('asaa/blood_names.py', sources)
+        self.assertIn('tests/test_blood_names.py', sources)
 
     def test_wallpaper_selection_opens_only_the_selected_local_image(self):
         controller = SimpleNamespace(state=SimpleNamespace(path=ROOT / 'state-not-written.json'))
