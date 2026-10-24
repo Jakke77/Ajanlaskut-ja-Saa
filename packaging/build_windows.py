@@ -42,7 +42,7 @@ def unpack(archive, destination):
 def source_files():
     yield ROOT / 'main.py'
     yield ROOT / 'packaging/build_windows.py'
-    for folder in ('asaa', 'vendor', 'tests', 'packaging/windows'):
+    for folder in ('asaa', 'vendor', 'tests', 'packaging/windows', 'assets/wallpapers'):
         for source in sorted((ROOT / folder).rglob('*')):
             if source.is_file() and '__pycache__' not in source.parts and source.suffix != '.pyc':
                 yield source

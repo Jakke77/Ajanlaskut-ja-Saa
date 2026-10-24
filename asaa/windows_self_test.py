@@ -15,7 +15,9 @@ def run_tests(app, preview_dir=None):
     from . import platform_support, ui, theme
     suite = unittest.defaultTestLoader.loadTestsFromNames([
         'tests.test_windows_support', 'tests.test_weather_network',
-        'tests.test_forecast', 'tests.test_providers', 'tests.test_display_geometry'])
+        'tests.test_forecast', 'tests.test_providers', 'tests.test_display_geometry',
+        'tests.test_windows_delivery', 'tests.test_blood_time', 'tests.test_otava',
+        'tests.test_blood_ui', 'tests.test_otava_clock'])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if not result.wasSuccessful(): return 1
     # The same acceptance route also runs on Linux CI with Windows UI selection.
@@ -29,7 +31,7 @@ def run_tests(app, preview_dir=None):
         try:
             controller.restore_widgets(); controller.listen(); controller.window.show(); app.processEvents()
             settings = controller.window.page_widgets['settings']
-            assert {settings.theme.itemData(i) for i in range(settings.theme.count())} == set(platform_support.WINDOWS_THEMES)
+            assert {settings.theme.itemData(i) for i in range(settings.theme.count())} == {*platform_support.WINDOWS_THEMES, 'blood'}
             for selected in platform_support.WINDOWS_THEMES:
                 controller.configure({'theme': selected}); app.processEvents()
                 assert controller.weather.paint_palette == theme.THEMES[selected]
