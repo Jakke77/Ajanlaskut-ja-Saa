@@ -3,7 +3,6 @@ import importlib.util
 from dataclasses import asdict
 import json
 import os
-from datetime import timedelta
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -46,8 +45,31 @@ class WindowsDeliveryTests(unittest.TestCase):
         self.assertIn('asaa/blood_names.py', sources)
         self.assertIn('tests/test_blood_names.py', sources)
 
+    def test_package_includes_all_meanings_and_current_offline_namebooks(self):
+        from asaa import blood_names, blood_namebook
+
+        spec = importlib.util.spec_from_file_location('windows_meanings_builder', ROOT / 'packaging/build_windows.py')
+        builder = importlib.util.module_from_spec(spec); spec.loader.exec_module(builder)
+        sources = {path.relative_to(ROOT).as_posix(): path for path in builder.source_files()}
+        self.assertTrue(sources['assets/blood-name-meanings.json'].is_file())
+        entries = blood_names.meanings()
+        expected = {name for pair in blood_names.catalog() for name in (pair.male, pair.female)}
+        self.assertEqual({entry.name for entry in entries}, expected)
+        self.assertEqual(len(entries), 1554)
+        html = sources['assets/namebooks/veri-ajan-nimikirja.html'].read_text(encoding='utf-8')
+        markdown = sources['assets/namebooks/veri-ajan-nimikirja.md'].read_text(encoding='utf-8')
+        self.assertEqual(html, blood_namebook.render_html())
+        self.assertEqual(markdown, blood_namebook.render_markdown())
+        for name in expected:
+            self.assertIn(name, html)
+            self.assertIn(name, markdown)
+        self.assertIn('tämän keksin :)', html)
+        self.assertNotIn('src="https://', html)
+        for test in ('blood_meanings', 'blood_meanings_ui', 'blood_namebook', 'blood_calendar_ui'):
+            self.assertIn(f'tests/test_{test}.py', sources)
+
     def test_calendar_grids_fit_with_wide_native_button_minimums(self):
-        from asaa import blood_ui, celestial_ui
+        from asaa import blood_ui, blood_calendar_ui, celestial_ui
         from tests import test_veri_names_ui as fixture
 
         class WideNativeButtons(QProxyStyle):
@@ -58,6 +80,7 @@ class WindowsDeliveryTests(unittest.TestCase):
                 return result
 
         with patch.object(blood_ui, 'IS_WINDOWS', True, create=True), \
+                patch.object(blood_calendar_ui, 'IS_WINDOWS', True, create=True), \
                 patch.object(celestial_ui, 'IS_WINDOWS', True, create=True):
             case = fixture.VeriNamesUiTests('test_minimum_window_keeps_veri_calendar_within_the_viewport')
             case.app = self.app
@@ -66,31 +89,50 @@ class WindowsDeliveryTests(unittest.TestCase):
                 case.controller.configure({'theme': 'windows_light', 'wallpaper_follow_theme': False})
                 self.app.setStyle(WideNativeButtons('Fusion'))
                 case.window.resize(1020, 720)
-                for key in ('blood', 'names'):
-                    case.controller.open_page(key); self.app.processEvents()
+                def assert_page_fits(page):
                     scroll = case.window.pages.currentWidget()
-                    page = case.window.page_widgets[key]
                     overflow = scroll.horizontalScrollBar().maximum()
                     self.assertEqual(overflow, 0, layout_diagnostics(page, scroll) if overflow else None)
+
+                def assert_grid_text_fits(grid):
+                    marked = grid.visible_days[0]
+                    case.state.save_note(marked, 'Luettavuustestin kalenterimerkintä')
+                    grid.render(); self.app.processEvents()
+                    self.assertIn(len(grid.day_buttons), (7, 35))
+                    self.assertEqual(len(grid.day_buttons), len(grid.visible_days))
+                    for item, day in zip(grid.day_buttons, grid.visible_days):
+                        lines = item.text().splitlines()
+                        metrics = item.fontMetrics()
+                        widths = [metrics.horizontalAdvance(line) for line in lines]
+                        text_height = metrics.height() + (len(lines) - 1) * metrics.lineSpacing()
+                        evidence = json.dumps(dict(text=item.text(), font=item.font().toString(),
+                            widths=widths, text_height=text_height,
+                            contents=[item.contentsRect().width(), item.contentsRect().height()],
+                            size_hint=[item.sizeHint().width(), item.sizeHint().height()]), ensure_ascii=False)
+                        self.assertGreaterEqual(item.contentsRect().width(), max(widths), evidence)
+                        self.assertGreaterEqual(item.contentsRect().height(), text_height, evidence)
+                        self.assertEqual(item.property('civil_date'), day)
+                        number = blood_ui.blood_time.from_date(day).day_of_year
+                        self.assertEqual(item.accessibleName(),
+                            f'Vuoden päivä {number} · {day:%d.%m.%Y}'
+                            + (' · kalenterimerkintä' if case.state.note(day) else ''))
+                        self.assertEqual(item.accessibleDescription(), item.toolTip())
+
+                case.controller.open_page('blood'); self.app.processEvents()
                 page = case.window.page_widgets['blood']
-                case.state.save_note(page.week_start, 'Luettavuustestin kalenterimerkintä')
-                page.render(); self.app.processEvents()
-                for index, item in enumerate(page.day_buttons):
-                    lines = item.text().splitlines()
-                    metrics = item.fontMetrics()
-                    widths = [metrics.horizontalAdvance(line) for line in lines]
-                    text_height = metrics.height() + (len(lines) - 1) * metrics.lineSpacing()
-                    evidence = json.dumps(dict(text=item.text(), font=item.font().toString(),
-                        widths=widths, text_height=text_height,
-                        contents=[item.contentsRect().width(), item.contentsRect().height()],
-                        size_hint=[item.sizeHint().width(), item.sizeHint().height()]), ensure_ascii=False)
-                    self.assertGreaterEqual(item.contentsRect().width(), max(widths), evidence)
-                    self.assertGreaterEqual(item.contentsRect().height(), text_height, evidence)
-                    day = page.week_start + timedelta(days=index)
-                    self.assertEqual(item.accessibleName(),
-                        f'Viikon {index + 1}. päivä · {day:%d.%m.%Y}'
-                        + (' · kalenterimerkintä' if index == 0 else ''))
-                    self.assertEqual(item.accessibleDescription(), item.toolTip())
+                assert_page_fits(page)
+                assert_grid_text_fits(page.calendar_grid)
+                case.controller.open_page('names'); self.app.processEvents()
+                page = case.window.page_widgets['names']
+                for index in range(page.tabs.count()):
+                    page.tabs.setCurrentIndex(index); self.app.processEvents()
+                    assert_page_fits(page)
+                case.controller.open_calendar('blood', case.now.date()); self.app.processEvents()
+                self.assertTrue(case.window.navigation['calendar'].isChecked())
+                page = case.window.page_widgets['calendar']
+                self.assertEqual(page.selector.currentData(), 'blood')
+                assert_page_fits(page)
+                assert_grid_text_fits(page.blood_calendar)
             finally:
                 case.tearDown(); self.app.setStyle('Fusion')
 

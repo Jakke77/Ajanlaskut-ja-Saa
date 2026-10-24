@@ -42,11 +42,13 @@ def unpack(archive, destination):
 def source_files():
     yield ROOT / 'main.py'
     yield ROOT / 'packaging/build_windows.py'
-    for folder in ('asaa', 'vendor', 'tests', 'packaging/windows', 'assets/wallpapers'):
+    for folder in ('asaa', 'vendor', 'tests', 'packaging/windows', 'assets/wallpapers',
+                   'assets/namebooks'):
         for source in sorted((ROOT / folder).rglob('*')):
             if source.is_file() and '__pycache__' not in source.parts and source.suffix != '.pyc':
                 yield source
-    for name in ('icon.svg', 'calendar-names.json', 'blood-names.json', 'huuhkaja.wav'):
+    for name in ('icon.svg', 'calendar-names.json', 'blood-names.json',
+                 'blood-name-meanings.json', 'huuhkaja.wav'):
         yield ROOT / 'assets' / name
     for name in ('LICENSE', 'THIRD_PARTY_NOTICES.md', 'WINDOWS.md'):
         yield ROOT / name
