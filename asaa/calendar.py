@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from .models import shadow, star
 
-NAMES = {'shadow': 'Varjoaika', 'star': 'Tähtiaika', 'civil': 'Gregoriaaninen kalenteri'}
+NAMES = {'shadow': 'Varjoaika', 'star': 'Tähtiaika', 'civil': 'Gregoriaaninen kalenteri', 'blood': 'Veri Aika'}
 MONTHS = ('Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu',
           'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu')
 WEEKDAYS = ('Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai', 'Sunnuntai')
@@ -56,7 +56,19 @@ class Calendars:
     def now(self):
         return datetime.now(self.zone)
 
+    def at(self, system, moment):
+        """Convert an instant, respecting Veri Aika's independent Helsinki cutover."""
+        if moment.tzinfo is None or moment.utcoffset() is None:
+            raise ValueError('Ajanhetkellä pitää olla aikavyöhyke.')
+        if system == 'blood':
+            from .blood_time import at
+            return at(moment)
+        return self.convert(system, moment.astimezone(self.zone).date())
+
     def convert(self, system, civil):
+        if system == 'blood':
+            from .blood_time import from_date
+            return from_date(civil)
         if system == 'civil': return Day(system, civil.year, civil.month - 1, civil.day, civil, self.zone.key)
         if system == 'shadow':
             item = shadow.from_gregorian(civil)
@@ -101,6 +113,7 @@ class Calendars:
         return self.bound_month(system, year, month+delta)
 
     def day_words(self, item, side='left'):
+        if item.system == 'blood': return item.day_name
         if item.system == 'star': return star.day_name(star.StarDate(item.year, item.month, item.day), side)
         if item.system == 'shadow': return shadow.WEEKDAY_NAMES[item.weekday]
         return WEEKDAYS[item.weekday]

@@ -143,7 +143,7 @@ def acceptance(controller, app, preview_dir=None):
         quiet_save(widgets);assert palette('weather').text == '#ff9f7c'
 
         # Each clock previews its own inherited text color and its independent digit color.
-        digit_colors = dict(zip(PROFILE_KEYS, ('#ff4fd8', '#8eff66', '#66dcff', '#ffe166')))
+        digit_colors = dict(zip(PROFILE_KEYS, ('#ff4fd8', '#8eff66', '#66dcff', '#ffe166', '#f0788b')))
         for key, color in digit_colors.items():
             controller.open_clock(key)
             clocks.load()

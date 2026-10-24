@@ -3,27 +3,29 @@ import math
 import random
 import time
 
-SYSTEMS = ('shadow', 'star', 'civil')
-PROFILE_KEYS = ('combined', 'shadow', 'star', 'civil')
-CLOCK_TITLES = {'shadow': 'Varjoaika', 'star': 'Tähtiaika', 'civil': 'Gregoriaaninen'}
+SYSTEMS = ('shadow', 'star', 'civil', 'blood')
+PROFILE_KEYS = ('combined', *SYSTEMS)
+CLOCK_TITLES = {'shadow': 'Varjoaika', 'star': 'Tähtiaika', 'civil': 'Gregoriaaninen', 'blood': 'Veri Aika'}
 FIELD_LABELS = {
     'clock': 'Kello', 'date': 'Ajanlaskun päivämäärä', 'weekday': 'Viikonpäivän nimi',
     'phase': 'Todellinen kuunvaihe ja valaistus',
     'civil_date': 'Tavallinen päivämäärä', 'zone': 'Aikavyöhyke',
     'weather': 'Kolmen päivän sää', 'note': 'Päivän kalenterimerkintä',
     'reminder': 'Seuraava muistutus',
+    'otava': 'Otavan todellinen asento · Oulu',
 }
 
 
-def default_profile(weather=False, civil_date=True):
+def default_profile(weather=False, civil_date=True, otava=False):
     return {'clock': True, 'date': True, 'weekday': True, 'phase': True,
             'civil_date': civil_date, 'zone': True, 'weather': weather,
-            'note': False, 'reminder': False}
+            'note': False, 'reminder': False, 'otava': otava}
 
 
 DEFAULT_PROFILES = {
-    'combined': default_profile(True), 'shadow': default_profile(True),
+    'combined': default_profile(True, otava=True), 'shadow': default_profile(True),
     'star': default_profile(), 'civil': default_profile(civil_date=False),
+    'blood': default_profile(otava=True),
 }
 
 
@@ -32,7 +34,7 @@ def clock_layout(profile, *, analog=False):
     y = 56
     blocks = []
     for field, height in [('clock', 346 if analog else 90), ('date', 46), ('weekday', 34), ('phase', 34),
-                          ('reference', 36), ('weather', 206), ('note', 66), ('reminder', 64)]:
+                          ('reference', 36), ('otava', 138), ('weather', 206), ('note', 66), ('reminder', 64)]:
         enabled = (profile['civil_date'] or profile['zone']) if field == 'reference' else profile[field]
         if enabled:
             blocks.append((field, y, height))

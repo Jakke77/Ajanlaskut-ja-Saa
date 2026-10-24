@@ -207,6 +207,10 @@ class Controller(QObject):
         self.window.show_page(key);self.window.raise_();self.window.activateWindow()
 
     def open_calendar(self,system,day=None):
+        if system == 'blood':
+            if day is not None:self.window.page_widgets['blood'].set_day(day)
+            else:self.window.page_widgets['blood'].today()
+            self.open_page('blood');return
         self.window.page_widgets['calendar'].set_day(system,day)
         self.open_page('calendar')
 
@@ -286,7 +290,7 @@ class Controller(QObject):
                     mode=json.loads(raw).get('mode')
                     if mode=='widgets':self.restore_widgets()
                     elif mode in ('main','overview'):self.open_page('overview')
-                    elif mode in ('weather','calendar','sunmoon','names','widgets','settings','wallpapers','clocks'):self.open_page(mode)
+                    elif mode in ('weather','calendar','sunmoon','names','widgets','settings','wallpapers','clocks','blood'):self.open_page(mode)
                 except (ValueError,AttributeError):pass
                 conn.disconnectFromServer()
             connection.readyRead.connect(read);connection.disconnected.connect(connection.deleteLater);read()

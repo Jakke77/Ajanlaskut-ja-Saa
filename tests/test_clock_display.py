@@ -291,6 +291,7 @@ class ClockDisplayResolutionTests(unittest.TestCase):
         self.assertEqual(CLOCK_DISPLAY_CHOICES, [
             ('Teeman oletus', 'theme'), ('Digitaalinen', 'digital'),
             ('Analoginen', 'analog'), ('Analoginen ja digitaalinen', 'both'),
+            ('Otavakello', 'otava'), ('Otavakello ja digitaalinen', 'otava_both'),
         ])
 
 

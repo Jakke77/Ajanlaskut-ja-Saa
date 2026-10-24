@@ -49,6 +49,30 @@
       "created": "2026-10-12",
       "generation": "built-in image generation",
       "prompt": "ubuntu-2610-dark/LUONTIKUVAUS.md"
+    },
+    {
+      "id": "veriyo-otava",
+      "title": "Veriyö · Otava",
+      "theme": "blood",
+      "file": "veri-aika/veriyo-otava.png",
+      "description": "Seitsemän tähden koristeellinen Otava, tumma suomalainen yömaisema ja punertava tähtikehä. Rauhallinen oikea reuna jättää tilaa widgeteille. Staattinen kuvitus, ei nykyhetken tähtikartta.",
+      "width": 1672,
+      "height": 941,
+      "created": "2026-10-24",
+      "generation": "built-in image generation",
+      "prompt": "veri-aika/LUONTIKUVAUS.md"
+    },
+    {
+      "id": "veriyo-hiillos",
+      "title": "Veriyö · Hiillos",
+      "theme": "blood",
+      "file": "veri-aika/veriyo-hiillos.png",
+      "description": "Lähes musta metsämaisema ja hillitty punertava kiertokehä. Hyvin rauhallinen oikea reuna jättää tilaa widgeteille. Staattinen kuvitus, ei nykyhetken tähtikartta.",
+      "width": 1672,
+      "height": 941,
+      "created": "2026-10-24",
+      "generation": "built-in image generation",
+      "prompt": "veri-aika/LUONTIKUVAUS.md"
     }
   ]
 }

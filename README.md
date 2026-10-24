@@ -1,24 +1,55 @@
 # Ajanlaskut ja Sää
 
-**Windows 10 x64 -versio 1.11.2:** [käynnistys, Windowsin omat teemat ja MIKES-aika](WINDOWS.md).
-Purettava paketti sisältää tarvittavat kirjastot. Oletuksena Windowsin järjestelmäteema
-ja Segoe UI; kellot käyttävät Windowsin valmiiksi synkronoimaa aikaa.
-Versio 1.11.1 sisältää julkiset HTTPS-juurivarmenteet Yr:n ja FMI:n ennustehakuja varten,
-tarkemmat yhteysvirheet ja aiemmin epäonnistuneiden hakujen uuden yrityksen päivitettäessä.
-Versio 1.11.2 palauttaa widgettien valitut koot ja paikat näytön resoluution tai
-DPI-skaalauksen vaihtuessa esimerkiksi koko näytön pelin yhteydessä.
+**Uusin Ubuntu-paketti: [1.12.0 · Veri Aika ja Otavakello](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).**
+Windows 10 x64: [1.12.0:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.0).
+**Windows-versio sisältää oman Pythonin ja Qt:n.** Katso [Windowsin käynnistys ja ominaisuudet](WINDOWS.md).
 
-**Uusin asennuspaketti: [1.10.0 · Kuu, nimikalenterit ja päivän valo](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).**
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
 Sulje vanha ohjelma valikon **Lopeta sovellus** -komennolla ennen uuden käynnistystä.
 Ikkunan otsikko ja alareuna näyttävät käynnissä olevan version.
 
-Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, tavallinen kalenteri ja sää
+Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, Veri Aika, tavallinen kalenteri ja sää
 yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
+
+## Veri Aika ja Otavakello · versio 1.12.0
+
+**Veri Aika** löytyy suoraan sivuvalikosta sekä **Kalenterit → Veri Aika**.
+Alkuhetki on **26.6.2026 klo 01:07:07 Suomen aikaa**. Päivä vaihtuu klo
+01:07:07, ja joka seitsemäs päivä alkaa uusi viikko. Viikot jatkuvat yli
+vuodenvaihteen ja alun vuosipäivän; ajanlaskuun ei ole keksitty kuukausia.
+Suomen kesä- ja talviaika huomioidaan. Ennen alkua valittu päivä merkitään
+selvästi ajanlaskua edeltäväksi. Viikkonäkymästä voi avata yhteisen päivän merkinnät.
+
+Etusivulla, Veri Ajan kalenterissa ja kellon **Otavan todellinen asento · Oulu**
+-sisältökentässä näkyy seitsemän tähden kuvio oikeassa asennossaan Oulun
+pohjoistaivaalla. Kuvio liikkuu ajan mukana vakaan pohjoisen taivaannavan
+ympärillä: ylös on zeniitti, oikealle itä. Tähtien korkeudet ja ilmansuunnat
+näkyvät kalenterikuvan vihjeessä. Paikka on tarkoituksella kiinteä Oulu,
+vaikka sääpaikka tai kellon aikavyöhyke vaihtuisi. Laskenta toimii offline,
+vuosina 1900–2100. Se kuvaa tähtien geometriaa, ei näkyvyyttä päivänvalossa tai pilvien läpi.
+
+**Ajanlaskuwidgetit → Näyttötapa → Otavakello** tai **Otavakello ja digitaalinen**
+vaihtaa kellotaulun: tunti- ja minuuttiviisarit näyttävät ajan, Otavan
+seitsemän tähden kuvio toimii sekuntiviisarina. Tämä kuvio kiertää symbolisesti
+kerran minuutissa; erillinen taivaskuva näyttää todellisen tähtiasennon.
+**Asetukset → Näytä sekunnit** piilottaa myös tämän sekuntikuvion.
+Valitse samalla **Valittu ajanlasku → Veri Aika**, tai lisää se vaihtoon
+osallistuvien ajanlaskujen joukkoon. Tallenna. Vanha tallennettu kiertojoukko säilyy päivityksessä.
+
+**Asetukset → Teema → Veri Aika · Veriyö** tuo lähes mustan viininpunaisen
+paletin. Teeman voi valita myös yksittäiselle widgetille. **Taustakuvat**
+-sivulla ovat **Veriyö · Otava** ja **Veriyö · Hiillos**. Taustakuvien ja
+paneelikoristeen Otava on staattista kuvitusta; se ei väitä näyttävänsä nykyhetken taivasta.
+Ubuntu-paketissa on myös yhteensopiva Veriyö-kuvaketeema.
+Windows-version samat kalenteri- ja kello-ominaisuudet säilyttävät
+Windowsin omat työpöytä- ja saavutettavuusasetukset.
+
+![Veri Ajan viikko ja Oulun todellinen Otava](previews/veri-aika.png)
+![Otavakello ja Veriyö](previews/otavakello.png)
 
 ## Kuu, nimikalenterit ja päivän valo · versio 1.10.0
 
@@ -196,7 +227,7 @@ Taustakuvat-sivun toimintopainikkeiden vieressä. **Aseta Ubuntu-teeman tausta**
 (tai Kupari/Halla) kertoo, minkä teeman kuva asetetaan. Galleriassa valitun kuvan
 asettaa **Työpöydän taustaksi** -painike.
 
-[Lataa uusin 1.10.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).
+[Lataa uusin 1.12.0-deb-paketti ja tarkiste](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).
 Se sisältää myös alla kuvatut kellon ja tekstivärien säädöt.
 
 ## Kellon näyttötapa, numerokoko ja tekstivärit · versio 1.6.1
@@ -238,7 +269,7 @@ lukitusnäyttö seuraa työpöydän taustakuvaa: käytä **Työpöydän taustaks
 ![Kellon väri- ja numerosäätöjen esikatselu](previews/clock-colors.png)
 
 Valmis Debian-paketti ja asennusohje julkaistaan GitHubin
-[packages/v1.10.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.10.0).
+[packages/v1.12.0-haarassa](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.0).
 Paketti ei tarvitse lähdekoodin rakentamista. [Deb-asennus ja käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 
 ## Oma teema jokaiselle widgetille · versio 1.6.0

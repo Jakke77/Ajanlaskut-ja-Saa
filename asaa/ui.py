@@ -43,7 +43,7 @@ class OrbitBanner(QFrame):
         super().__init__(); self.controller = controller
         self.setMinimumHeight(170)
         layout = QVBoxLayout(self); layout.setContentsMargins(28,20,28,20)
-        layout.addWidget(label('YKSI HETKI · KOLME AJANLASKUA', 'eyebrow'))
+        layout.addWidget(label('YKSI HETKI · NELJÄ AJANLASKUA', 'eyebrow'))
         self.clock = label('', 'clock'); layout.addWidget(self.clock)
         self.subtitle = label('', 'muted'); layout.addWidget(self.subtitle)
         controller.clock_changed.connect(self.tick); self.tick()
@@ -105,6 +105,20 @@ class OverviewPage(QWidget):
             self.date_labels[system]=value;self.note_labels[system]=detail
             row.addWidget(frame)
         layout.addLayout(row)
+        frame, content=card()
+        blood_row=QHBoxLayout();words=QVBoxLayout()
+        words.addWidget(label('VERI AIKA · SEITSEMÄN TÄHTEÄ','eyebrow'))
+        value=label('','',True);value.setStyleSheet('font-size:22px;font-weight:bold;')
+        detail=label('','muted',True)
+        words.addWidget(value);words.addWidget(detail)
+        words.addWidget(button('Avaa Veri Aika →',lambda:controller.open_calendar('blood')))
+        blood_row.addLayout(words,1)
+        from .otava_ui import OtavaView
+        self.otava=OtavaView(controller,compact=True)
+        self.otava.setMaximumWidth(270)
+        blood_row.addWidget(self.otava)
+        content.addLayout(blood_row);layout.addWidget(frame)
+        self.date_labels['blood']=value;self.note_labels['blood']=detail
         self.source_row=QHBoxLayout()
         self.source_row.addWidget(label('SÄÄ · SEURAAVAT 12 TUNTIA','eyebrow'));self.source_row.addStretch(1)
         self.source_row.addWidget(button('Avaa sää →',lambda:controller.open_page('weather')))
@@ -117,8 +131,13 @@ class OverviewPage(QWidget):
         now=self.controller.calendars.now()
         for system in self.date_labels:
             try:
-                item=self.controller.calendars.convert(system,now.date())
+                item=self.controller.calendars.at(system,now)
                 self.date_labels[system].setText(item.label)
+                if system=='blood':
+                    from .blood_time import next_week
+                    self.note_labels[system].setText('Alku 26.6.2026 klo 01:07:07 · Suomen aikaa\n'
+                        f'Seuraava viikko {next_week(now):%d.%m. %H:%M:%S %Z}\nOtava näyttää Oulun taivaan todellisen asennon.')
+                    continue
                 from .astronomy import moon_at
                 try:phase=moon_at(now).label
                 except ValueError:phase=item.phase
@@ -231,7 +250,13 @@ class CalendarPage(QWidget):
         self.month_box.blockSignals(True);self.month_box.clear()
         self.month_box.addItems(shadow.MONTH_NAMES if system=='shadow' else star.MONTHS if system=='star' else MONTHS)
         self.month_box.blockSignals(False);self.render()
-    def change_system(self):self.set_day(self.selector.currentData(),self.selected)
+    def change_system(self):
+        system=self.selector.currentData()
+        if system=='blood':
+            self.selector.blockSignals(True);self.selector.setCurrentIndex(self.selector.findData(self.system));self.selector.blockSignals(False)
+            self.controller.open_calendar('blood',self.selected)
+            return
+        self.set_day(system,self.selected)
     def today(self):self.set_day(self.system)
     def step(self,delta):
         self.month=self.controller.calendars.step_month(self.system,*self.month,delta);self.render()
@@ -539,7 +564,7 @@ class SettingsPage(QWidget):
         self.status=label('','muted',True);layout.addWidget(self.status)
         row=QHBoxLayout();row.addWidget(button('Palauta ulkoasun oletukset',self.reset));row.addStretch(1)
         row.addWidget(button('Tallenna asetukset',self.save,True));layout.addLayout(row)
-        layout.addWidget(label('Varjoaika ja Tähtiaika ovat kuvitteellisia; niiden kuuvaiheiden nimet ovat symbolisia. Gregoriaaninen ja valinnaiset rinnakkaiskalenterit ovat oikeita kalentereita. Merkinnät ja asetukset tallentuvat tälle koneelle.','muted',True))
+        layout.addWidget(label('Varjoaika, Tähtiaika ja Veri Aika ovat sovelluksen omia ajanlaskuja. Kuunvaihe ja Otavan asento lasketaan todellisesta ajasta. Otavakellon tähtikuvio toimii symbolisena sekuntiviisarina. Merkinnät ja asetukset tallentuvat tälle koneelle.','muted',True))
         self.about_button=button('Tietoa sovelluksesta',controller.show_about)
         layout.addWidget(self.about_button)
         self.load()
@@ -589,12 +614,12 @@ class MainWindow(QMainWindow):
         side=QVBoxLayout(sidebar);side.setContentsMargins(18,24,18,20);side.setSpacing(5)
         side.addWidget(label('AJANLASKUT\nJA SÄÄ','eyebrow'));side.addWidget(label('Oma hetki. Omat kalenterit.','muted',True));side.addSpacing(22)
         self.navigation={};group=QButtonGroup(self);group.setExclusive(True)
-        for key,title in [('overview','◉  Yleiskatsaus'),('calendar','▦  Kalenterit'),('sunmoon','☼  Valo ja aurinko'),('names','✧  Nimikalenterit'),('clocks','◷  Ajanlaskuwidgetit'),('weather','☁  Sää'),('widgets','◫  Työpöytäwidgetit'),('wallpapers','▧  Taustakuvat'),('settings','⚙  Asetukset')]:
+        for key,title in [('overview','◉  Yleiskatsaus'),('calendar','▦  Kalenterit'),('blood','✧  Veri Aika'),('sunmoon','☼  Valo ja aurinko'),('names','✧  Nimikalenterit'),('clocks','◷  Ajanlaskuwidgetit'),('weather','☁  Sää'),('widgets','◫  Työpöytäwidgetit'),('wallpapers','▧  Taustakuvat'),('settings','⚙  Asetukset')]:
             if IS_WINDOWS and key=='wallpapers':title='▧  Windowsin ulkoasu'
             item=button(title,lambda _,k=key:self.show_page(k));item.setObjectName('nav');item.setCheckable(True);group.addButton(item);side.addWidget(item);self.navigation[key]=item
         side.addStretch(1);self.theme_title=label('','eyebrow',True);side.addWidget(self.theme_title)
         controller.settings_changed.connect(self.sync_theme);self.sync_theme()
-        side.addWidget(label('Varjoaika · Tähtiaika\nYr · Foreca · FMI · Windy','muted',True))
+        side.addWidget(label('Varjoaika · Tähtiaika · Veri Aika\nYr · Foreca · FMI · Windy','muted',True))
         side.addWidget(button('Lopeta sovellus',controller.quit));outer.addWidget(sidebar)
         content=QWidget();body=QVBoxLayout(content);body.setContentsMargins(26,24,26,18);body.setSpacing(16)
         self.pages=QStackedWidget();self.page_widgets={};self.page_indices={}
@@ -603,7 +628,8 @@ class MainWindow(QMainWindow):
         else:from .wallpaper_ui import WallpapersPage
         from .clock_ui import ClocksPage
         from .celestial_ui import CelestialPage, NamesPage
-        for key,page in [('overview',OverviewPage(controller)),('calendar',CalendarPage(controller)),('sunmoon',CelestialPage(controller)),('names',NamesPage(controller)),('clocks',ClocksPage(controller)),('weather',WeatherPage(controller)),('widgets',WidgetsPage(controller)),('wallpapers',WallpapersPage(controller)),('settings',SettingsPage(controller))]:
+        from .blood_ui import VeriPage
+        for key,page in [('overview',OverviewPage(controller)),('calendar',CalendarPage(controller)),('blood',VeriPage(controller)),('sunmoon',CelestialPage(controller)),('names',NamesPage(controller)),('clocks',ClocksPage(controller)),('weather',WeatherPage(controller)),('widgets',WidgetsPage(controller)),('wallpapers',WallpapersPage(controller)),('settings',SettingsPage(controller))]:
             self.page_widgets[key]=page
             scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setWidget(page)
             self.page_indices[key]=self.pages.addWidget(scroll)

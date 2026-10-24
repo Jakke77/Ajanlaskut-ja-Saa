@@ -20,12 +20,13 @@ THEMES = {
     'frost': Theme('#10151e', '#192330', '#405b72', '#a3cfe9', '#e9f4fb', '#a3bacb'),
     'ubuntu': Theme('#17121f', '#2b1b33', '#6e3c36', '#e95420', '#fff4ed', '#c6aebd', 'ubuntu'),
     'ubuntu2610_dark': Theme('#000000', '#2C001E', '#5E2750', '#E95420', '#FFFFFF', '#AEA79F', 'ubuntu'),
+    'blood': Theme('#070508', '#160b12', '#56303c', '#f0788b', '#f5eaf0', '#bfa9b4', 'blood'),
 }
 THEME_NAMES = {'copper': 'Kupari', 'frost': 'Halla', 'ubuntu': 'Ubuntu',
-               'ubuntu2610_dark': 'Ubuntu 26.10 Dark'}
+               'ubuntu2610_dark': 'Ubuntu 26.10 Dark', 'blood': 'Veriyö'}
 THEME_LABELS = {'copper': 'Kupari · Pöllönkankaan sää', 'frost': 'Halla · yön sininen',
                 'ubuntu': 'Ubuntu · oranssi ja munakoiso',
-                'ubuntu2610_dark': 'Ubuntu 26.10 Dark'}
+                'ubuntu2610_dark': 'Ubuntu 26.10 Dark', 'blood': 'Veri Aika · Veriyö'}
 THEME_NAMES.update({'windows_system': 'Windows · järjestelmän teema',
                     'windows_light': 'Windows · vaalea', 'windows_dark': 'Windows · tumma'})
 THEME_LABELS.update({key: THEME_NAMES[key] for key in WINDOWS_THEMES})
@@ -50,8 +51,9 @@ CALENDAR_THEMES = {
     'shadow': THEMES['copper'],
     'star': Theme('#0c191e', '#14292d', '#53605a', '#e6c37a', '#f5ead0', '#b4c4bd', 'stars'),
     'civil': Theme('#111c28', '#1d2b3b', '#4d657a', '#b8d9f0', '#eef5fc', '#b7c7d5', 'ledger'),
+    'blood': THEMES['blood'],
 }
-CALENDAR_THEME_NAMES = {'shadow': 'Kupari', 'star': 'Astraali', 'civil': 'Aamunkajo'}
+CALENDAR_THEME_NAMES = {'shadow': 'Kupari', 'star': 'Astraali', 'civil': 'Aamunkajo', 'blood': 'Veriyö'}
 
 def apply_theme(app, options):
     if options['theme'] in WINDOWS_THEMES:
@@ -155,6 +157,17 @@ def paint_panel(p, rect, theme, opacity=1):
             p.drawEllipse(point, 5, 5)
             p.setBrush(Qt.BrushStyle.NoBrush); p.setPen(QPen(orbit, 4))
         p.setPen(QPen(orbit, 1))
+    elif theme.motif == 'blood':
+        # A static, faint decorative motif. Current Oulu sky positions are drawn
+        # separately by the Otava views, never inferred from this panel artwork.
+        origin = QPointF(rect.right()-148, rect.top()+22)
+        points = [origin+QPointF(x, y) for x, y in
+                  ((0, 4), (24, 12), (45, 29), (66, 46), (108, 42), (103, 72), (64, 75))]
+        for a, b in ((0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 3)):
+            p.drawLine(points[a], points[b])
+        p.setBrush(orbit); p.setPen(Qt.PenStyle.NoPen)
+        for point in points:
+            p.drawEllipse(point, 2, 2)
     elif theme.motif == 'ledger':
         for offset in range(5):
             x = rect.right()-122+offset*28

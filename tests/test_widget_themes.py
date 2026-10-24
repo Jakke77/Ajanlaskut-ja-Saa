@@ -185,7 +185,7 @@ class WidgetThemeResolutionTests(unittest.TestCase):
             with self.subTest(widget=key):
                 choices = widget_theme_choices(key)
                 labels = {token: label for label, token in choices}
-                expected = {'shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark'}
+                expected = {'shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'blood'}
                 if key in PROFILE_KEYS:
                     expected.add('calendar')
                     self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
@@ -193,6 +193,7 @@ class WidgetThemeResolutionTests(unittest.TestCase):
                     self.assertEqual(labels['ubuntu'], 'Ubuntu · oranssi ja munakoiso')
                 self.assertEqual(set(labels), expected)
                 self.assertEqual(labels['ubuntu2610_dark'], 'Ubuntu 26.10 Dark')
+                self.assertEqual(labels['blood'], 'Veriyö')
                 self.assertEqual(choices[0], ('Sovelluksen yhteinen teema', 'shared'))
                 choices.clear()
                 self.assertTrue(widget_theme_choices(key))

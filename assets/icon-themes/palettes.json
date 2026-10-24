@@ -34,5 +34,14 @@
     "accent": "#E95420",
     "text": "#FFFFFF",
     "muted": "#AEA79F"
+  },
+  "blood": {
+    "name": "Veriyö",
+    "background": "#070508",
+    "surface": "#160b12",
+    "border": "#56303c",
+    "accent": "#f0788b",
+    "text": "#f5eaf0",
+    "muted": "#bfa9b4"
   }
 }
