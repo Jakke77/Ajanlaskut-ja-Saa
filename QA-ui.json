@@ -1,0 +1,14 @@
+{
+  "version": "1.12.1",
+  "example_time": "2028-08-11T01:07:07+03:00",
+  "year": 2,
+  "year_day": 1,
+  "days_per_year": 777,
+  "weeks_per_year": 111,
+  "name_pair": "Mies: Rubino · Nainen: Rubina",
+  "all_10_navigation_visible_at_1020x720": true,
+  "native_qt": true,
+  "network": false,
+  "birthday_example": "1985-02-14",
+  "settings_and_notes_use_disposable_storage": true
+}
