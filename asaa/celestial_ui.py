@@ -273,8 +273,10 @@ class NamesPage(QWidget):
         super().__init__();self.controller=controller;self.folk_period=None
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(14)
         layout.addWidget(label('NIMIKALENTERIT','eyebrow'))
-        self.heading=label('Mikä on nimesi ajanlaskuissa?','heading');layout.addWidget(self.heading)
-        row=QHBoxLayout();row.addWidget(label('Syntymäpäivä tai muu päivä'))
+        self.heading=label('Mikä on nimesi ajanlaskuissa?','heading',IS_WINDOWS);layout.addWidget(self.heading)
+        row=QHBoxLayout();caption=label('Syntymäpäivä tai muu päivä',wrap=IS_WINDOWS)
+        if IS_WINDOWS:layout.addWidget(caption)
+        else:row.addWidget(caption)
         self.date=date_edit(controller.calendars.now().date());row.addWidget(self.date)
         row.addWidget(button('Tänään',self.today));row.addStretch(1);layout.addLayout(row)
         self.tabs=QTabWidget();layout.addWidget(self.tabs)

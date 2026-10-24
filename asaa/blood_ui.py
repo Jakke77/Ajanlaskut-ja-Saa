@@ -59,8 +59,15 @@ class VeriPage(QWidget):
         self.date.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
         self.date.setAccessibleName('Veri Ajan kalenterin päivämäärä')
         self.date.dateChanged.connect(self.date_changed)
-        controls.addWidget(self.date)
         layout.addLayout(controls)
+        if IS_WINDOWS:
+            dates = QHBoxLayout()
+            dates.addWidget(_label('Valitse päivämäärä', 'muted'))
+            dates.addWidget(self.date)
+            dates.addStretch(1)
+            layout.addLayout(dates)
+        else:
+            controls.addWidget(self.date)
         years = QHBoxLayout()
         self.previous_year = _button('‹ Edellinen vuosi', lambda: self.step_year(-1))
         self.next_year = _button('Seuraava vuosi ›', lambda: self.step_year(1))

@@ -17,6 +17,7 @@ from asaa import blood_time, blood_names
 from tests.test_about import MemoryTray
 from tests.test_icon_ui import MemoryIcons
 from tests.test_wallpapers import MemoryBackend
+from tests.layout_diagnostics import layout_diagnostics
 
 
 class VeriNamesUiTests(unittest.TestCase):
@@ -89,14 +90,17 @@ class VeriNamesUiTests(unittest.TestCase):
         self.app.processEvents()
         page = self.window.page_widgets['blood']
         scroll = self.window.pages.currentWidget()
-        self.assertEqual(scroll.horizontalScrollBar().maximum(), 0)
+        overflow = scroll.horizontalScrollBar().maximum()
+        self.assertEqual(overflow, 0, layout_diagnostics(page, scroll) if overflow else None)
         self.assertLessEqual(page.width(), self.window.pages.width())
         self.assertTrue(all(item.isVisible() for item in page.day_buttons))
         self.assertFalse(page.grab().isNull())
         self.controller.open_page('names')
         self.app.processEvents()
         scroll = self.window.pages.currentWidget()
-        self.assertEqual(scroll.horizontalScrollBar().maximum(), 0)
+        overflow = scroll.horizontalScrollBar().maximum()
+        page = self.window.page_widgets['names']
+        self.assertEqual(overflow, 0, layout_diagnostics(page, scroll) if overflow else None)
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ from PyQt6.QtCore import QEvent, QSize
 from PyQt6.QtWidgets import QApplication, QProxyStyle, QStyle
 
 from asaa.windows_ui import WindowsAppearancePage
+from tests.layout_diagnostics import layout_diagnostics
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,8 +69,8 @@ class WindowsDeliveryTests(unittest.TestCase):
                     case.controller.open_page(key); self.app.processEvents()
                     scroll = case.window.pages.currentWidget()
                     page = case.window.page_widgets[key]
-                    self.assertEqual(scroll.horizontalScrollBar().maximum(), 0,
-                        f'{key}: viewport={scroll.viewport().width()}, minimum={page.minimumSizeHint().width()}')
+                    overflow = scroll.horizontalScrollBar().maximum()
+                    self.assertEqual(overflow, 0, layout_diagnostics(page, scroll) if overflow else None)
                 page = case.window.page_widgets['blood']
                 for item in page.day_buttons:
                     widest = max(item.fontMetrics().horizontalAdvance(line) for line in item.text().splitlines())
