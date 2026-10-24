@@ -9,7 +9,7 @@ from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from PyQt6.QtCore import QEvent
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication,QHBoxLayout
 from asaa.app import Controller
 from asaa.state import State, atomic_json
 from asaa.clock_config import FIELD_LABELS, PROFILE_KEYS
@@ -80,16 +80,69 @@ class VeriIntegrationTests(unittest.TestCase):
         controller.clock_changed.emit()
         self.assertEqual(overview.date_labels['blood'].text(), '1. päivä · 2. viikko · vuosi 0001')
         controller.open_calendar('blood')
-        self.assertTrue(controller.window.navigation['blood'].isChecked())
+        self.assertTrue(controller.window.navigation['calendar'].isChecked())
         calendar = controller.window.page_widgets['calendar']
+        self.assertEqual(calendar.selected,date(2026,7,3))
+        self.assertEqual(calendar.selector.currentData(),'blood')
         calendar.set_day('civil', date(2026, 6, 26))
         calendar.selector.setCurrentIndex(calendar.selector.findData('blood'))
-        page = controller.window.page_widgets['blood']
-        self.assertEqual(page.selected, date(2026, 6, 26))
-        self.assertEqual(calendar.selector.currentData(), 'civil')
-        self.assertIn('1. VIIKKO', page.week_heading.text())
-        self.assertIn('0001', page.week_heading.text())
+        self.assertTrue(controller.window.navigation['calendar'].isChecked())
+        self.assertEqual(calendar.selected, date(2026, 6, 26))
+        self.assertEqual(calendar.selector.currentData(), 'blood')
+        self.assertEqual(len(calendar.day_buttons),35)
+        self.assertIn('0001', calendar.blood_calendar.year_heading.text())
         self.assertEqual(len(overview.otava.sky), 7)
+
+    def test_main_veri_calendar_shows_names_meanings_and_returns_to_other_months(self):
+        from asaa.blood_names import names_at
+        controller=self.controller
+        controller.open_calendar('blood',date(2026,6,26))
+        page=controller.window.page_widgets['calendar']
+        self.assertTrue(controller.window.navigation['calendar'].isChecked())
+        self.assertEqual(page.selector.currentData(),'blood')
+        self.assertEqual(len(page.day_buttons),35)
+        page.day_buttons[20].click()
+        self.assertEqual(page.selected,date(2026,7,16))
+        pair=names_at(21)
+        self.assertIn(pair.male,page.parallel.text())
+        self.assertIn(pair.female,page.parallel.text())
+        self.assertIn('** tämän keksin :)',page.parallel.text())
+        page.selector.setCurrentIndex(page.selector.findData('civil'))
+        self.assertEqual(page.system,'civil')
+        self.assertFalse(page.blood_calendar.isVisible())
+        self.assertEqual(len(page.day_buttons),31)
+        self.assertEqual(page.selected,date(2026,7,16))
+
+    def test_main_veri_calendar_fits_a_small_window_without_horizontal_scroll(self):
+        controller=self.controller
+        controller.window.resize(1020,720)
+        controller.open_calendar('blood',date(2026,10,24))
+        self.app.processEvents()
+        page=controller.window.page_widgets['calendar']
+        scroll=controller.window.pages.currentWidget()
+        self.assertEqual(scroll.horizontalScrollBar().maximum(),0)
+        self.assertEqual(len(page.blood_calendar.day_buttons),35)
+        self.assertFalse(page.grab().isNull())
+
+    def test_main_veri_calendar_moves_details_beside_grid_only_in_wide_windows(self):
+        controller=self.controller
+        controller.window.resize(1560,1000)
+        controller.open_calendar('blood',date(2026,10,24))
+        self.app.processEvents()
+        page=controller.window.page_widgets['calendar']
+        self.assertGreaterEqual(page.width(),1180)
+        self.assertEqual(page.calendar_split.direction(),QHBoxLayout.Direction.LeftToRight)
+        self.assertEqual(page.calendar_tools.direction(),QHBoxLayout.Direction.LeftToRight)
+        self.assertLessEqual(page.detail_frame.width(),310)
+        self.assertGreaterEqual(page.detail_frame.width(),240)
+        self.assertEqual(controller.window.pages.currentWidget().horizontalScrollBar().maximum(),0)
+        controller.window.resize(1020,720)
+        self.app.processEvents()
+        self.assertEqual(page.calendar_split.direction(),QHBoxLayout.Direction.TopToBottom)
+        self.assertEqual(page.calendar_tools.direction(),QHBoxLayout.Direction.TopToBottom)
+        self.assertGreater(page.detail_frame.width(),310)
+        self.assertEqual(controller.window.pages.currentWidget().horizontalScrollBar().maximum(),0)
+        self.assertTrue(page.parallel.wordWrap())
 
     def test_otava_mode_roundtrip_and_real_sky_content_are_independent(self):
         controller = self.controller

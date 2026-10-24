@@ -1,2 +1,2 @@
 """Ajanlaskut ja Sää — native shared desktop application."""
-VERSION = '1.12.1'
+VERSION = '1.12.2'

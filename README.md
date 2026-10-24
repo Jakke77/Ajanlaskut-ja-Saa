@@ -1,7 +1,7 @@
 # Ajanlaskut ja Sää
 
-**Uusin Ubuntu-paketti: [1.12.1 · Veri Aika ja Otavakello](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.1).**
-Windows: [1.12.1:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.1).
+**Uusin Ubuntu-paketti: [1.12.2 · Veri Ajan ruutukalenteri ja nimikirja](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.2).**
+Windows: [1.12.2:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.2).
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
 **Taustakuvat → vieritä alas → Sovelluskuvakkeet**. Ne puuttuvat 1.6-versioista.
@@ -13,6 +13,38 @@ yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellu
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
 
+## Veri Ajan ruutukalenteri ja nimien merkitykset · versio 1.12.2
+
+**Kalenterit → Veri Aika** näyttää nyt varsinaisen ruutukalenterin samalla
+sivulla muiden kalenterien kanssa. Seitsemän päivän viikot ovat allekkain:
+näkymässä on viisi viikkoa eli 35 päivää kerrallaan. Vuodessa on edelleen
+777 päivää ja 111 viikkoa. Vuoden viimeisessä näkymässä on yksi viikko.
+Näkymät ovat selausjaksoja, eivät uusia kuukausia. Valitse ruudusta päivä:
+sen nimet, selitykset ja yhteiset kalenterimerkinnät löytyvät päivän tiedoista.
+Myös Otavan yhteydessä oleva Veri Ajan sivu käyttää samaa ruudukkoa.
+
+**Nimikalenterit → Veri Ajan nimikirja** sisältää kaikkien **1 554 nimen**
+selitykset. Hae nimeä tai merkitystä ja kopioi selitys talteen. Syntymäpäivä
+valitaan edelleen **Oma nimi** -välilehdellä. Aiemmat nimiparit ja niiden
+paikat 777 päivän kierrossa säilyvät täsmälleen samoina.
+
+Sanatausta ja lähteet esitetään erikseen nimelle kirjoitetusta symbolisesta
+merkityksestä. Lähteet kertovat esimerkiksi veren, solujen tai verenkierron
+sanastosta; samankaltainen ääni ei yksin todista nimen historiallista alkuperää.
+Oma tulkinta merkitään kirjaimellisella merkillä `**`. Selite on käyttäjän
+pyytämä **`** tämän keksin :)`**. Näin itse kirjoitetut vertauskuvat voi erottaa
+lähteissä esitetyistä tiedoista myös myöhemmin.
+
+Nimikirja toimii kokonaan ilman verkkoa. **Avaa tulostettava nimikirja**
+avaa mukana olevan itsenäisen HTML-tiedoston selaimeen. Sen voi säilyttää,
+tulostaa tai tallentaa selaimella PDF:ksi. Verkkoa tarvitaan vain, jos avaat
+jonkin lähdelinkin. [Markdown-nimikirja](assets/namebooks/veri-ajan-nimikirja.md)
+on luettavissa myös tässä repossa; [HTML-versio](assets/namebooks/veri-ajan-nimikirja.html)
+säilyy luettavana ilman sovellusta.
+
+![Veri Ajan ruutukalenteri ja valitun päivän nimiselitykset](previews/veri-ruutukalenteri.png)
+![Veri Ajan nimikirjan haku, merkitys ja erillinen sanatausta](previews/veri-nimikirja.png)
+
 ## Veri Aika: 777 päivän vuodet ja omat nimet · versio 1.12.1
 
 **Veri Aika** löytyy suoraan sivuvalikosta sekä **Kalenterit → Veri Aika**.
@@ -22,7 +54,7 @@ eli 111 täyttä viikkoa.** Vuoden päivät 1–777 ja viikot 1–111 alkavat uu
 ykkösestä vuoden vaihtuessa. Vuosi 0002 alkaa 11.8.2028 klo 01:07:07, ei
 gregoriaanisen vuoden tai alkupäivän vuosipäivän kohdalla. Kuukausia ei ole.
 Suomen kesä- ja talviaika huomioidaan. Ennen alkua valittu päivä merkitään
-selvästi ajanlaskua edeltäväksi. Viikkonäkymästä voi avata yhteisen päivän merkinnät.
+selvästi ajanlaskua edeltäväksi. Kalenterista voi avata yhteisen päivän merkinnät.
 
 **777 omaa nimiparia:** jokaisella vuoden päivällä on pysyvä miehen ja naisen
 nimi. Nimet ammentavat verestä, verenkierrosta, soluista ja elämän sanastosta:
