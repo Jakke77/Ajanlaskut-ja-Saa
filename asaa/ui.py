@@ -183,12 +183,14 @@ class CalendarPage(QWidget):
         super().__init__();self.controller=controller;self.system='shadow';self.selected=controller.calendars.now().date();self.month=None
         layout=QVBoxLayout(self);layout.setContentsMargins(0,0,0,0);layout.setSpacing(14)
         layout.addWidget(label('KALENTERIT','eyebrow'))
-        self.heading=label('','heading');layout.addWidget(self.heading)
+        self.heading=label('','heading',True);layout.addWidget(self.heading)
         top=QHBoxLayout();self.selector=QComboBox()
         for key,title in NAMES.items():self.selector.addItem(title,key)
         self.selector.currentIndexChanged.connect(self.change_system);top.addWidget(self.selector)
         top.addStretch(1)
-        top.addWidget(button('‹',lambda:self.step(-1)));top.addWidget(button('Tänään',self.today));top.addWidget(button('›',lambda:self.step(1)))
+        self.previous=button('‹',lambda:self.step(-1));top.addWidget(self.previous)
+        top.addWidget(button('Tänään',self.today))
+        self.next=button('›',lambda:self.step(1));top.addWidget(self.next)
         self.year=QSpinBox();self.year.setRange(1,9998);self.year.setPrefix('Vuosi ');self.year.valueChanged.connect(self.change_year);top.addWidget(self.year)
         self.month_box=QComboBox();self.month_box.currentIndexChanged.connect(self.change_month);top.addWidget(self.month_box)
         layout.addLayout(top)
@@ -196,18 +198,28 @@ class CalendarPage(QWidget):
         self.extras_visible=QCheckBox('Näytä kuu-, aurinko- ja kuu–aurinkokalenterit')
         self.extras_visible.setChecked(controller.options['calendar_extras_visible'])
         self.extras_visible.toggled.connect(self.toggle_extras);extras_row.addWidget(self.extras_visible)
-        extras_row.addStretch(1);extras_row.addWidget(button('Valitse lisäkalenterit…',self.configure_extras))
+        self.extras_button=button('Valitse lisäkalenterit…',self.configure_extras)
+        extras_row.addStretch(1);extras_row.addWidget(self.extras_button)
         layout.addLayout(extras_row)
-        tools=QHBoxLayout()
+        tools=QHBoxLayout();self.calendar_tools=tools
         tools.addWidget(button('Oma nimesi ajanlaskuissa →',self.open_names))
         tools.addWidget(button('Suomalainen kuukalenteri →',self.open_folk_calendar))
         tools.addWidget(button('Kuu, valo ja aurinko →',self.open_sunmoon))
         layout.addLayout(tools)
-        split=QHBoxLayout();frame,grid_content=card();self.grid=QGridLayout();self.grid.setSpacing(7);grid_content.addLayout(self.grid)
+        split=QHBoxLayout();self.calendar_split=split
+        frame,grid_content=card();self.grid=QGridLayout();self.grid.setSpacing(7)
+        self.month_grid=QWidget();month_content=QVBoxLayout(self.month_grid)
+        month_content.setContentsMargins(0,0,0,0);month_content.addLayout(self.grid)
+        grid_content.addWidget(self.month_grid)
+        from .blood_calendar_ui import BloodCalendarGrid
+        self.blood_calendar=BloodCalendarGrid(controller)
+        self.blood_calendar.selected_changed.connect(self.select_blood_day)
+        self.blood_calendar.hide();grid_content.addWidget(self.blood_calendar)
         split.addWidget(frame,3)
-        detail,content=card();detail.setMinimumWidth(240);detail.setMaximumWidth(310)
+        detail,content=card();self.detail_frame=detail
+        detail.setMinimumWidth(240);detail.setMaximumWidth(310)
         content.addWidget(label('VALITTU PÄIVÄ','eyebrow'));self.day_heading=label('','',True);self.day_heading.setStyleSheet('font-size:20px;font-weight:bold;');content.addWidget(self.day_heading)
-        self.parallel=label('','muted',True);content.addWidget(self.parallel)
+        self.parallel=label('','muted',True);self.parallel.setTextFormat(Qt.TextFormat.PlainText);content.addWidget(self.parallel)
         self.extras=label('','muted',True);content.addWidget(self.extras)
         self.note=label('','',True);content.addWidget(self.note);content.addStretch(1)
         content.addWidget(button('Muokkaa merkintää',self.edit_note,True));split.addWidget(detail,1)
@@ -242,6 +254,12 @@ class CalendarPage(QWidget):
         self.render()
     def set_day(self,system,civil=None):
         civil=civil or self.controller.calendars.now().date()
+        if system=='blood':
+            from . import blood_time
+            item=blood_time.from_date(civil)
+            self.system,self.selected,self.month=system,civil,(item.year,(item.day_of_year-1)//35)
+            self.selector.blockSignals(True);self.selector.setCurrentIndex(self.selector.findData(system));self.selector.blockSignals(False)
+            self.render();return
         try:item=self.controller.calendars.convert(system,civil)
         except ValueError:
             civil=self.controller.calendars.civil_date(system,1,0,0);item=self.controller.calendars.convert(system,civil)
@@ -252,23 +270,57 @@ class CalendarPage(QWidget):
         self.month_box.blockSignals(False);self.render()
     def change_system(self):
         system=self.selector.currentData()
-        if system=='blood':
-            self.selector.blockSignals(True);self.selector.setCurrentIndex(self.selector.findData(self.system));self.selector.blockSignals(False)
-            self.controller.open_calendar('blood',self.selected)
-            return
         self.set_day(system,self.selected)
-    def today(self):self.set_day(self.system)
+    def today(self):
+        if self.system=='blood':
+            from .blood_time import at
+            self.set_day('blood',at(self.controller.calendars.now()).civil)
+        else:self.set_day(self.system)
     def step(self,delta):
+        if self.system=='blood':self.blood_calendar.step(delta);return
         self.month=self.controller.calendars.step_month(self.system,*self.month,delta);self.render()
     def change_year(self,value):
         if self.month:self.month=(value,self.month[1]);self.render()
     def change_month(self,index):
         if self.month and index>=0:self.month=(self.month[0],index);self.render()
     def select(self,item):self.selected=item.civil;self.render_detail();self.render()
+    def select_blood_day(self,day):
+        self.selected=day;self.render()
+    def blood_layout(self,enabled):
+        side_detail=enabled and self.width()>=1180
+        horizontal_tools=not enabled or self.width()>=900
+        mode=(enabled,side_detail,horizontal_tools)
+        if getattr(self,'_calendar_layout_mode',None)==mode:return
+        self._calendar_layout_mode=mode
+        self.blood_calendar.setVisible(enabled)
+        self.month_grid.setVisible(not enabled)
+        for control in (self.previous,self.next,self.year,self.month_box,self.extras_visible,self.extras_button):
+            control.setVisible(not enabled)
+        beside=not enabled or side_detail
+        self.calendar_split.setDirection(QHBoxLayout.Direction.LeftToRight if beside else QHBoxLayout.Direction.TopToBottom)
+        self.calendar_tools.setDirection(QHBoxLayout.Direction.LeftToRight if horizontal_tools else QHBoxLayout.Direction.TopToBottom)
+        self.detail_frame.setMinimumWidth(240 if beside else 0)
+        self.detail_frame.setMaximumWidth(310 if beside else 16777215)
+    def resizeEvent(self,event):
+        super().resizeEvent(event)
+        if hasattr(self,'calendar_split') and self.system=='blood':self.blood_layout(True)
     def render(self):
         while self.grid.count():
             old=self.grid.takeAt(0)
             if old.widget():old.widget().hide();old.widget().deleteLater()
+        self.blood_layout(self.system=='blood')
+        if self.system=='blood':
+            from . import blood_time
+            item=blood_time.from_date(self.selected)
+            self.heading.setText('Veri Aika · '+(f'vuosi {item.year:04d}' if item.ordinal>=0 else 'ennen ajanlaskun alkua'))
+            self.blood_calendar.set_day(self.selected)
+            self.day_buttons=self.blood_calendar.day_buttons
+            self.month=(item.year,self.blood_calendar.period_index)
+            self.info.setText('Veri Aika · 777 päivää = 111 seitsemän päivän viikkoa. '
+                              'Kalenteri näyttää enintään viisi viikkoa kerrallaan; viimeisessä jaksossa on yksi viikko. '
+                              'Päivä ja uusi viikko alkavat klo 01:07:07 Suomen aikaa.')
+            self.cell_info.clear();self.cell_info.hide()
+            self.render_detail();return
         self.month=self.controller.calendars.bound_month(self.system,*self.month)
         days=self.controller.calendars.month_days(self.system,*self.month)
         self.heading.setText(f'{days[0].month_name} · '+('kierto ' if self.system=='star' else 'vuosi ')+str(self.month[0]))
@@ -308,18 +360,30 @@ class CalendarPage(QWidget):
         self.cell_info.setVisible(has_cell)
         self.render_detail()
     def render_detail(self):
-        item=self.controller.calendars.convert(self.system,self.selected)
-        self.day_heading.setText(item.label)
-        lines=[f'{self.selected:%d.%m.%Y}',item.phase+f'\nKlo 12 · {self.controller.options["zone"]}']
-        if item.names:lines.append('NIMIPARI\n'+item.names.label)
-        for system in ('shadow','star'):
-            if system!=self.system:
-                try:lines.append(self.controller.calendars.convert(system,self.selected).label)
-                except ValueError:pass
-        self.parallel.setText('\n\n'.join(lines))
-        extra_lines=almanac.lines(self.controller.options,self.system,self.selected)
-        self.extras.setText('RINNAKKAISKALENTERIT\n\n'+'\n\n'.join(extra_lines) if extra_lines else '')
-        self.extras.setVisible(bool(extra_lines))
+        if self.system=='blood':
+            from . import blood_time,blood_names
+            item=blood_time.from_date(self.selected)
+            self.day_heading.setText(item.label+f' · vuoden päivä {item.day_of_year}/777')
+            lines=[f'{self.selected:%d.%m.%Y} · päivä alkaa klo 01:07:07 Suomen aikaa',item.phase,'NIMIPARI\n'+item.names.label]
+            for name in (item.names.male,item.names.female):
+                meaning=blood_names.meaning_for_name(name)
+                lines.append(name+': '+meaning.meaning+(' **' if meaning.invented else ''))
+            lines.append('** tämän keksin :) · Sanataustat ja lähteet löytyvät Nimikalenterit → Veri Ajan nimikirja -välilehdeltä.')
+            self.parallel.setText('\n\n'.join(lines))
+            self.extras.clear();self.extras.hide()
+        else:
+            item=self.controller.calendars.convert(self.system,self.selected)
+            self.day_heading.setText(item.label)
+            lines=[f'{self.selected:%d.%m.%Y}',item.phase+f'\nKlo 12 · {self.controller.options["zone"]}']
+            if item.names:lines.append('NIMIPARI\n'+item.names.label)
+            for system in ('shadow','star'):
+                if system!=self.system:
+                    try:lines.append(self.controller.calendars.convert(system,self.selected).label)
+                    except ValueError:pass
+            self.parallel.setText('\n\n'.join(lines))
+            extra_lines=almanac.lines(self.controller.options,self.system,self.selected)
+            self.extras.setText('RINNAKKAISKALENTERIT\n\n'+'\n\n'.join(extra_lines) if extra_lines else '')
+            self.extras.setVisible(bool(extra_lines))
         self.note.setText(self.controller.state.note(self.selected) or 'Ei merkintää tälle päivälle.')
         upcoming=[r for r in self.controller.state.data['reminders'] if not r['delivered']]
         self.day_reminders=[r['id'] for r in upcoming if datetime.fromisoformat(r['due']).astimezone(self.controller.calendars.zone).date()==self.selected]

@@ -3,11 +3,11 @@ from datetime import date, timedelta
 
 from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-                            QGridLayout, QDateEdit, QFrame)
+                            QDateEdit, QFrame)
 
-from . import blood_time
+from . import blood_time, blood_names
+from .blood_calendar_ui import BloodCalendarGrid
 from .otava_ui import OtavaView
-from .theme import THEMES
 
 
 def _label(text='', name=None):
@@ -60,16 +60,6 @@ class VeriPage(QWidget):
         self.date.dateChanged.connect(self.date_changed)
         controls.addWidget(self.date)
         layout.addLayout(controls)
-        years = QHBoxLayout()
-        self.previous_year = _button('‹ Edellinen vuosi', lambda: self.step_year(-1))
-        self.next_year = _button('Seuraava vuosi ›', lambda: self.step_year(1))
-        years.addWidget(self.previous_year)
-        years.addStretch(1)
-        years.addWidget(_label('777 päivää · 111 viikkoa', 'muted'))
-        years.addStretch(1)
-        years.addWidget(self.next_year)
-        layout.addLayout(years)
-
         frame = QFrame()
         frame.setObjectName('card')
         content = QVBoxLayout(frame)
@@ -78,27 +68,30 @@ class VeriPage(QWidget):
         content.addWidget(self.week_heading)
         self.week_dates = _label('', 'muted')
         content.addWidget(self.week_dates)
-        self.days = QGridLayout()
-        self.days.setSpacing(8)
-        content.addLayout(self.days)
-        self.day_buttons = []
-        for index in range(7):
-            item = _button('', lambda checked=False, index=index: self.select_index(index))
-            item.setCheckable(True)
-            item.setMinimumHeight(70)
-            self.days.addWidget(item, 0, index)
-            self.days.setColumnStretch(index, 1)
-            self.day_buttons.append(item)
+        self.calendar_grid = BloodCalendarGrid(controller)
+        self.calendar_grid.selected_changed.connect(self.set_day)
+        self.calendar_grid.today_button.clicked.connect(self.today)
+        content.addWidget(self.calendar_grid)
+        self.days = self.calendar_grid.grid
+        self.day_buttons = self.calendar_grid.day_buttons
+        self.previous_year = self.calendar_grid.previous_year
+        self.next_year = self.calendar_grid.next_year
         self.selected_label = _label('')
         content.addWidget(self.selected_label)
         self.selected_names = _label('')
         self.selected_names.setStyleSheet('font-size:20px;')
         self.selected_names.setAccessibleName('Valitun päivän nimipari')
         content.addWidget(self.selected_names)
+        self.selected_meanings = _label('')
+        self.selected_meanings.setTextFormat(Qt.TextFormat.PlainText)
+        self.selected_meanings.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        content.addWidget(self.selected_meanings)
+        content.addWidget(_label('** tämän keksin :) · Sanatausta ja lähteet löytyvät nimikirjasta.', 'muted'))
+        content.addWidget(_button('Avaa nimien selitykset ja lähteet →', self.open_meaning_book))
         self.name_lookup = _button('Oma nimi Veri Ajassa →', self.open_name_lookup)
         content.addWidget(self.name_lookup)
         self.open_day = _button('Avaa päivän merkinnät →',
-                                lambda: controller.open_calendar('civil', self.selected))
+                                lambda: controller.open_calendar('blood', self.selected))
         content.addWidget(self.open_day)
         layout.addWidget(frame)
 
@@ -160,6 +153,12 @@ class VeriPage(QWidget):
         page.tabs.setCurrentIndex(0)
         self.controller.open_page('names')
 
+    def open_meaning_book(self):
+        page = self.controller.window.page_widgets['names']
+        page.set_day(self.selected)
+        page.show_selected_names()
+        self.controller.open_page('names')
+
     def select_index(self, index):
         self.set_day(self.week_start + timedelta(days=index))
 
@@ -169,26 +168,17 @@ class VeriPage(QWidget):
                                   if selected.ordinal >= 0 else 'ENNEN VERI AJAN ALKUA')
         end = self.week_start + timedelta(days=6)
         self.week_dates.setText(f'{self.week_start:%d.%m.%Y} – {end:%d.%m.%Y} · viikon alku klo 01:07:07')
-        today = blood_time.at(self.controller.calendars.now()).civil
-        theme = THEMES[self.controller.options['theme']]
-        for index, item in enumerate(self.day_buttons):
-            day = self.week_start + timedelta(days=index)
-            marker = ' •' if self.controller.state.note(day) else ''
-            item.setText(f'{index + 1}. päivä\n{day:%d.%m.}{marker}')
-            item.setChecked(day == self.selected)
-            item.setStyleSheet(f'border:2px solid {theme.accent};' if day == today and day != self.selected else '')
-            begin, finish = blood_time.boundary(day), blood_time.boundary(day + timedelta(days=1))
-            position = blood_time.from_date(day)
-            item.setToolTip(f'{position.label}\nVuoden päivä {position.day_of_year}/777\n'
-                            f'{position.names.label}\n'
-                            f'{begin:%d.%m.%Y %H:%M:%S %Z} – {finish:%d.%m.%Y %H:%M:%S %Z}\n'
-                            + self.controller.state.note(day))
+        self.calendar_grid.set_day(self.selected)
+        self.day_buttons = self.calendar_grid.day_buttons
         self.selected_label.setText(f'VALITTU PÄIVÄ · {selected.label}\n'
                                    f'Vuoden päivä {selected.day_of_year}/777 · '
                                    f'{self.selected:%d.%m.%Y} klo 01:07:07 alkaen')
         names = f'Miehen nimi: {selected.names.male}\nNaisen nimi: {selected.names.female}'
         self.selected_names.setText(names)
         self.selected_names.setAccessibleName('Valitun päivän nimipari\n' + names)
+        self.selected_meanings.setText('\n'.join(
+            f'{name} – {blood_names.meaning_for_name(name).label}'
+            for name in (selected.names.male, selected.names.female)))
         self.previous.setEnabled(self.selected - timedelta(days=7) >= date(1900, 1, 1))
         self.next.setEnabled(self.selected + timedelta(days=7) <= date(2100, 12, 31))
         self.previous_year.setEnabled(self.selected - timedelta(days=blood_time.DAYS_PER_YEAR) >= date(1900, 1, 1))
