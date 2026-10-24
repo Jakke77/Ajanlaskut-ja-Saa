@@ -56,7 +56,7 @@ def run_tests(app, preview_dir=None):
             for key in controller.window.page_widgets:
                 controller.open_page(key);app.processEvents()
                 assert controller.window.navigation[key].isChecked()
-            for key in ('shadow','star','shadow_calendar','star_calendar','civil','daily'):
+            for key in ('shadow','star','shadow_calendar','star_calendar','civil','daily','blood'):
                 controller.set_widget(key,True);app.processEvents()
                 assert controller.widgets[key].isVisible()
                 assert not controller.widgets[key].grab().isNull()
@@ -198,7 +198,7 @@ def run_tests(app, preview_dir=None):
                 for x,key in ((30,'shadow_calendar'),(405,'star_calendar')):
                     painter.drawPixmap(x,490,controller.widgets[key].grab().scaledToHeight(205))
                 painter.end();assert image.save(str(preview_dir/'desktop-widgets.png'))
-            print('PASS: shared appearance, all 8 widgets, calendars, persistence and single-instance routing')
+            print('PASS: shared appearance, all 9 widgets, calendars, persistence and single-instance routing')
             selected_before=state.settings['widgets']
             QTimer.singleShot(0,controller.quit)
             app.exec()
