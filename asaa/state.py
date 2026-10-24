@@ -29,7 +29,7 @@ DEFAULTS = {
     'star_side': 'left', 'clock_weather': True, 'sound': False,
     'windy_zoom': 9, 'windy_layer': 'temp', 'autostart': False,
     'place': {'name': 'Pöllönkangas, Oulu', 'latitude': 65.0701, 'longitude': 25.5071, 'timezone': 'Europe/Helsinki'},
-    'widgets': {'combined': True, 'shadow': False, 'star': False, 'weather': True, 'daily': False, 'civil': False,
+    'widgets': {'combined': True, 'shadow': False, 'star': False, 'weather': True, 'daily': False, 'civil': False, 'blood': False,
                 'shadow_calendar': False, 'star_calendar': False},
 }
 
@@ -86,15 +86,15 @@ class State:
         if data.get('version') != 1: raise ValueError('Tuntematon asetustiedosto')
         settings = data['settings']
         ZoneInfo(settings['zone'])
-        if settings['theme'] not in ('copper', 'frost', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon teema')
+        if settings['theme'] not in ('copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'blood'): raise ValueError('Tuntematon teema')
         if settings['time_mode'] not in ('fixed', 'cycle', 'random'): raise ValueError('Tuntematon ajanlaskun vaihtotapa')
         if settings['time_system'] not in SYSTEMS: raise ValueError('Tuntematon ajanlasku')
-        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu', 'ubuntu2610_dark'): raise ValueError('Tuntematon kelloteema')
+        if settings['time_theme'] not in ('calendar', 'shared', 'ubuntu', 'ubuntu2610_dark', 'blood'): raise ValueError('Tuntematon kelloteema')
         widget_themes = settings.get('widget_themes', {})
         if not isinstance(widget_themes, dict): raise ValueError('Virheelliset widgettiteemat')
         for key, selection in widget_themes.items():
             if (key not in DEFAULTS['widgets'] or not isinstance(selection, str)
-                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'calendar')
+                or selection not in ('shared', 'copper', 'frost', 'ubuntu', 'ubuntu2610_dark', 'blood', 'calendar')
                 or selection == 'calendar' and key not in PROFILE_KEYS):
                 raise ValueError('Tuntematon widgettiteema')
         widget_text_colors = settings.get('widget_text_colors', {})
@@ -110,7 +110,7 @@ class State:
                 or not set(display) <= {'mode', 'digit_scale', 'digit_color'}):
                 raise ValueError('Virheellinen kellon näyttötapa')
             if 'mode' in display and (not isinstance(display['mode'], str)
-                or display['mode'] not in ('theme', 'digital', 'analog', 'both')):
+                or display['mode'] not in ('theme', 'digital', 'analog', 'both', 'otava', 'otava_both')):
                 raise ValueError('Tuntematon kellon näyttötapa')
             if 'digit_scale' in display and (type(display['digit_scale']) is not int
                 or not 80 <= display['digit_scale'] <= 140):

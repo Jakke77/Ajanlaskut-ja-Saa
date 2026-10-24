@@ -43,6 +43,8 @@ class ClocksPage(QWidget):
         for title, control in [('Vaihtotapa',self.mode),('Valittu ajanlasku',self.system),('Vaihtoväli',self.interval),('Kellon teema',self.theme)]:form.addRow(title,control)
         self.display_mode = QComboBox();self.display_mode.setAccessibleName('Kellon näyttötapa')
         for title,key in CLOCK_DISPLAY_CHOICES:self.display_mode.addItem(title,key)
+        self.display_mode.setToolTip('Otavakellossa seitsemän tähden kuvio toimii sekuntiviisarina. '
+            'Se kiertää kerran minuutissa. Todellinen Oulun tähtitaivas näkyy Veri Ajan sivulla.')
         self.digit_scale = QSpinBox();self.digit_scale.setRange(80,140);self.digit_scale.setSuffix(' %')
         self.digit_scale.setAccessibleName('Digikellon numerokoko')
         self.digit_scale.setToolTip('Valitun kellon digitaalisten numeroiden koko. Fontti valitaan yhteisistä asetuksista.')
@@ -59,7 +61,7 @@ class ClocksPage(QWidget):
             check = QCheckBox(CLOCK_TITLES[key]);pool_row.addWidget(check);self.pool[key] = check
             check.toggled.connect(lambda _:self.changed(setting='time_systems'))
         content.addWidget(label('Vaihtoon osallistuvat ajanlaskut', 'muted'));content.addLayout(pool_row)
-        content.addWidget(label('Kupari · Varjoaika / Astraali · Tähtiaika / Aamunkajo · Gregoriaaninen. Kellon paikka ja koko eivät muutu ajanlaskun vaihtuessa.', 'muted', True))
+        content.addWidget(label('Kupari · Varjoaika / Astraali · Tähtiaika / Aamunkajo · Gregoriaaninen / Veriyö · Veri Aika. Kellon paikka ja koko eivät muutu ajanlaskun vaihtuessa.', 'muted', True))
         content.addWidget(label('Kellon teema, näyttötapa, numerokoko, numeroväri ja näkyvä sisältö koskevat yllä valittua kellowidgetiä. Näyttötavan voi valita teemasta riippumatta. Widgetin muiden tekstien väri valitaan Työpöytäwidgetit-sivulla. Vaihtotapa koskee yhteistä kelloa.', 'muted', True))
         left.addWidget(frame)
         frame, content = card();content.addWidget(label('NÄKYVÄ SISÄLTÖ', 'eyebrow'))
@@ -68,7 +70,7 @@ class ClocksPage(QWidget):
             check = QCheckBox(title);self.fields[key] = check;grid.addWidget(check,index//2,index%2)
             check.toggled.connect(lambda _,field=key:self.changed(field=field))
         content.addLayout(grid)
-        content.addWidget(label('Sisältövalinnat tallentuvat erikseen yhteiselle widgetille ja vanhoille erillisille kelloille. Kuun- ja kierronvaiheet ovat kuvitteellisia, paitsi gregoriaanisen ISO-viikko.', 'muted', True))
+        content.addWidget(label('Sisältövalinnat tallentuvat erikseen yhteiselle widgetille ja erillisille kelloille. Kuunvaihe perustuu todelliseen Kuuhun. Otavakellon kuvio on symbolinen sekuntiviisari; Veri Ajan tähtikuva näyttää Otavan todellisen asennon Oulussa.', 'muted', True))
         content.addWidget(button('Yhteinen fontti ja tekstikoko →', lambda:controller.open_page('settings')))
         content.addWidget(button('Kuu-, aurinko- ja kuu–aurinkokalenterit →', self.open_extras))
         left.addWidget(frame);left.addStretch(1)
@@ -206,8 +208,9 @@ class ClocksPage(QWidget):
         shared=self.shared_digit_scale.isChecked()
         if shared:
             self.digit_scale.blockSignals(True);self.digit_scale.setValue(scale);self.digit_scale.blockSignals(False)
-        self.digit_scale.setEnabled(display in ('digital','both') and not shared)
-        self.display_hint.setText('Analoginen näyttötapa ei näytä digitaalisia numeroita. Numerokoko on käytössä, kun valitset digikellon tai molemmat.' if display=='analog' else
+        self.digit_scale.setEnabled(display in ('digital','both','otava_both') and not shared)
+        self.display_hint.setText('Otavan seitsemän tähteä kiertävät sekuntiviisarina kerran minuutissa. Tunti- ja minuuttiviisarit näyttävät kellonajan. Sekuntikuvion voi piilottaa yhteisten asetusten sekuntivalinnalla.' if display in ('otava','otava_both') else
+            'Analoginen näyttötapa ei näytä digitaalisia numeroita. Numerokoko on käytössä, kun valitset digikellon tai molemmat.' if display=='analog' else
             f'Käytössä yhteinen numerokoko: {scale} %. Poista valinta säätääksesi tämän kellon kokoa.' if shared else
             f'Tämän kellon digitaalisten numeroiden koko: {scale} %. Fontti on yhteinen.')
         self.preview_widget.apply_options()
@@ -219,7 +222,7 @@ class ClocksPage(QWidget):
                 'Ubuntu' if choice=='ubuntu' else
                 'Yhteinen ' + THEME_NAMES[self.controller.options['theme']] if choice=='shared' else THEME_NAMES[choice])
         display_name=dict((key,title) for title,key in CLOCK_DISPLAY_CHOICES)[display]
-        size_label=f' · {scale} %' if display in ('digital','both') else ''
+        size_label=f' · {scale} %' if display in ('digital','both','otava_both') else ''
         self.preview_caption.setText(f'{WIDGET_LABELS[self.editing]} · {CLOCK_TITLES[system]} · {name}\n{display_name}{size_label}\nEsikatselu ei muuta työpöydän widgettiä. Sää käyttää yhteistä ennustetta, jos se on saatavilla.')
 
     def save(self):

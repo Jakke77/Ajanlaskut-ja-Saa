@@ -17,7 +17,7 @@ from .state import atomic_json
 INTERFACE = 'org.gnome.desktop.interface'
 ICON_KEY = 'icon-theme'
 THEMES = {'copper': 'Ajanlaskut-Kupari', 'frost': 'Ajanlaskut-Halla', 'ubuntu': 'Ajanlaskut-Ubuntu',
-          'ubuntu2610_dark': 'Ajanlaskut-Ubuntu-2610-Dark'}
+          'ubuntu2610_dark': 'Ajanlaskut-Ubuntu-2610-Dark', 'blood': 'Ajanlaskut-Veriyo'}
 
 
 def valid_theme_name(value):

@@ -16,6 +16,7 @@ THEMES = {
     'frost': 'Ajanlaskut-Halla',
     'ubuntu': 'Ajanlaskut-Ubuntu',
     'ubuntu2610_dark': 'Ajanlaskut-Ubuntu-2610-Dark',
+    'blood': 'Ajanlaskut-Veriyo',
 }
 MARKER = '.ajanlaskut-icons'
 INSTALL_MANIFEST = '.ajanlaskut-installed.json'

@@ -12,10 +12,10 @@ kartta, välimuisti, paikka ja palveluasetukset säilyvät teemanvaihdossa.
 | Ominaisuus | Oletus | Toiminta |
 |---|---|---|
 | Vaihtotapa | järjestyksessä | kiinteä valinta, järjestys tai satunnainen |
-| Ajanlaskut | kaikki kolme | vähintään yksi, satunnainen ei toista heti samaa |
+| Ajanlaskut | kaikki neljä uudessa asennuksessa | vähintään yksi, satunnainen ei toista heti samaa |
 | Vaihtoväli | 77 sekuntia | 1–3600 s, ei sama asetus kuin sään 77 minuuttia |
 | Kelloteema | sovelluksen yhteinen | widgetille voi valita Kuparin, Hallan, Ubuntun tai ajanlaskun oman teeman |
-| Näyttötapa | teeman oletus | digitaalinen, analoginen tai molemmat; valinta erikseen jokaiselle kellolle |
+| Näyttötapa | teeman oletus | digitaalinen, analoginen, Otavakello tai yhdistelmä; valinta erikseen jokaiselle kellolle |
 | Digikellon numerokoko | yhteinen 100 % | oma 80–140 % valitulle kellolle; fontti säilyy yhteisenä |
 | Widgetin tekstiväri | teeman mukaan | oma väri kaikille kahdeksalle widgetille; korostus- ja sääsuureiden värit säilyvät |
 | Digikellon numeroväri | widgetin tekstiväri | oma väri valitulle kellolle tai widgetin värin seuraaminen |
@@ -50,7 +50,7 @@ sisältökentät säilyvät.
 Valinnainen `settings.widget_themes` on harva kartta: siinä ovat vain erikseen
 tallennetut widgettivalinnat. `shared` seuraa sovelluksen yhteistä teemaa ja
 `copper`, `frost` sekä `ubuntu` valitsevat kiinteän paletin. `calendar` on sallittu
-vain neljälle kellolle. Puuttuva kellon avain käyttää vanhaa `time_theme`-valintaa;
+vain viidelle kelloprofiilille. Puuttuva kellon avain käyttää vanhaa `time_theme`-valintaa;
 muut widgetit seuraavat ilman omaa avainta yhteistä teemaa. Valinnat ratkaisee
 `widget_themes.py`, jota myös esikatselu käyttää.
 
@@ -106,3 +106,25 @@ Kukin kalenteri valitaan erikseen; näyttöpaikka on Tähtiaika tai kaikki kalen
 Versiosta 1.10.0 lähtien kellojen kuunvaihe ja valaistus lasketaan oikealle
 hetkelle; ne ovat samat eri ajanlaskuissa. Varjoajan ja Tähtiajan omat päiväykset
 säilyvät. Nimiparit näkyvät kalenterissa ja kellon vihjeessä.
+
+## Veri Aika ja Otavan kaksi käyttötapaa · 1.12.0
+
+`blood` on neljäs ajanlasku; viisi kelloprofiilia ovat `combined`, `shadow`,
+`star`, `civil` ja `blood`. Päiväys käyttää aina Suomen klo 01:07:07 rajaa,
+vaikka kellon tuntinäyttö seuraisi käyttäjän muuta aikavyöhykettä. Viikot
+ovat jatkuvia seitsemän paikallisen päivän jaksoja alkupisteestä 26.6.2026.
+`Calendars.at(system, moment)` pitää tämän eron erillään kuukausikalentereista.
+
+Valinnainen `otava`-sisältökenttä piirtää Oulun todellisen pohjoistaivaan.
+Se on oletuksena näkyvissä yhteisessä ja Veri Ajan kellossa, ja se voidaan
+piilottaa kellojen sisältövalinnoista. Sama vakaan mittakaavan piirtäjä palvelee
+etusivua ja Veri Ajan sivua. Kuvan pohjoisen taivaannavan ympärillä liikkuvaa
+asentoa ei keskitetä tai kierretä uudelleen joka piirrolla.
+
+Näyttötavat `otava` ja `otava_both` puolestaan käyttävät Otavaa symbolisena
+sekuntiviisarina: yksi kierros minuutissa. `seconds=False` piilottaa tämän
+kuvion, mutta ei varsinaista taivaskenttää. Tunti- ja minuuttiviisarit näyttävät
+normaalin paikallisen ajan. Näyttötapa ja taivaskenttä ovat toisistaan riippumattomia.
+
+Asetusten lukija täydentää puuttuvan blood-profiilin ja otava-kentät. Se ei
+avaa uutta ikkunaa eikä muuta vanhaa tallennettua vaihtoon osallistuvien ajanlaskujen listaa.
