@@ -16,10 +16,12 @@ class RotationTests(unittest.TestCase):
         self.now += 76;self.assertFalse(self.rotation.poll())
         self.now += 1;self.assertTrue(self.rotation.poll());self.assertEqual(self.rotation.current,'star')
         self.now += 77;self.rotation.poll();self.assertEqual(self.rotation.current,'civil')
+        self.now += 77;self.rotation.poll();self.assertEqual(self.rotation.current,'blood')
         self.now += 77;self.rotation.poll();self.assertEqual(self.rotation.current,'shadow')
     def test_fixed_never_switches_and_manual_steps_wrap(self):
         self.options.update(time_mode='fixed',time_system='civil');self.rotation.configure(self.options)
         self.now += 9000;self.assertFalse(self.rotation.poll());self.assertEqual(self.rotation.current,'civil')
+        self.rotation.advance();self.assertEqual(self.rotation.current,'blood')
         self.rotation.advance();self.assertEqual(self.rotation.current,'shadow')
     def test_random_excludes_the_current_calendar(self):
         self.options['time_mode']='random';self.rotation.configure(self.options)

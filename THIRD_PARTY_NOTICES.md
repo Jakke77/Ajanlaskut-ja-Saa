@@ -174,3 +174,21 @@ ja tunnukset kuuluvat niiden omistajille; teemassa ei toimiteta muiden
 kuvaketeemojen kopioita. Tähtikehä-taustakuva on luotu sisäänrakennetulla
 kuvanluonnilla. Sen luontikuvaus on `assets/wallpapers/ubuntu-2610-dark`-kansiossa.
 Teema ei ole Canonicalin virallinen Ubuntu 26.10 -kuvakepaketti tai julkaisu­tausta.
+
+## Otavan tähtiluettelo · 1.12.0
+
+Seitsemän tähden J2000-paikat, magnitudit ja ominaisliikkeet: Hoffleit, D. ja
+Warren, W. H. Jr., *Bright Star Catalogue, 5th Revised Ed.* (1991), CDS V/50.
+HR-tunnukset 4301, 4295, 4554, 4660, 4905, 5054 ja 5191.
+Luettelon dokumentaatio: https://cdsarc.cds.unistra.fr/ftp/V/50/ReadMe
+Sovellus sisältää vain näiden seitsemän tähden numeeriset tiedot ja omat piirrokset.
+Prekessio käyttää mukana olevaa muuttamatonta PyMeeus-kirjastoa.
+
+`tests/fixtures/otava-astropy.json` on tätä projektia varten tuotettu numeerinen
+vertailutulos Astropy 7.1 / ERFA -laskennasta. Astropya ei toimiteta eikä
+vaadita sovelluksessa tai sen testeissä. Geometrisesta mallista on jätetty
+pois refraktio, nutaatio ja vuotuinen aberraatio; kuva ei ole havaintolaitteen suuntausohje.
+
+Veriyö-taustakuvat on luotu tätä projektia varten kuvanluonnilla.
+Luontikuvaukset ovat `assets/wallpapers/veri-aika/LUONTIKUVAUS.md`.
+Taustakuvien Otava on staattista kuvitusta, ei dynaaminen tähtikartta.

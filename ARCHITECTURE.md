@@ -14,11 +14,11 @@ käyttäjän koneessa. Sään kuparinen ulkoasu on yhteisen teeman lähtökohta.
                       │          │           │
                    MainWindow ──┴───────────┤
                       │                      │
-                7 sovellusnäkymää      8 desktop-widgettiä
+                10 sovellusnäkymää     9 desktop-widgettiä
 ```
 
 `State` hallitsee vain tämän sovelluksen asetuksia, merkintöjä, muistutuksia ja
-ikkunapaikkoja. `Calendars` muuntaa saman todellisen päivän kolmelle ajanlaskulle.
+ikkunapaikkoja. `Calendars` muuntaa saman todellisen päivän neljälle ajanlaskulle.
 Sääkerros tarjoaa kaikille ikkunoille samat ennusteet; yksittäinen widgetti ei
 käynnistä erillistä verkkohakua tai vanhaa sovellusta.
 
@@ -36,8 +36,8 @@ widgetteihin yhdellä asetuskokonaisuudella.
 Varjoajan ja Tähtiajan aiemmat muunnossäännöt säilyvät; alkuperäisten sovellusten
 käyttöliittymät eivät kuulu uuteen prosessiin.
 
-`ClockRotation` käyttää monotonista aikaa ja vain kolmen ajanlaskun tunnisteita.
-Ulkoasun tai sisällön muutos ei aloita vaihtoväliä uudelleen. Neljä kelloprofiilia
+`ClockRotation` käyttää monotonista aikaa ja neljän ajanlaskun tunnisteita.
+Ulkoasun tai sisällön muutos ei aloita vaihtoväliä uudelleen. Viisi kelloprofiilia
 sisältävät riippumattomat kenttävalinnat; sama `clock_layout` ja `DesktopSurface`
 piirtävät sekä työpöydän että tallentamattoman esikatselun. Kellon tai lisäkalenterien
 asetukset säilyttävät sään nykyisen toiminnan. Kellosisällön ja kellon oman teeman
@@ -249,3 +249,21 @@ JSON pitää paikallisen pienen kalenterin helposti varmuuskopioitavana. Jos muk
 tulee suuri määrä tapahtumia, toistuvia muistutuksia tai pilvisynkka, arvioidaan
 SQLite, versionoidut tuonnit ja ristiriitojen ratkaisu uudelleen. Foreca-sovitin
 lukee julkista sivua ja voi muuttua; Yr ja FMI ovat vaihtoehtoisia lähteitä.
+
+## Veri Aika ja Otava · 1.12.0
+
+`blood_time` erottaa paikallisen kalenteripäivän UTC-kestosta: alku on
+26.6.2026 klo 01:07:07 Europe/Helsinki, ja rajat rakennetaan paikallisista
+päivämääristä. Viikon todellinen kesto voi olla 167 tai 169 tuntia kesäajan
+vaihtuessa. Viikkolaskuri jatkuu keskeytyksettä vuosipäivien yli.
+
+`otava` sisältää seitsemän BSC5-luettelon tähden J2000-paikat ja ominaisliikkeet.
+PyMeeus laskee prekession ja keskimääräisen tähtiajan; paikallinen horisontti
+on Oulu 65.0121 N, 25.4651 E. Koordinaatit lasketaan geometrisesti ilman
+refraktiota. Kiinteä pohjoiseen taivaannapaan keskitetty stereografinen
+projektio säilyttää liikkeen ja suhteellisen muodon. `otava_ui.paint_otava`
+piirtää saman asennon etusivulle, Veri Ajan kalenteriin ja valinnaiseen kellokenttään.
+
+`ubuntu_clock` käyttää saman luettelon staattista muotoa erillisessä
+`style='otava'`-tilassa sekuntiviisarina. Se ei sekoita sekuntikulmaa taivaan
+asentoon. `VeriPage` selaa viikkoja muuttamatta reaaliaikaisen taivaskuvan aikaa.

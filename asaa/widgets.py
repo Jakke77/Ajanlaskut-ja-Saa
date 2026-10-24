@@ -14,6 +14,7 @@ WIDGET_LABELS = {
     'combined': 'Ajanlaskut · vaihtuva kello',
     'shadow': 'Varjoaika · kello', 'star': 'Tähtiaika · kello', 'weather': 'Sää · tuntigraafi',
     'daily': 'Varjosää · kolme päivää', 'civil': 'Gregoriaaninen · kello',
+    'blood': 'Veri Aika · Otava ja kello',
     'shadow_calendar': 'Varjoaika · kuukausiwidget', 'star_calendar': 'Tähtiaika · kuukausiwidget',
 }
 
@@ -78,11 +79,11 @@ class DesktopSurface(QWidget):
 
     @property
     def analog_clock(self):
-        return self.clock_mode in ('analog', 'both')
+        return self.clock_mode in ('analog', 'both', 'otava', 'otava_both')
 
     @property
     def digital_clock(self):
-        return self.clock_mode in ('digital', 'both')
+        return self.clock_mode in ('digital', 'both', 'otava_both')
 
     @property
     def clock_mode(self):
@@ -199,7 +200,7 @@ class DesktopSurface(QWidget):
 
     def paint_clock(self, p, now, theme):
         try:
-            item = self.controller.calendars.convert(self.system, now.date())
+            item = self.controller.calendars.at(self.system, now)
             date_label = item.label
             weekday = self.controller.calendars.day_words(item, self.options['star_side'])
             from .astronomy import moon_at
@@ -215,7 +216,8 @@ class DesktopSurface(QWidget):
                     from .ubuntu_clock import paint_clock
                     rect = paint_clock(p, QRectF(22, y+8, self.logical_width-44, height-16), now,
                                        theme, self.options['font'], self.options['opacity']/100,
-                                       self.options['seconds'], self.options['widget_clock_scale']/100)
+                                       self.options['seconds'], self.options['widget_clock_scale']/100,
+                                       style='otava' if self.clock_mode in ('otava','otava_both') else 'standard')
                     if self.digital_clock:
                         self.text(p, value, rect.y(), 24, bold=True, x=rect.x(), width=rect.width(),
                                   center=True, height=rect.height(), clock=True)
@@ -227,6 +229,15 @@ class DesktopSurface(QWidget):
             elif field == 'reference':
                 value = ' · '.join(([f'{now:%d.%m.%Y}'] if self.profile['civil_date'] else []) + ([self.options['zone']] if self.profile['zone'] else []))
                 self.text(p, value, y+2, 12, theme.muted, center=True, height=28)
+            elif field == 'otava':
+                from .otava_ui import paint_otava
+                from .blood_time import ZONE
+                try:
+                    paint_otava(p,QRectF(self.logical_width/2-60,y,120,108),now,theme)
+                    value=f'Otava · Oulu · {now.astimezone(ZONE):%H:%M:%S %Z}'
+                except (ValueError,OverflowError):
+                    value='Otavan laskenta: vuodet 1900–2100'
+                self.text(p,value,y+111,11,theme.muted,center=True,height=23)
             elif field == 'weather':
                 lines = self.controller.daily.lines()
                 self.text(p, self.controller.weather.place.name, y, 12, theme.accent, height=25)
@@ -242,7 +253,7 @@ class DesktopSurface(QWidget):
                 tip.extend(lines)
             elif field == 'note':
                 self.text(p, 'PÄIVÄN MERKINTÄ', y, 11, theme.accent, height=23)
-                value = self.controller.state.note(now.date()) or 'Ei merkintää tälle päivälle.'
+                value = self.controller.state.note(item.civil if self.system=='blood' else now.date()) or 'Ei merkintää tälle päivälle.'
                 self.text(p, value.splitlines()[0], y+27, 14, height=31)
             elif field == 'reminder':
                 self.text(p, 'SEURAAVA MUISTUTUS', y, 11, theme.accent, height=23)
@@ -253,6 +264,10 @@ class DesktopSurface(QWidget):
         try:
             if item.names: tip.append('Nimipari · '+item.names.label)
         except UnboundLocalError: pass
+        if self.clock_mode in ('otava','otava_both'):
+            tip.append('Otavakello: tähtikuvio on symbolinen sekuntiviisari, yksi kierros minuutissa.')
+        if self.profile['otava']:
+            tip.append('Otavan erillinen taivaskuva näyttää todellisen asennon Oulussa, zeniitti ylöspäin ja itä oikealle.')
         self.setToolTip('\n'.join(tip))
         self.setAccessibleName(CLOCK_TITLES[self.system]+'\n'+'\n'.join(tip))
 

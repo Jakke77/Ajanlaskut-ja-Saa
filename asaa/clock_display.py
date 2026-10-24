@@ -5,6 +5,8 @@ CLOCK_DISPLAY_CHOICES = [
     ('Digitaalinen', 'digital'),
     ('Analoginen', 'analog'),
     ('Analoginen ja digitaalinen', 'both'),
+    ('Otavakello', 'otava'),
+    ('Otavakello ja digitaalinen', 'otava_both'),
 ]
 
 

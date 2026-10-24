@@ -356,7 +356,7 @@ class AppearanceTransactionTests(IconThemeFixture, unittest.TestCase):
         wallpaper_bundle = self.root / 'wallpapers'; wallpaper_bundle.mkdir()
         records = []
         for theme, color in (('copper', '#ef986e'), ('frost', '#a3cfe9'), ('ubuntu', '#e95420'),
-                             ('ubuntu2610_dark', '#2C001E')):
+                             ('ubuntu2610_dark', '#2C001E'), ('blood', '#160b12')):
             filename = theme + '.png'
             image = QImage(32, 18, QImage.Format.Format_RGB32)
             image.fill(QColor(color)); self.assertTrue(image.save(str(wallpaper_bundle / filename)))
@@ -402,6 +402,19 @@ class AppearanceTransactionTests(IconThemeFixture, unittest.TestCase):
         self.assertEqual(self.backend.values[INTERFACE]['color-scheme'], self.before[INTERFACE]['color-scheme'])
         self.assertEqual(self.installer.launcher_calls, [])
         self.assertEqual(self.installer.installed[-1][1].name, 'Ajanlaskut-Ubuntu-2610-Dark')
+
+    def test_veriyo_switches_matching_icons_and_wallpaper_without_changing_notes(self):
+        self.configure({'icon_follow_theme': True})
+        self.state.data['notes']['2026-06-26'] = 'Veri Ajan alku'
+        before = copy.deepcopy(self.state.data)
+        self.configure({'theme': 'blood'})
+        expected = copy.deepcopy(before)
+        expected['settings']['theme'] = 'blood'
+        self.assertEqual(State(self.state.path).data, expected)
+        self.assertEqual(self.backend.values[INTERFACE][ICON_KEY], 'Ajanlaskut-Veriyo')
+        self.assertEqual(self.installer.installed[-1][1].name, 'Ajanlaskut-Veriyo')
+        self.assertEqual(self.installer.launcher_calls, [])
+        self.assertTrue(self.wallpaper_backend.calls)
 
     def test_settings_failure_restores_icons_wallpaper_and_original_settings(self):
         self.configure({'icon_follow_theme': True})

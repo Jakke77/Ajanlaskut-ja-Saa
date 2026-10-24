@@ -1,5 +1,46 @@
 # Tarkistukset
 
+## Veri Aika, Oulun Otava ja Veriyö · 24.10.2026 · 1.12.0
+
+- Ubuntu-lähdekoodin koko yksikkö- ja Qt-sarja: **370 testiä läpäisi**.
+  Viikkorajan testi kattaa sekunnit ennen klo 01:07:07 ja sen jälkeen,
+  Suomen kesä- ja talviajan 167/169 tunnin viikot sekä toisessa
+  aikavyöhykkeessä näytettävän kellon. Ennen vuorokausirajaa myös
+  widgetin merkintä pysyy Veri Ajan alkupäivän mukaisena.
+  Laaja Qt-hyväksyntä läpäisi myös kaikki yhdeksän widgettiä, eri fontti-,
+  koko-, teema- ja näyttötapayhdistelmät sekä tallennus- ja palautusvirheet.
+- Oikean Qt-ohjaimen hyväksyntä tarkisti etusivun, viikkokalenterin,
+  Kalenterit-valikon ohjauksen, kellon näyttötapojen tallentumisen,
+  vanhojen asetusten täydentymisen ja erikseen piilotettavan tähtikuvan.
+  Kaikki kymmenen sivuvalintaa näkyvät 1020×720-ikkunassa.
+- Seitsemän tähden BSC5-luettelopaikat, ominaisliikkeet ja prekessio
+  verrattiin Astropy 7.1 / ERFA -tuloksiin neljällä 2026 ajanhetkellä:
+  taivaan kulmaero on alle 0,01 astetta. Myös tuetun 1900–2100 alueen
+  reunat, tähtivuorokausi, kuuden tunnin kierto ja Oulun horisontti testattiin.
+  Astropy ei ole sovelluksen tai offline-testien riippuvuus.
+- Otavakellon seitsemän tähden sekuntiviisari tarkistettiin oikeassa
+  Qt-piirrossa eri sekunneilla, sekunnit piilotettuina ja läpinäkyvällä
+  taustalla. Se on käyttöliittymässä erotettu todellisesta tähtitaivaasta.
+- Veriyö-paletin teksti-, himmeä- ja korostusvärin kontrasti on vähintään
+  7,12:1 taustaa ja pintaa vasten. Kaksi 1672×941-taustakuvaa ovat
+  identtiset sovelluksessa ja teemarepossa. Staattinen kuvitus on merkitty.
+- Kuvakerepon **51 testiä** ja sovelluksen **40 kuvaketestiä** läpäisivät.
+  Neljän aiemman kuvaketeeman tiedostot säilyivät tavutasolla ennallaan.
+- Windowsin paketissa ajettiin **90 testiä natiivilla Windows 2022
+  -runnerilla**, mukana kaikki uudet Veri Ajan laskenta-, piirto- ja
+  integraatiotestit. Myös koko Windows-käyttöliittymän hyväksyntä sekä
+  Yr:n 24 ja FMI:n 26 tuntiennusteen TLS-haut mukana olevilla CA-varmenteilla
+  läpäisivät. [Windows-ajo 40094226230](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40094226230).
+  High contrast ohittaa tarvittaessa Veriyö-värit säilyttäen käyttäjän valinnan.
+- Käyttäjäasennuksen purkajan tiedostoraja on nyt 4096, jotta viides
+  kuvaketeema mahtuu mukaan. Yli 2000 tiedoston julkaisu ja rajan ylittävä
+  paketti testattiin; polku-, tiedostotyyppi- ja tavumäärärajat säilyvät.
+- Windowsin paikallinen ristipaketti tarkistettiin erikseen: x64 PE-käynnistin,
+  kahdeksan lukittua lataustarkistetta, ZIP:n CRC sekä kaikkien 187
+  lähdetiedoston vertailu. Jaetut Veri Ajan moduulit ja taustakuvat ovat
+  Ubuntu-version kanssa samat. Julkaistava Windows-ZIP on natiivin CI-ajon
+  rakentama ja testaama, joten sen ZIP-tarkiste poikkeaa paikallisesta ristipaketista.
+
 ## Kuu, nimikalenterit ja päivän valo · 23.10.2026 · 1.10.0
 
 - Lopullinen yksikkö- ja Qt-testisarja: 332 testiä läpäisi. Lisäksi uusi

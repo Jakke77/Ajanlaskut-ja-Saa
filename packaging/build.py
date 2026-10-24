@@ -38,8 +38,8 @@ def build(output):
         wrapper.chmod(0o755)
         desktop=stage/'usr/share/applications';desktop.mkdir(parents=True)
         (desktop/'ajanlaskut-ja-saa.desktop').write_text('[Desktop Entry]\nType=Application\nName=Ajanlaskut ja Sää\n'
-            'Comment=Varjoaika, Tähtiaika, kalenterit ja sää yhdessä sovelluksessa\n'
-            'Exec=ajanlaskut-ja-saa\nIcon=/usr/share/ajanlaskut-ja-saa/assets/icon.svg\n'
+            'Comment=Varjoaika, Tähtiaika, Veri Aika, kalenterit ja sää yhdessä sovelluksessa\n'
+            'Exec=/usr/bin/ajanlaskut-ja-saa\nIcon=/usr/share/ajanlaskut-ja-saa/assets/icon.svg\n'
             'Terminal=false\nCategories=Office;Calendar;\nStartupNotify=true\n')
         control=stage/'DEBIAN';control.mkdir()
         (control/'control').write_text(f'Package: ajanlaskut-ja-saa\nVersion: {VERSION}\nArchitecture: all\n'
@@ -47,9 +47,9 @@ def build(output):
             'Depends: python3 (>= 3.10), python3-pyqt6 (>= 6.8), python3-pyqt6.qtmultimedia (>= 6.8)\n'
             'Recommends: python3-pyqt6.qtwebengine (>= 6.8), python3-gi, gir1.2-glib-2.0, xdg-desktop-portal, xdg-desktop-portal-gnome, geoclue-2.0\n'
             'Description: Finnish calendars and desktop weather\n'
-            ' Varjoaika, Tahtiaika and Gregorian calendars with shared notes and reminders.\n'
-            ' Weather forecasts, optional parallel calendars and eight desktop widgets.\n'
-            ' A rotating clock uses copper, astral or Gregorian clock themes.\n')
+            ' Varjoaika, Tahtiaika, Veri Aika and Gregorian calendars with shared notes.\n'
+            ' Weather forecasts, parallel calendars and configurable desktop widgets.\n'
+            ' Otava sky above Oulu, constellation clock hands and dark clock themes.\n')
         deb=output/f'ajanlaskut-ja-saa_{VERSION}_all.deb'
         subprocess.run(['dpkg-deb','--root-owner-group','--build',str(stage),str(deb)],check=True)
     archive=output/f'Ajanlaskut-ja-Saa-{VERSION}-lahdekoodi.zip'

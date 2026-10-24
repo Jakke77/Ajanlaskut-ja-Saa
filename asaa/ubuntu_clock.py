@@ -1,5 +1,6 @@
-"""Original Ubuntu-inspired analogue dial, drawn locally with Qt."""
+"""Original analogue dials and a symbolic seven-star Otava seconds hand."""
 import math
+from functools import lru_cache
 from PyQt6.QtCore import Qt, QRectF, QPointF
 from PyQt6.QtGui import QColor, QFont, QFontMetricsF, QLinearGradient, QPen, QRadialGradient
 
@@ -30,7 +31,56 @@ def ubuntu_mark(painter, center, radius, color):
     painter.restore()
 
 
-def paint_clock(painter, rect, now, theme, font_family, opacity=1, seconds=True, clock_scale=1):
+@lru_cache(maxsize=1)
+def otava_hand_shape():
+    """Catalogue-shaped dipper with Alkaid at the pivot and Dubhe at twelve.
+
+    A gnomonic projection preserves the recognisable seven-star pattern. The
+    complete pattern turns once a minute as a symbolic hand; unlike the sky
+    display this orientation does not describe the current position in Oulu.
+    Coordinates are fractions of the clock radius, in clockwise screen axes.
+    """
+    from .otava import STARS
+    ra0, dec0 = math.radians(185), math.radians(55)
+    projected = []
+    for star in STARS:
+        ra, dec = math.radians(star.ra), math.radians(star.dec)
+        denominator = (math.sin(dec0)*math.sin(dec)
+                       + math.cos(dec0)*math.cos(dec)*math.cos(ra-ra0))
+        projected.append((math.cos(dec)*math.sin(ra-ra0)/denominator,
+            (math.cos(dec0)*math.sin(dec)
+             - math.sin(dec0)*math.cos(dec)*math.cos(ra-ra0))/denominator))
+    indices = {star.name: i for i, star in enumerate(STARS)}
+    origin, tip = projected[indices['Alkaid']], projected[indices['Dubhe']]
+    dx, dy = tip[0]-origin[0], tip[1]-origin[1]
+    length = math.hypot(dx, dy)
+    along = dx/length, dy/length
+    perpendicular = -along[1], along[0]
+    return tuple((.5*((x-origin[0])*perpendicular[0]+(y-origin[1])*perpendicular[1])/length,
+                  -.1-.5*((x-origin[0])*along[0]+(y-origin[1])*along[1])/length)
+                 for x, y in projected)
+
+
+def paint_otava_hand(painter, radius, theme):
+    """Draw seven stars and the dipper outline, already rotated by caller."""
+    from .otava import LINKS
+    points = [QPointF(x*radius, y*radius) for x, y in otava_hand_shape()]
+    glow = QColor(theme.accent);glow.setAlphaF(.12)
+    line = QColor(theme.accent);line.setAlphaF(.82)
+    painter.setBrush(Qt.BrushStyle.NoBrush)
+    painter.setPen(QPen(line, 1.15, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
+    for first, second in LINKS:
+        painter.drawLine(points[first], points[second])
+    painter.setPen(Qt.PenStyle.NoPen)
+    size = max(1.7, radius*.014)
+    for point in points:
+        painter.setBrush(glow);painter.drawEllipse(point, size*3.2, size*3.2)
+        painter.setBrush(QColor(theme.accent));painter.drawEllipse(point, size*1.5, size*1.5)
+        painter.setBrush(QColor(theme.text));painter.drawEllipse(point, size*.65, size*.65)
+
+
+def paint_clock(painter, rect, now, theme, font_family, opacity=1, seconds=True, clock_scale=1,
+                style='standard'):
     """Paint the dial and return a reserved rectangle for the digital time."""
     painter.save()
     painter.setRenderHint(painter.RenderHint.Antialiasing)
@@ -80,12 +130,17 @@ def paint_clock(painter, rect, now, theme, font_family, opacity=1, seconds=True,
         painter.drawText(box, Qt.AlignmentFlag.AlignCenter, str(number))
 
     hour, minute, second = hand_angles(now)
+    if seconds and style == 'otava':
+        # Draw beneath the ordinary hands so the time stays immediately legible.
+        painter.save();painter.translate(center);painter.rotate(second)
+        paint_otava_hand(painter, radius, theme)
+        painter.restore()
     for angle, length, width, color in ((hour, .43, 6.5, text), (minute, .61, 4, text)):
         painter.save();painter.translate(center);painter.rotate(angle)
         painter.setPen(QPen(color, width, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
         painter.drawLine(QPointF(0, radius*.06), QPointF(0, -radius*length))
         painter.restore()
-    if seconds:
+    if seconds and style != 'otava':
         painter.save();painter.translate(center);painter.rotate(second)
         painter.setPen(QPen(accent, 1.5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
         painter.drawLine(QPointF(0, radius*.18), QPointF(0, -radius*.66))
