@@ -65,7 +65,7 @@ Kaikki **2 321** deb- ja lähde-ZIP-tiedostoa verrattiin lähteeseen;
 myös turvallinen käyttäjäpäivittimen purku tarkistettiin.
 
 Windowsin paketti rakennetaan ja testataan natiivilla Windows-runnerilla:
-[Windows-ajo 40103808960](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40103808960).
+[Windows-ajo 40104633005](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40104633005).
 
 [Testiloki](QA-unit.log) · [Qt-tarkistus](QA-ui.json) · [Pakettivertailu](QA-package.json).
 
