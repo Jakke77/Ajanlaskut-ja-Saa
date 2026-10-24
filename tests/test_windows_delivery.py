@@ -3,6 +3,7 @@ import importlib.util
 from dataclasses import asdict
 import json
 import os
+from datetime import timedelta
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -72,9 +73,24 @@ class WindowsDeliveryTests(unittest.TestCase):
                     overflow = scroll.horizontalScrollBar().maximum()
                     self.assertEqual(overflow, 0, layout_diagnostics(page, scroll) if overflow else None)
                 page = case.window.page_widgets['blood']
-                for item in page.day_buttons:
-                    widest = max(item.fontMetrics().horizontalAdvance(line) for line in item.text().splitlines())
-                    self.assertGreaterEqual(item.contentsRect().width(), widest)
+                case.state.save_note(page.week_start, 'Luettavuustestin kalenterimerkintä')
+                page.render(); self.app.processEvents()
+                for index, item in enumerate(page.day_buttons):
+                    lines = item.text().splitlines()
+                    metrics = item.fontMetrics()
+                    widths = [metrics.horizontalAdvance(line) for line in lines]
+                    text_height = metrics.height() + (len(lines) - 1) * metrics.lineSpacing()
+                    evidence = json.dumps(dict(text=item.text(), font=item.font().toString(),
+                        widths=widths, text_height=text_height,
+                        contents=[item.contentsRect().width(), item.contentsRect().height()],
+                        size_hint=[item.sizeHint().width(), item.sizeHint().height()]), ensure_ascii=False)
+                    self.assertGreaterEqual(item.contentsRect().width(), max(widths), evidence)
+                    self.assertGreaterEqual(item.contentsRect().height(), text_height, evidence)
+                    day = page.week_start + timedelta(days=index)
+                    self.assertEqual(item.accessibleName(),
+                        f'Viikon {index + 1}. päivä · {day:%d.%m.%Y}'
+                        + (' · kalenterimerkintä' if index == 0 else ''))
+                    self.assertEqual(item.accessibleDescription(), item.toolTip())
             finally:
                 case.tearDown(); self.app.setStyle('Fusion')
 

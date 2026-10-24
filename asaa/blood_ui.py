@@ -186,7 +186,14 @@ class VeriPage(QWidget):
         for index, item in enumerate(self.day_buttons):
             day = self.week_start + timedelta(days=index)
             marker = ' •' if self.controller.state.note(day) else ''
-            item.setText(f'{index + 1}. päivä\n{day:%d.%m.}{marker}')
+            if IS_WINDOWS:
+                # Keep all wording readable in seven native-size columns.
+                # Minimum vertical policy lets Qt grow for the third line.
+                item.setText(f'{index + 1}.{marker}\npäivä\n{day:%d.%m.}')
+                item.setAccessibleName(f'Viikon {index + 1}. päivä · {day:%d.%m.%Y}'
+                                       + (' · kalenterimerkintä' if marker else ''))
+            else:
+                item.setText(f'{index + 1}. päivä\n{day:%d.%m.}{marker}')
             item.setChecked(day == self.selected)
             item.setStyleSheet(f'border:2px solid {theme.accent};' if day == today and day != self.selected else '')
             begin, finish = blood_time.boundary(day), blood_time.boundary(day + timedelta(days=1))
@@ -195,6 +202,8 @@ class VeriPage(QWidget):
                             f'{position.names.label}\n'
                             f'{begin:%d.%m.%Y %H:%M:%S %Z} – {finish:%d.%m.%Y %H:%M:%S %Z}\n'
                             + self.controller.state.note(day))
+            if IS_WINDOWS:
+                item.setAccessibleDescription(item.toolTip())
         self.selected_label.setText(f'VALITTU PÄIVÄ · {selected.label}\n'
                                    f'Vuoden päivä {selected.day_of_year}/777 · '
                                    f'{self.selected:%d.%m.%Y} klo 01:07:07 alkaen')
