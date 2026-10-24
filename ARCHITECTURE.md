@@ -267,3 +267,17 @@ piirtää saman asennon etusivulle, Veri Ajan kalenteriin ja valinnaiseen kellok
 `ubuntu_clock` käyttää saman luettelon staattista muotoa erillisessä
 `style='otava'`-tilassa sekuntiviisarina. Se ei sekoita sekuntikulmaa taivaan
 asentoon. `VeriPage` selaa viikkoja muuttamatta reaaliaikaisen taivaskuvan aikaa.
+
+## Veri Ajan 777 päivän vuosi ja nimet · 1.12.1
+
+`blood_time` jakaa paikallisen ordinal-luvun 777 päivän jaksoihin. Vuodessa
+on täsmälleen 111 seitsemän päivän viikkoa, joten vuoden raja on myös viikon
+raja. `next_year()` laskee seuraavan paikallisen 01:07:07-rajan päivämääristä,
+ei 777×24 tunnista. Aiempi jatkuva viikkonumero säilyy mallissa, mutta
+käyttöliittymä näyttää vuoden sisäisen viikon ja vuoden numeron.
+
+`blood_names` lukee staattisen, validoidun 777 nimiparin luettelon. Päivät
+ovat 1-pohjaisia; syntymäpäivähaku sovittaa myös ennen alkua olevat päivät
+modulo 777. `NamePair` on yhteinen aiempien nimikalenterien kanssa.
+VeriPage ja NamesPage näyttävät nimet; etusivu ja kellon `nameday`-kenttä
+käyttävät saman muunnetun Veri-päivän nimiparia. Haku ei kirjoita asetuksia.

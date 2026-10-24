@@ -192,3 +192,11 @@ pois refraktio, nutaatio ja vuotuinen aberraatio; kuva ei ole havaintolaitteen s
 Veriyö-taustakuvat on luotu tätä projektia varten kuvanluonnilla.
 Luontikuvaukset ovat `assets/wallpapers/veri-aika/LUONTIKUVAUS.md`.
 Taustakuvien Otava on staattista kuvitusta, ei dynaaminen tähtikartta.
+
+## Veri Ajan alkuperäiset nimiparit · 1.12.1
+
+`assets/blood-names.json` sisältää sovellusta varten laaditut 777 pysyvää
+mies-/naisnimiparia. Nimien inspiraationa ovat veren, verisuonten, solujen,
+sydämen ja elämän suomen- ja latinankieliset sanavartalot. Kantasanat ja
+niiden merkitykset on kuvattu tiedoston `inspirations`-luettelossa. Nimet
+ovat omaa kuvitteellista aineistoa, eivät virallisen nimipäivärekisterin kopio.

@@ -1,6 +1,6 @@
 """Veri Aika reaches real menus, persisted settings and rendered desktop clocks."""
 import copy
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 from pathlib import Path
 import tempfile
@@ -55,6 +55,7 @@ class VeriIntegrationTests(unittest.TestCase):
         settings['clock_profiles'].pop('blood')
         for profile in settings['clock_profiles'].values():
             profile.pop('otava')
+            profile.pop('nameday')
         old['notes']['2026-10-24'] = 'Säilytä merkintä'
         old['geometry']['combined'] = [180, 40]
         atomic_json(self.state.path, old)
@@ -64,6 +65,8 @@ class VeriIntegrationTests(unittest.TestCase):
         self.assertEqual(set(migrated.settings['clock_profiles']), set(PROFILE_KEYS))
         self.assertTrue(migrated.settings['clock_profiles']['blood']['otava'])
         self.assertTrue(migrated.settings['clock_profiles']['combined']['otava'])
+        self.assertTrue(migrated.settings['clock_profiles']['blood']['nameday'])
+        self.assertTrue(migrated.settings['clock_profiles']['combined']['nameday'])
         self.assertEqual(migrated.note(date(2026, 10, 24)), 'Säilytä merkintä')
         self.assertEqual(migrated.geometry('combined'), [180, 40])
 
@@ -72,10 +75,10 @@ class VeriIntegrationTests(unittest.TestCase):
         self.assertIn('blood', controller.window.navigation)
         overview = controller.window.page_widgets['overview']
         overview.tick()
-        self.assertEqual(overview.date_labels['blood'].text(), '7. päivä · 1. viikko')
+        self.assertEqual(overview.date_labels['blood'].text(), '7. päivä · 1. viikko · vuosi 0001')
         self.now = self.now.replace(second=7)
         controller.clock_changed.emit()
-        self.assertEqual(overview.date_labels['blood'].text(), '1. päivä · 2. viikko')
+        self.assertEqual(overview.date_labels['blood'].text(), '1. päivä · 2. viikko · vuosi 0001')
         controller.open_calendar('blood')
         self.assertTrue(controller.window.navigation['blood'].isChecked())
         calendar = controller.window.page_widgets['calendar']
@@ -84,7 +87,8 @@ class VeriIntegrationTests(unittest.TestCase):
         page = controller.window.page_widgets['blood']
         self.assertEqual(page.selected, date(2026, 6, 26))
         self.assertEqual(calendar.selector.currentData(), 'civil')
-        self.assertEqual(page.week_heading.text(), '1. VIIKKO')
+        self.assertIn('1. VIIKKO', page.week_heading.text())
+        self.assertIn('0001', page.week_heading.text())
         self.assertEqual(len(overview.otava.sky), 7)
 
     def test_otava_mode_roundtrip_and_real_sky_content_are_independent(self):
@@ -99,13 +103,13 @@ class VeriIntegrationTests(unittest.TestCase):
             self.assertEqual(widget.digital_clock, mode == 'otava_both')
             self.assertFalse(widget.grab().isNull())
             values = [row[0] for row in widget.text_layout]
-            self.assertIn('7. päivä · 1. viikko', values)
+            self.assertIn('7. päivä · 1. viikko · vuosi 0001', values)
             self.assertTrue(any(value.startswith('Otava · Oulu') for value in values))
             self.assertIn('symbolinen sekuntiviisari', widget.toolTip())
             self.assertEqual(State(self.state.path).settings['clock_displays']['combined']['mode'], mode)
         self.now = self.now.replace(second=7)
         controller.clock_changed.emit(); widget.grab()
-        self.assertIn('1. päivä · 2. viikko', [row[0] for row in widget.text_layout])
+        self.assertIn('1. päivä · 2. viikko · vuosi 0001', [row[0] for row in widget.text_layout])
 
     def test_all_fields_fit_and_physical_sky_can_be_disabled_separately(self):
         controller = self.controller
@@ -136,8 +140,44 @@ class VeriIntegrationTests(unittest.TestCase):
         controller.calendars.now = lambda: self.now
         controller.set_widget('blood', True)
         widget = controller.widgets['blood']; widget.grab()
-        self.assertIn('1. päivä · 2. viikko', [row[0] for row in widget.text_layout])
+        self.assertIn('1. päivä · 2. viikko · vuosi 0001', [row[0] for row in widget.text_layout])
         self.assertTrue(any('EEST' in row[0] for row in widget.text_layout if row[0].startswith('Otava · Oulu')))
+
+    def test_year_and_name_pair_roll_over_together_without_resizing_clock(self):
+        from asaa import blood_time as blood
+        from asaa.blood_names import names_at
+        controller = self.controller
+        boundary = blood.boundary(blood.EPOCH_DATE + timedelta(days=777))
+        self.now = boundary - timedelta(seconds=1)
+        controller.set_widget('blood', True)
+        widget = controller.widgets['blood']
+        widget.grab()
+        size = widget.size()
+        values = [row[0] for row in widget.text_layout]
+        self.assertIn('7. päivä · 111. viikko · vuosi 0001', values)
+        self.assertIn('Mies: '+names_at(777).male, values)
+        self.assertIn('Nainen: '+names_at(777).female, values)
+        self.now = boundary
+        controller.clock_changed.emit(); widget.grab()
+        values = [row[0] for row in widget.text_layout]
+        self.assertIn('1. päivä · 1. viikko · vuosi 0002', values)
+        self.assertIn('Mies: '+names_at(1).male, values)
+        self.assertIn('Nainen: '+names_at(1).female, values)
+        self.assertEqual(widget.size(), size)
+        overview = controller.window.page_widgets['overview']
+        self.assertIn('Vuoden päivä 1/777', overview.note_labels['blood'].text())
+        self.assertIn(names_at(1).male, overview.note_labels['blood'].text())
+
+    def test_names_field_can_be_hidden_and_its_choice_survives_restart(self):
+        controller = self.controller
+        controller.set_widget('blood', True)
+        widget = controller.widgets['blood']; widget.grab()
+        self.assertTrue(any(row[0].startswith('Mies: ') for row in widget.text_layout))
+        profiles = controller.options['clock_profiles']; profiles['blood']['nameday'] = False
+        controller.configure({'clock_profiles': profiles})
+        widget.grab()
+        self.assertFalse(any(row[0].startswith(('Mies: ', 'Nainen: ')) for row in widget.text_layout))
+        self.assertFalse(State(self.state.path).settings['clock_profiles']['blood']['nameday'])
 
     def test_blood_note_follows_effective_day_before_cutover(self):
         controller = self.controller

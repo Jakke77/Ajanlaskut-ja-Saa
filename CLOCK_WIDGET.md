@@ -128,3 +128,18 @@ normaalin paikallisen ajan. Näyttötapa ja taivaskenttä ovat toisistaan riippu
 
 Asetusten lukija täydentää puuttuvan blood-profiilin ja otava-kentät. Se ei
 avaa uutta ikkunaa eikä muuta vanhaa tallennettua vaihtoon osallistuvien ajanlaskujen listaa.
+
+## 777 päivän vuosi ja nimiparit · 1.12.1
+
+`BloodDate.year`, `day_of_year` ja `week_of_year` jakavat vuoden 777 päivään
+ja 111 viikkoon. Jatkuva `week` säilyy sisäisenä yhteensopivuustietona;
+näkyvä päiväys käyttää vuoden sisäistä viikkoa. Vuoden vaihtumisen jälkeen
+päivä on 1/777 ja viikko 1/111. Ensimmäinen raja on 11.8.2028 klo 01:07:07.
+
+`nameday` on valinnainen 66 pikselin sisältökenttä: miehen ja naisen nimelle
+on erilliset rivit. Se on oletuksena käytössä yhteisessä ja Veri Ajan kellossa.
+Vanha profiili täydentyy kentällä lukiessa, ja tallennettu false säilyy.
+Nimilista on versionoitu `assets/blood-names.json`; koko lista on pysyvä eikä
+sovellus arvo nimiä. Nimet seuraavat samaa Suomen vuorokausirajaa kuin Veri
+Ajan päivämäärä ja merkinnät. Pitkä vuosipäiväys ja nimet sovitetaan rivin
+leveyteen pienentämällä tekstiä tarvittaessa, joten vuoden numero ei katoa.
