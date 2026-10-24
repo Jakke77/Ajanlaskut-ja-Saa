@@ -1,0 +1,36 @@
+{
+  "version": "1.12.1",
+  "packaged_source_files": 192,
+  "all_declared_files_exist": true,
+  "name_pairs": 777,
+  "database_sha256": "5c0ffe55edaf3a1848e9fbfd48fec6f135c8890bd521a695e9508d52554986bd",
+  "no_new_runtime_dependencies": true,
+  "commit": "a7e196e9e12e96432434bce17b3877ee022abb8d",
+  "local_windows_tests": 112,
+  "local_windows_ui_acceptance": true,
+  "native_ci_run": 40117259481,
+  "native_ci_url": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40117259481",
+  "runtime_downloads_verified": 8,
+  "shared_calendar_model_and_names_identical": true,
+  "windows_ui_adaptation": "seven equal columns; three readable text lines and accessible names; date and birthday controls on separate rows",
+  "shared_files_identical": [
+    "asaa/blood_time.py",
+    "asaa/blood_names.py",
+    "assets/blood-names.json",
+    "asaa/clock_config.py",
+    "tests/test_blood_names.py",
+    "tests/test_blood_time.py",
+    "asaa/otava.py",
+    "asaa/otava_ui.py"
+  ],
+  "diagnostics_packaged": true,
+  "native_ci_conclusion": "success",
+  "native_windows_tests": 112,
+  "native_windows_ui_acceptance": true,
+  "native_weather": {
+    "yr": "OK,24hours",
+    "fmi": "OK,26hours"
+  },
+  "release": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.1",
+  "windows_zip_sha256": "26b213c915fa1ca4e8b311b2d7906b327763b7f1b79196997dd53ed14a6dbdd6"
+}

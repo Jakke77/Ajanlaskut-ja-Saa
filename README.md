@@ -64,8 +64,11 @@ Oikea Qt-käyttöliittymä tarkistettiin myös 1020×720-koossa.
 Kaikki **2 321** deb- ja lähde-ZIP-tiedostoa verrattiin lähteeseen;
 myös turvallinen käyttäjäpäivittimen purku tarkistettiin.
 
-Windowsin paketti rakennetaan ja testataan natiivilla Windows-runnerilla:
-[Windows-ajo 40104633005](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40104633005).
+Windowsin valmis paketti läpäisi **112 testiä**, käyttöliittymän hyväksynnän
+sekä Yr:n ja FMI:n TLS-haut mukana olevilla CA-varmenteilla natiivissa Windowsissa:
+[Windows-ajo 40117259481](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40117259481).
+Myös kalenterit tarkistettiin pienessä ikkunassa Windowsin omilla fonteilla.
+[Windows-testiloki](QA-Windows.log) · [Windows-paketin tarkistus](QA-Windows.json).
 
 [Testiloki](QA-unit.log) · [Qt-tarkistus](QA-ui.json) · [Pakettivertailu](QA-package.json).
 
