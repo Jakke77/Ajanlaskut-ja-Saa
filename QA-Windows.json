@@ -1,0 +1,45 @@
+{
+  "version": "1.12.2",
+  "commit": "abd4b9945583fc0fc5d043a3de9e783d80c1f07e",
+  "ubuntu_source_commit": "ccc6f5058e05d4f0ed91719658c452de05efaa0d",
+  "packaged_source_files": 201,
+  "all_declared_files_exist": true,
+  "name_pairs": 777,
+  "meaning_entries": 1554,
+  "shared_files_identical": [
+    "asaa/blood_names.py",
+    "asaa/blood_time.py",
+    "asaa/blood_calendar_ui.py",
+    "asaa/blood_namebook.py",
+    "assets/blood-names.json",
+    "assets/blood-name-meanings.json",
+    "assets/namebooks/veri-ajan-nimikirja.html",
+    "assets/namebooks/veri-ajan-nimikirja.md"
+  ],
+  "meanings_sha256": "4c240606183e1f07915faf32174bb259c560d7f30c58dc3f219effa18f6160c9",
+  "local_windows_tests": 142,
+  "local_windows_ui_acceptance": true,
+  "native_ci_run": 40154840197,
+  "native_ci_url": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40154840197",
+  "native_ci_conclusion": "success",
+  "native_ci_status": "completed",
+  "no_new_runtime_dependencies": true,
+  "runtime_downloads_verified": 8,
+  "windows_ui_adaptations": [
+    "separate Veri date row",
+    "wrapped names heading and birthday row",
+    "flexible Finnish calendar cells",
+    "shared35-day grid with text-fit and accessible-name checks",
+    "main calendar detail moves beside grid only in wide windows",
+    "viewport resize tracking and actual native toolbar width prevent horizontal overflow during gradual shrinking",
+    "LF attributes preserve shared catalogs and exported books under Windows autocrlf"
+  ],
+  "native_windows_tests": 142,
+  "native_windows_ui_acceptance": true,
+  "native_weather": {
+    "yr": "OK,24hours",
+    "fmi": "OK,26hours"
+  },
+  "windows_zip_sha256": "2a5b02c0261fb14d68f4c267d0de82653b47e39b849782ca3050caf8f48d1b54",
+  "release": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.2"
+}

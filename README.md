@@ -80,6 +80,10 @@ HTML:n haku, päivä- ja viikkosuodatus, tyhjä tulos, haun tyhjennys ja 500 pik
 näkymä testattiin oikealla Qt Chromium -selaimella. Mukana olevat HTML- ja
 Markdown-tiedostot vastaavat täsmälleen generaattorin tulosta.
 
+Windowsin valmis paketti läpäisi **142 testiä**, käyttöliittymän hyväksynnän sekä Yr:n ja FMI:n TLS-haut paketin omilla CA-varmenteilla natiivissa Windowsissa: [ajo 40154840197](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40154840197). Työkalurivi tarkistettiin myös asteittain pienenevässä ikkunassa, ja alkuperäiset nimiluettelot sekä nimikirjat säilyvät samoina Windowsin rivinvaihtokäsittelyssä.
+
+[Windows-testiloki](QA-Windows.log) · [Windows-paketti](QA-Windows.json) · [Rivinvaihtotarkistus](QA-Windows-newlines.json).
+
 [Testiloki](QA-unit.log) · [Pakettivertailu](QA-package.json) · [Qt-tarkistus](QA-ui.json)
 · [HTML-selaintesti](QA-namebook-browser.json) · [Nimikirjan tarkistus](QA-namebook-export.json).
 

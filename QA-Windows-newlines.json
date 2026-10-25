@@ -1,0 +1,14 @@
+{
+  "core_autocrlf": true,
+  "exported_shared_files_identical": [
+    "asaa/blood_names.py",
+    "asaa/blood_time.py",
+    "asaa/blood_calendar_ui.py",
+    "asaa/blood_namebook.py",
+    "assets/blood-names.json",
+    "assets/blood-name-meanings.json",
+    "assets/namebooks/veri-ajan-nimikirja.html",
+    "assets/namebooks/veri-ajan-nimikirja.md"
+  ],
+  "original_names_sha256": "5c0ffe55edaf3a1848e9fbfd48fec6f135c8890bd521a695e9508d52554986bd"
+}

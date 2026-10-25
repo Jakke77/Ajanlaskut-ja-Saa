@@ -1,0 +1,166 @@
+Native Windows validation
+Commit: abd4b9945583fc0fc5d043a3de9e783d80c1f07e
+Run: https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40154840197
+
+2026-10-25T02:36:03.5117124Z test_all_windows_theme_selections_persist_for_shared_and_individual_widgets (tests.test_windows_support.WindowsSupportTests.test_all_windows_theme_selections_persist_for_shared_and_individual_widgets) ... ok
+2026-10-25T02:36:03.8616592Z test_cache_lock_serializes_real_processes_and_releases (tests.test_windows_support.WindowsSupportTests.test_cache_lock_serializes_real_processes_and_releases) ... ok
+2026-10-25T02:36:03.8618652Z test_clock_reads_system_instant_with_helsinki_dst (tests.test_windows_support.WindowsSupportTests.test_clock_reads_system_instant_with_helsinki_dst) ... ok
+2026-10-25T02:36:03.8640293Z test_contended_windows_lock_times_out_without_unlocking_another_owner (tests.test_windows_support.WindowsSupportTests.test_contended_windows_lock_times_out_without_unlocking_another_owner) ... ok
+2026-10-25T02:36:03.8642331Z test_disabling_missing_autostart_is_idempotent (tests.test_windows_support.WindowsSupportTests.test_disabling_missing_autostart_is_idempotent) ... ok
+2026-10-25T02:36:03.8644022Z test_time_configuration_is_read_without_claiming_a_live_sync (tests.test_windows_support.WindowsSupportTests.test_time_configuration_is_read_without_claiming_a_live_sync) ... ok
+2026-10-25T02:36:03.8662668Z test_windows_autostart_sets_only_own_hkcu_value_and_removes_it (tests.test_windows_support.WindowsSupportTests.test_windows_autostart_sets_only_own_hkcu_value_and_removes_it) ... ok
+2026-10-25T02:36:03.8664425Z test_windows_byte_lock_unlocks_even_on_exception (tests.test_windows_support.WindowsSupportTests.test_windows_byte_lock_unlocks_even_on_exception) ... ok
+2026-10-25T02:36:03.8675234Z test_windows_command_quotes_paths_with_spaces_and_unicode (tests.test_windows_support.WindowsSupportTests.test_windows_command_quotes_paths_with_spaces_and_unicode) ... ok
+2026-10-25T02:36:03.8692526Z test_windows_light_dark_and_high_contrast_colors (tests.test_windows_support.WindowsSupportTests.test_windows_light_dark_and_high_contrast_colors) ... ok
+2026-10-25T02:36:03.8724172Z test_windows_storage_uses_local_appdata_even_when_xdg_is_present (tests.test_windows_support.WindowsSupportTests.test_windows_storage_uses_local_appdata_even_when_xdg_is_present) ... ok
+2026-10-25T02:36:04.0944566Z test_https_opener_passes_a_verified_context_and_timeout (tests.test_weather_network.NetworkTests.test_https_opener_passes_a_verified_context_and_timeout) ... ok
+2026-10-25T02:36:04.0971545Z test_legacy_explicit_throttling_and_healthy_cache_still_back_off (tests.test_weather_network.NetworkTests.test_legacy_explicit_throttling_and_healthy_cache_still_back_off) ... ok
+2026-10-25T02:36:04.1003037Z test_new_tls_failure_is_saved_with_cause_and_still_backs_off (tests.test_weather_network.NetworkTests.test_new_tls_failure_is_saved_with_cause_and_still_backs_off) ... ok
+2026-10-25T02:36:04.1066609Z test_site_retries_legacy_failure_without_deleting_cached_payload (tests.test_weather_network.NetworkTests.test_site_retries_legacy_failure_without_deleting_cached_payload) ... ok
+2026-10-25T02:36:04.1068360Z test_tls_dns_http_and_timeout_errors_are_distinguishable (tests.test_weather_network.NetworkTests.test_tls_dns_http_and_timeout_errors_are_distinguishable) ... ok
+2026-10-25T02:36:04.2113852Z test_windows_bundle_supplies_trust_when_system_store_is_empty (tests.test_weather_network.NetworkTests.test_windows_bundle_supplies_trust_when_system_store_is_empty) ... ok
+2026-10-25T02:36:04.2184014Z test_yr_retries_legacy_network_failure_after_update (tests.test_weather_network.NetworkTests.test_yr_retries_legacy_network_failure_after_update) ... ok
+2026-10-25T02:36:04.2250336Z test_304_uses_if_modified_since_and_keeps_body (tests.test_forecast.CacheTests.test_304_uses_if_modified_since_and_keeps_body) ... ok
+2026-10-25T02:36:04.2266874Z test_atomic_write (tests.test_forecast.CacheTests.test_atomic_write) ... ok
+2026-10-25T02:36:04.2346253Z test_bad_response_does_not_overwrite_valid_payload (tests.test_forecast.CacheTests.test_bad_response_does_not_overwrite_valid_payload) ... ok
+2026-10-25T02:36:04.2400273Z test_corrupt_cache_recovers (tests.test_forecast.CacheTests.test_corrupt_cache_recovers) ... ok
+2026-10-25T02:36:04.2436738Z test_expires_and_shared_cache_prevent_repeat_request (tests.test_forecast.CacheTests.test_expires_and_shared_cache_prevent_repeat_request) ... ok
+2026-10-25T02:36:04.2460822Z test_initial_failure_backs_off_without_fake_weather (tests.test_forecast.CacheTests.test_initial_failure_backs_off_without_fake_weather) ... ok
+2026-10-25T02:36:04.2532459Z test_offline_preserves_cached_forecast_and_backs_off (tests.test_forecast.CacheTests.test_offline_preserves_cached_forecast_and_backs_off) ... ok
+2026-10-25T02:36:04.2553503Z test_retry_after_429 (tests.test_forecast.CacheTests.test_retry_after_429) ... ok
+2026-10-25T02:36:04.2558164Z test_conky_has_twelve_records (tests.test_forecast.ForecastTests.test_conky_has_twelve_records) ... ok
+2026-10-25T02:36:04.2563113Z test_current_hour_and_24_intervals (tests.test_forecast.ForecastTests.test_current_hour_and_24_intervals) ... ok
+2026-10-25T02:36:04.2566321Z test_dst_repeated_hour_retains_distinct_instants (tests.test_forecast.ForecastTests.test_dst_repeated_hour_retains_distinct_instants) ... ok
+2026-10-25T02:36:04.2568662Z test_expired_forecast_rejected (tests.test_forecast.ForecastTests.test_expired_forecast_rejected) ... ok
+2026-10-25T02:36:04.2571766Z test_invalid_number_and_bad_row_skipped (tests.test_forecast.ForecastTests.test_invalid_number_and_bad_row_skipped) ... ok
+2026-10-25T02:36:04.2574847Z test_missing_hourly_rain_not_replaced_by_six_hour_total (tests.test_forecast.ForecastTests.test_missing_hourly_rain_not_replaced_by_six_hour_total) ... ok
+2026-10-25T02:36:04.2576313Z test_24_slots_across_dst_preserve_every_real_hour (tests.test_providers.ProviderTests.test_24_slots_across_dst_preserve_every_real_hour) ... ok
+2026-10-25T02:36:04.2644655Z test_bad_site_body_does_not_replace_good_cached_data (tests.test_providers.ProviderTests.test_bad_site_body_does_not_replace_good_cached_data) ... ok
+2026-10-25T02:36:04.2649023Z test_extended_fmi_request_covers_last_rain_interval (tests.test_providers.ProviderTests.test_extended_fmi_request_covers_last_rain_interval) ... ok
+2026-10-25T02:36:04.2652410Z test_fmi_xml_combines_parameters_and_shifts_rain (tests.test_providers.ProviderTests.test_fmi_xml_combines_parameters_and_shifts_rain) ... ok
+2026-10-25T02:36:04.2659488Z test_foreca_dst_keeps_two_03_hours (tests.test_providers.ProviderTests.test_foreca_dst_keeps_two_03_hours) ... ok
+2026-10-25T02:36:04.2661862Z test_foreca_new_year_uses_page_timestamp (tests.test_providers.ProviderTests.test_foreca_new_year_uses_page_timestamp) ... ok
+2026-10-25T02:36:04.2663778Z test_foreca_parser_never_executes_expressions (tests.test_providers.ProviderTests.test_foreca_parser_never_executes_expressions) ... ok
+2026-10-25T02:36:04.2667763Z test_foreca_rain_uses_following_interval_end (tests.test_providers.ProviderTests.test_foreca_rain_uses_following_interval_end) ... ok
+2026-10-25T02:36:04.2669239Z test_same_slots_and_scales_for_every_source (tests.test_providers.ProviderTests.test_same_slots_and_scales_for_every_source) ... ok
+2026-10-25T02:36:04.2675489Z test_separate_location_caches_and_legacy_shared_met (tests.test_providers.ProviderTests.test_separate_location_caches_and_legacy_shared_met) ... ok
+2026-10-25T02:36:04.2739774Z test_site_offline_backoff_and_preserves_data (tests.test_providers.ProviderTests.test_site_offline_backoff_and_preserves_data) ... ok
+2026-10-25T02:36:04.2741141Z test_symbols_are_our_own_normalized_codes (tests.test_providers.ProviderTests.test_symbols_are_our_own_normalized_codes) ... ok
+2026-10-25T02:36:04.3051999Z test_display_restore_uses_latest_user_move_and_weather_clamp (tests.test_display_geometry.DisplayGeometryTests.test_display_restore_uses_latest_user_move_and_weather_clamp) ... ok
+2026-10-25T02:36:04.3229241Z test_dpi_event_restores_selected_custom_size_without_resaving_it (tests.test_display_geometry.DisplayGeometryTests.test_dpi_event_restores_selected_custom_size_without_resaving_it) ... ok
+2026-10-25T02:36:04.3326210Z test_explicit_size_change_replaces_preferred_size (tests.test_display_geometry.DisplayGeometryTests.test_explicit_size_change_replaces_preferred_size) ... ok
+2026-10-25T02:36:04.3423948Z test_game_activation_cancels_in_progress_resize_without_persisting (tests.test_display_geometry.DisplayGeometryTests.test_game_activation_cancels_in_progress_resize_without_persisting) ... ok
+2026-10-25T02:36:04.3549802Z test_game_resolution_round_trip_restores_size_and_original_position (tests.test_display_geometry.DisplayGeometryTests.test_game_resolution_round_trip_restores_size_and_original_position) ... ok
+2026-10-25T02:36:04.3662953Z test_interrupted_resize_cannot_follow_mouse_after_button_release (tests.test_display_geometry.DisplayGeometryTests.test_interrupted_resize_cannot_follow_mouse_after_button_release) ... ok
+2026-10-25T02:36:04.3863925Z test_real_held_button_resize_still_commits_user_size (tests.test_display_geometry.DisplayGeometryTests.test_real_held_button_resize_still_commits_user_size) ... ok
+2026-10-25T02:36:06.2122214Z test_calendar_grids_fit_with_wide_native_button_minimums (tests.test_windows_delivery.WindowsDeliveryTests.test_calendar_grids_fit_with_wide_native_button_minimums) ... ok
+2026-10-25T02:36:06.2130412Z test_high_contrast_overrides_then_restores_veriyo_without_changing_selection (tests.test_windows_delivery.WindowsDeliveryTests.test_high_contrast_overrides_then_restores_veriyo_without_changing_selection) ... ok
+2026-10-25T02:36:06.2329698Z test_package_contains_every_bundled_wallpaper_and_catalog (tests.test_windows_delivery.WindowsDeliveryTests.test_package_contains_every_bundled_wallpaper_and_catalog) ... ok
+2026-10-25T02:36:07.4187576Z test_package_includes_all_meanings_and_current_offline_namebooks (tests.test_windows_delivery.WindowsDeliveryTests.test_package_includes_all_meanings_and_current_offline_namebooks) ... ok
+2026-10-25T02:36:07.4375592Z test_package_includes_the_complete_veri_names_database (tests.test_windows_delivery.WindowsDeliveryTests.test_package_includes_the_complete_veri_names_database) ... ok
+2026-10-25T02:36:07.4471795Z test_veriyo_is_available_in_windows_pickers_and_persists (tests.test_windows_delivery.WindowsDeliveryTests.test_veriyo_is_available_in_windows_pickers_and_persists) ... ok
+2026-10-25T02:36:07.5095828Z test_wallpaper_selection_opens_only_the_selected_local_image (tests.test_windows_delivery.WindowsDeliveryTests.test_wallpaper_selection_opens_only_the_selected_local_image) ... ok
+2026-10-25T02:36:07.5123687Z test_authored_year_has_exactly_111_complete_weeks (tests.test_blood_time.BloodTimeTests.test_authored_year_has_exactly_111_complete_weeks) ... ok
+2026-10-25T02:36:07.5125280Z test_date_selection_means_its_boundary_not_midnight (tests.test_blood_time.BloodTimeTests.test_date_selection_means_its_boundary_not_midnight) ... ok
+2026-10-25T02:36:07.5127152Z test_dst_days_have_23_or_25_hours_but_one_calendar_day (tests.test_blood_time.BloodTimeTests.test_dst_days_have_23_or_25_hours_but_one_calendar_day) ... ok
+2026-10-25T02:36:07.5128605Z test_epoch_is_exactly_the_first_day_of_the_first_week (tests.test_blood_time.BloodTimeTests.test_epoch_is_exactly_the_first_day_of_the_first_week) ... ok
+2026-10-25T02:36:07.5130106Z test_gregorian_anniversary_and_leap_day_do_not_end_the_authored_year (tests.test_blood_time.BloodTimeTests.test_gregorian_anniversary_and_leap_day_do_not_end_the_authored_year) ... ok
+2026-10-25T02:36:07.5131536Z test_midnight_does_not_change_veri_day (tests.test_blood_time.BloodTimeTests.test_midnight_does_not_change_veri_day) ... ok
+2026-10-25T02:36:07.5132932Z test_naive_datetimes_and_wrong_input_types_are_not_inferred (tests.test_blood_time.BloodTimeTests.test_naive_datetimes_and_wrong_input_types_are_not_inferred) ... ok
+2026-10-25T02:36:07.5142266Z test_next_year_is_strictly_future_before_and_at_the_boundary (tests.test_blood_time.BloodTimeTests.test_next_year_is_strictly_future_before_and_at_the_boundary) ... ok
+2026-10-25T02:36:07.5143959Z test_one_microsecond_before_epoch_is_explicitly_before_start (tests.test_blood_time.BloodTimeTests.test_one_microsecond_before_epoch_is_explicitly_before_start) ... ok
+2026-10-25T02:36:07.5153167Z test_same_instant_is_identical_in_all_input_timezones (tests.test_blood_time.BloodTimeTests.test_same_instant_is_identical_in_all_input_timezones) ... ok
+2026-10-25T02:36:07.5154706Z test_week_changes_only_at_seventh_local_day_cutover (tests.test_blood_time.BloodTimeTests.test_week_changes_only_at_seventh_local_day_cutover) ... ok
+2026-10-25T02:36:07.5156530Z test_week_count_does_not_restart_at_year_or_anniversary (tests.test_blood_time.BloodTimeTests.test_week_count_does_not_restart_at_year_or_anniversary) ... ok
+2026-10-25T02:36:07.5166557Z test_week_duration_changes_across_dst_but_wall_time_stays_fixed (tests.test_blood_time.BloodTimeTests.test_week_duration_changes_across_dst_but_wall_time_stays_fixed) ... ok
+2026-10-25T02:36:07.5168350Z test_year_duration_counts_local_days_instead_of_fixed_utc_seconds (tests.test_blood_time.BloodTimeTests.test_year_duration_counts_local_days_instead_of_fixed_utc_seconds) ... ok
+2026-10-25T02:36:07.5170032Z test_year_rollover_uses_the_exact_local_cutover_after_777_days (tests.test_blood_time.BloodTimeTests.test_year_rollover_uses_the_exact_local_cutover_after_777_days) ... ok
+2026-10-25T02:36:07.5171788Z test_birthdays_before_epoch_continue_the_cycle_without_changing_the_date (tests.test_blood_names.BloodNameTests.test_birthdays_before_epoch_continue_the_cycle_without_changing_the_date) ... ok
+2026-10-25T02:36:07.5209544Z test_every_pair_returns_on_the_same_day_of_each_authored_year (tests.test_blood_names.BloodNameTests.test_every_pair_returns_on_the_same_day_of_each_authored_year) ... ok
+2026-10-25T02:36:07.5222593Z test_every_year_day_has_two_distinct_unique_readable_names (tests.test_blood_names.BloodNameTests.test_every_year_day_has_two_distinct_unique_readable_names) ... ok
+2026-10-25T02:36:07.5224294Z test_fixed_registry_anchors_preserve_authored_day_assignments (tests.test_blood_names.BloodNameTests.test_fixed_registry_anchors_preserve_authored_day_assignments) ... ok
+2026-10-25T02:36:07.5225902Z test_lookup_accepts_civil_dates_and_rejects_ambiguous_day_numbers (tests.test_blood_names.BloodNameTests.test_lookup_accepts_civil_dates_and_rejects_ambiguous_day_numbers) ... ok
+2026-10-25T02:36:07.5233216Z test_source_describes_the_calendar_and_scientific_name_inspirations (tests.test_blood_names.BloodNameTests.test_source_describes_the_calendar_and_scientific_name_inspirations) ... ok
+2026-10-25T02:36:07.5292525Z test_truncated_or_duplicate_registry_is_rejected_instead_of_reassigning_days (tests.test_blood_names.BloodNameTests.test_truncated_or_duplicate_registry_is_rejected_instead_of_reassigning_days) ... ok
+2026-10-25T02:36:07.5294675Z test_anchored_interpretations_remain_personal_and_distinct (tests.test_blood_meanings.BloodMeaningTests.test_anchored_interpretations_remain_personal_and_distinct) ... ok
+2026-10-25T02:36:07.5376077Z test_authored_meanings_keep_the_exact_plain_text_marker (tests.test_blood_meanings.BloodMeaningTests.test_authored_meanings_keep_the_exact_plain_text_marker) ... ok
+2026-10-25T02:36:07.5708965Z test_background_references_are_separate_and_immutable (tests.test_blood_meanings.BloodMeaningTests.test_background_references_are_separate_and_immutable) ... ok
+2026-10-25T02:36:07.5724023Z test_book_covers_every_existing_name_once_in_its_original_day_order (tests.test_blood_meanings.BloodMeaningTests.test_book_covers_every_existing_name_once_in_its_original_day_order) ... ok
+2026-10-25T02:36:07.5725850Z test_calendar_pair_lookup_retains_date_cycle_and_genders (tests.test_blood_meanings.BloodMeaningTests.test_calendar_pair_lookup_retains_date_cycle_and_genders) ... ok
+2026-10-25T02:36:07.6822390Z test_damaged_or_misattributed_book_is_rejected (tests.test_blood_meanings.BloodMeaningTests.test_damaged_or_misattributed_book_is_rejected) ... ok
+2026-10-25T02:36:07.6826075Z test_unknown_names_and_ambiguous_days_do_not_guess_an_explanation (tests.test_blood_meanings.BloodMeaningTests.test_unknown_names_and_ambiguous_days_do_not_guess_an_explanation) ... ok
+2026-10-25T02:36:08.2172271Z test_all_name_tabs_fit_the_minimum_window_and_the_book_renders (tests.test_blood_meanings_ui.BloodMeaningsUiTests.test_all_name_tabs_fit_the_minimum_window_and_the_book_renders) ... ok
+2026-10-25T02:36:08.6690651Z test_copy_preserves_invented_marker_and_keeps_background_sources_separate (tests.test_blood_meanings_ui.BloodMeaningsUiTests.test_copy_preserves_invented_marker_and_keeps_background_sources_separate) ... ok
+2026-10-25T02:36:09.0996899Z test_printable_book_button_opens_only_the_bundled_local_html (tests.test_blood_meanings_ui.BloodMeaningsUiTests.test_printable_book_button_opens_only_the_bundled_local_html) ... ok
+2026-10-25T02:36:09.5377737Z test_search_finds_names_and_meanings_without_changing_the_birthday_or_notes (tests.test_blood_meanings_ui.BloodMeaningsUiTests.test_search_finds_names_and_meanings_without_changing_the_birthday_or_notes) ... ok
+2026-10-25T02:36:10.0500841Z test_selected_day_shows_both_meanings_and_opens_the_same_name_in_the_book (tests.test_blood_meanings_ui.BloodMeaningsUiTests.test_selected_day_shows_both_meanings_and_opens_the_same_name_in_the_book) ... ok
+2026-10-25T02:36:10.0514282Z test_cli_requires_distinct_output_paths (tests.test_blood_namebook.BloodNamebookTests.test_cli_requires_distinct_output_paths) ... ok
+2026-10-25T02:36:10.0550953Z test_cli_writes_utf8_only_to_requested_destinations (tests.test_blood_namebook.BloodNamebookTests.test_cli_writes_utf8_only_to_requested_destinations) ... ok
+2026-10-25T02:36:10.2286271Z test_every_fixed_name_occurs_on_its_unchanged_calendar_day (tests.test_blood_namebook.BloodNamebookTests.test_every_fixed_name_occurs_on_its_unchanged_calendar_day) ... ok
+2026-10-25T02:36:10.2292694Z test_html_escapes_names_meanings_backgrounds_and_links (tests.test_blood_namebook.BloodNamebookTests.test_html_escapes_names_meanings_backgrounds_and_links) ... ok
+2026-10-25T02:36:10.2294456Z test_html_is_offline_searchable_accessible_and_printable_as_a_whole (tests.test_blood_namebook.BloodNamebookTests.test_html_is_offline_searchable_accessible_and_printable_as_a_whole) ... ok
+2026-10-25T02:36:10.2300969Z test_invention_marker_is_literal_and_does_not_mark_factual_background (tests.test_blood_namebook.BloodNamebookTests.test_invention_marker_is_literal_and_does_not_mark_factual_background) ... ok
+2026-10-25T02:36:10.4777340Z test_markdown_keeps_every_pair_and_literal_markers (tests.test_blood_namebook.BloodNamebookTests.test_markdown_keeps_every_pair_and_literal_markers) ... ok
+2026-10-25T02:36:10.4780286Z test_non_web_source_links_are_rejected (tests.test_blood_namebook.BloodNamebookTests.test_non_web_source_links_are_rejected) ... ok
+2026-10-25T02:36:10.5903445Z test_23_pages_cover_the_777_days_once_in_seven_columns (tests.test_blood_calendar_ui.BloodCalendarGridTests.test_23_pages_cover_the_777_days_once_in_seven_columns) ... ok
+2026-10-25T02:36:10.6078994Z test_date_limits_do_not_offer_selectable_dates_outside_supported_years (tests.test_blood_calendar_ui.BloodCalendarGridTests.test_date_limits_do_not_offer_selectable_dates_outside_supported_years) ... ok
+2026-10-25T02:36:10.6282603Z test_page_and_year_navigation_follow_authored_year_boundaries (tests.test_blood_calendar_ui.BloodCalendarGridTests.test_page_and_year_navigation_follow_authored_year_boundaries) ... ok
+2026-10-25T02:36:10.6475106Z test_today_uses_finnish_cutover_and_pre_epoch_grid_is_explicit (tests.test_blood_calendar_ui.BloodCalendarGridTests.test_today_uses_finnish_cutover_and_pre_epoch_grid_is_explicit) ... ok
+2026-10-25T02:36:10.6663791Z test_user_selection_reports_exact_date_and_note_without_storage_writes (tests.test_blood_calendar_ui.BloodCalendarGridTests.test_user_selection_reports_exact_date_and_note_without_storage_writes) ... ok
+2026-10-25T02:36:10.6679406Z test_all_seven_stay_above_oulu_horizon_and_inside_fixed_field (tests.test_otava.OtavaTests.test_all_seven_stay_above_oulu_horizon_and_inside_fixed_field) ... ok
+2026-10-25T02:36:10.6684792Z test_both_edges_of_supported_date_range_are_finite (tests.test_otava.OtavaTests.test_both_edges_of_supported_date_range_are_finite) ... ok
+2026-10-25T02:36:10.6686079Z test_exactly_seven_catalogue_stars_and_connected_dipper (tests.test_otava.OtavaTests.test_exactly_seven_catalogue_stars_and_connected_dipper) ... ok
+2026-10-25T02:36:10.6694961Z test_geometric_positions_match_independent_astropy_erfa_references (tests.test_otava.OtavaTests.test_geometric_positions_match_independent_astropy_erfa_references) ... ok
+2026-10-25T02:36:10.6697942Z test_naive_and_out_of_range_instants_are_rejected (tests.test_otava.OtavaTests.test_naive_and_out_of_range_instants_are_rejected) ... ok
+2026-10-25T02:36:10.6699437Z test_same_instant_has_identical_geometry_in_every_input_zone (tests.test_otava.OtavaTests.test_same_instant_has_identical_geometry_in_every_input_zone) ... ok
+2026-10-25T02:36:10.6700831Z test_sidereal_day_repeats_but_solar_day_does_not (tests.test_otava.OtavaTests.test_sidereal_day_repeats_but_solar_day_does_not) ... ok
+2026-10-25T02:36:10.6702064Z test_six_hours_rotate_constellation_without_resizing (tests.test_otava.OtavaTests.test_six_hours_rotate_constellation_without_resizing) ... ok
+2026-10-25T02:36:10.6899415Z test_777th_day_changes_to_year_two_at_the_same_cutover (tests.test_blood_ui.VeriUiTests.test_777th_day_changes_to_year_two_at_the_same_cutover) ... ok
+2026-10-25T02:36:10.7077428Z test_date_selection_does_not_change_live_sky_to_a_historical_time (tests.test_blood_ui.VeriUiTests.test_date_selection_does_not_change_live_sky_to_a_historical_time) ... ok
+2026-10-25T02:36:10.7393249Z test_grid_today_resumes_following_the_live_day (tests.test_blood_ui.VeriUiTests.test_grid_today_resumes_following_the_live_day) ... ok
+2026-10-25T02:36:10.7544822Z test_invalid_timestamp_is_an_accessible_error_not_a_widget_crash (tests.test_blood_ui.VeriUiTests.test_invalid_timestamp_is_an_accessible_error_not_a_widget_crash) ... ok
+2026-10-25T02:36:10.7784498Z test_now_tracks_the_cutover_and_week_at_exact_second (tests.test_blood_ui.VeriUiTests.test_now_tracks_the_cutover_and_week_at_exact_second) ... ok
+2026-10-25T02:36:10.7951532Z test_projection_changes_with_time_without_changing_painter_state (tests.test_blood_ui.VeriUiTests.test_projection_changes_with_time_without_changing_painter_state) ... ok
+2026-10-25T02:36:10.8245878Z test_real_week_navigation_keeps_selected_week_while_clock_ticks (tests.test_blood_ui.VeriUiTests.test_real_week_navigation_keeps_selected_week_while_clock_ticks) ... ok
+2026-10-25T02:36:10.8443725Z test_seven_actual_stars_render_and_accessibility_reports_directions (tests.test_blood_ui.VeriUiTests.test_seven_actual_stars_render_and_accessibility_reports_directions) ... ok
+2026-10-25T02:36:10.8634864Z test_year_boundaries_are_named_separately_from_week_boundaries (tests.test_blood_ui.VeriUiTests.test_year_boundaries_are_named_separately_from_week_boundaries) ... ok
+2026-10-25T02:36:10.8981382Z test_year_navigation_preserves_position_and_selected_names (tests.test_blood_ui.VeriUiTests.test_year_navigation_preserves_position_and_selected_names) ... ok
+2026-10-25T02:36:11.6528419Z test_birthday_lookup_before_epoch_names_the_cycle_without_writing_state (tests.test_veri_names_ui.VeriNamesUiTests.test_birthday_lookup_before_epoch_names_the_cycle_without_writing_state) ... ok
+2026-10-25T02:36:12.1673218Z test_calendar_name_link_opens_the_same_selected_day (tests.test_veri_names_ui.VeriNamesUiTests.test_calendar_name_link_opens_the_same_selected_day) ... ok
+2026-10-25T02:36:12.7108393Z test_minimum_window_keeps_veri_calendar_within_the_viewport (tests.test_veri_names_ui.VeriNamesUiTests.test_minimum_window_keeps_veri_calendar_within_the_viewport) ... ok
+2026-10-25T02:36:12.7110313Z test_catalogue_pattern_has_seven_stars_and_fits_inside_dial (tests.test_otava_clock.OtavaClockTests.test_catalogue_pattern_has_seven_stars_and_fits_inside_dial) ... ok
+2026-10-25T02:36:12.7174741Z test_hiding_seconds_removes_constellation_and_retains_ordinary_hands (tests.test_otava_clock.OtavaClockTests.test_hiding_seconds_removes_constellation_and_retains_ordinary_hands) ... ok
+2026-10-25T02:36:12.7176501Z test_modes_are_explicit_and_independent_of_theme (tests.test_otava_clock.OtavaClockTests.test_modes_are_explicit_and_independent_of_theme) ... ok
+2026-10-25T02:36:12.7277870Z test_quarter_minute_moves_only_the_constellation_when_hands_are_fixed (tests.test_otava_clock.OtavaClockTests.test_quarter_minute_moves_only_the_constellation_when_hands_are_fixed) ... ok
+2026-10-25T02:36:12.7297276Z test_transparent_background_keeps_constellation_and_clock_content (tests.test_otava_clock.OtavaClockTests.test_transparent_background_keeps_constellation_and_clock_content) ... ok
+2026-10-25T02:36:13.7732605Z test_all_fields_fit_and_physical_sky_can_be_disabled_separately (tests.test_veri_integration.VeriIntegrationTests.test_all_fields_fit_and_physical_sky_can_be_disabled_separately) ... ok
+2026-10-25T02:36:14.7541245Z test_blood_clock_uses_finnish_cutover_when_display_timezone_is_elsewhere (tests.test_veri_integration.VeriIntegrationTests.test_blood_clock_uses_finnish_cutover_when_display_timezone_is_elsewhere) ... ok
+2026-10-25T02:36:15.4219789Z test_blood_note_follows_effective_day_before_cutover (tests.test_veri_integration.VeriIntegrationTests.test_blood_note_follows_effective_day_before_cutover) ... ok
+2026-10-25T02:36:15.9438583Z test_main_veri_calendar_fits_a_small_window_without_horizontal_scroll (tests.test_veri_integration.VeriIntegrationTests.test_main_veri_calendar_fits_a_small_window_without_horizontal_scroll) ... ok
+2026-10-25T02:36:16.4321233Z test_main_veri_calendar_moves_details_beside_grid_only_in_wide_windows (tests.test_veri_integration.VeriIntegrationTests.test_main_veri_calendar_moves_details_beside_grid_only_in_wide_windows) ... ok
+2026-10-25T02:36:16.9067305Z test_main_veri_calendar_shows_names_meanings_and_returns_to_other_months (tests.test_veri_integration.VeriIntegrationTests.test_main_veri_calendar_shows_names_meanings_and_returns_to_other_months) ... ok
+2026-10-25T02:36:17.3831295Z test_menu_calendar_selector_and_overview_use_actual_cutover (tests.test_veri_integration.VeriIntegrationTests.test_menu_calendar_selector_and_overview_use_actual_cutover) ... ok
+2026-10-25T02:36:17.9404390Z test_names_field_can_be_hidden_and_its_choice_survives_restart (tests.test_veri_integration.VeriIntegrationTests.test_names_field_can_be_hidden_and_its_choice_survives_restart) ... ok
+2026-10-25T02:36:18.3739079Z test_old_three_calendar_settings_migrate_without_changing_selected_cycle (tests.test_veri_integration.VeriIntegrationTests.test_old_three_calendar_settings_migrate_without_changing_selected_cycle) ... ok
+2026-10-25T02:36:19.3928457Z test_otava_mode_roundtrip_and_real_sky_content_are_independent (tests.test_veri_integration.VeriIntegrationTests.test_otava_mode_roundtrip_and_real_sky_content_are_independent) ... ok
+2026-10-25T02:36:19.9000675Z test_year_and_name_pair_roll_over_together_without_resizing_clock (tests.test_veri_integration.VeriIntegrationTests.test_year_and_name_pair_roll_over_together_without_resizing_clock) ... ok
+2026-10-25T02:36:19.9001889Z
+2026-10-25T02:36:19.9002522Z ----------------------------------------------------------------------
+2026-10-25T02:36:19.9003297Z Ran 142 tests in 16.418s
+2026-10-25T02:36:19.9003607Z
+2026-10-25T02:36:19.9003786Z OK
+2026-10-25T02:36:26.0141459Z PASS: Windows themes, all views, widgets, notes, IPC; no desktop or time-service writes
+2026-10-25T02:36:26.1124093Z ##[group]Run $packageRoot = Get-ChildItem outputs/windows -Directory | Select-Object -First 1
+2026-10-25T02:36:26.1124780Z [36;1m$packageRoot = Get-ChildItem outputs/windows -Directory | Select-Object -First 1[0m
+2026-10-25T02:36:26.1125352Z [36;1m& "$($packageRoot.FullName)/runtime/python.exe" -m asaa.weather.network_test --providers yr fmi --bundle-only[0m
+2026-10-25T02:36:26.1125825Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-25T02:36:26.1157805Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-25T02:36:26.1158124Z env:
+2026-10-25T02:36:26.1158380Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-25T02:36:26.1158797Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-25T02:36:26.1159182Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-25T02:36:26.1159539Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-25T02:36:26.1159935Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-25T02:36:26.1160224Z ##[endgroup]
+2026-10-25T02:36:27.4555739Z {"provider": "yr", "status": "OK", "hours": 24, "first_hour": "2026-10-25T04:00:00+02:00"}
+2026-10-25T02:36:28.1136080Z {"provider": "fmi", "status": "OK", "hours": 26, "first_hour": "2026-10-25T02:00:00+00:00"}
