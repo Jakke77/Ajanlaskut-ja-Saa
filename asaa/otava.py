@@ -16,7 +16,7 @@ screen-down, so the direction toward the zenith is up.  The pole stays at (0,0)
 and the frame is never rotated, stretched or refitted to the current stars.
 """
 from dataclasses import dataclass
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time, timezone, timedelta
 from functools import lru_cache
 import math
 
@@ -28,6 +28,48 @@ OULU_LATITUDE = 65.0121
 OULU_LONGITUDE = 25.4651
 FIELD_RADIUS = 50.0
 PROJECTION_SCALE = math.tan(math.radians(FIELD_RADIUS / 2))
+UPDATE_INTERVAL = timedelta(minutes=26)
+
+
+@dataclass(frozen=True)
+class SkySnapshot:
+    moment: datetime
+    stars: tuple
+
+    @property
+    def next_update(self):
+        return self.moment + UPDATE_INTERVAL
+
+
+class SkySampler:
+    """One immediate sample, then every 26 elapsed minutes, including after sleep."""
+    def __init__(self):
+        self.snapshot = None
+        self.last_seen = None
+
+    def sample(self, moment):
+        julian_day(moment)  # Validate even when returning a cached sample.
+        utc = moment.astimezone(timezone.utc)
+        check_day(utc.date())
+        previous = self.snapshot
+        if previous is None or utc < self.last_seen or utc >= previous.next_update:
+            self.snapshot = SkySnapshot(utc, sky_at(utc))
+        self.last_seen = utc
+        return self.snapshot
+
+
+def sampled_sky(controller, moment):
+    """Share one timestamp and geometry between every view and widget."""
+    if not hasattr(controller, '_otava_sampler'):
+        controller._otava_sampler = SkySampler()
+    return controller._otava_sampler.sample(moment)
+
+
+def tail_description(stars):
+    tail = next(star for star in stars if star.name == 'Alkaid')
+    directions = ('P', 'Ko', 'I', 'Ka', 'E', 'Lo', 'L', 'Lu')
+    direction = directions[int((tail.azimuth + 22.5) // 45) % 8]
+    return f'Alkaid · {direction} {tail.azimuth:.1f}° · korkeus {tail.altitude:.1f}°'
 
 
 @dataclass(frozen=True)
