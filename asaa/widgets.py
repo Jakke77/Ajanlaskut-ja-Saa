@@ -247,13 +247,13 @@ class DesktopSurface(QWidget):
                 try:
                     snapshot = sampled_sky(self.controller, now)
                     paint_otava(p,QRectF(self.logical_width/2-60,y,120,108),snapshot.moment,theme,stars=snapshot.stars)
-                    value=f'Oulu · ○ {tail_description(snapshot.stars)} · {snapshot.moment.astimezone(ZONE):%H:%M}'
+                    value=f'Otava · Oulu · ○ {tail_description(snapshot.stars)} · {snapshot.moment.astimezone(ZONE):%H:%M %Z}'
                     tip.append(f'Tarkistettu {snapshot.moment.astimezone(ZONE):%d.%m.%Y %H:%M:%S %Z}')
                     tip.append(tail_description(snapshot.stars))
                     tip.append(f'Seuraava tarkistus {snapshot.next_update.astimezone(ZONE):%H:%M %Z} · 26 min välein')
                 except (ValueError,OverflowError):
                     value='Otavan laskenta: vuodet 1900–2100'
-                self.text(p,value,y+111,11,theme.muted,center=True,height=23)
+                self.text(p,value,y+111,11,theme.muted,center=True,height=23,fit=True)
             elif field == 'weather':
                 lines = self.controller.daily.lines()
                 self.text(p, self.controller.weather.place.name, y, 12, theme.accent, height=25)

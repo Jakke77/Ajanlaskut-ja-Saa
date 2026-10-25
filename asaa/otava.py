@@ -45,14 +45,16 @@ class SkySampler:
     """One immediate sample, then every 26 elapsed minutes, including after sleep."""
     def __init__(self):
         self.snapshot = None
+        self.last_seen = None
 
     def sample(self, moment):
         julian_day(moment)  # Validate even when returning a cached sample.
         utc = moment.astimezone(timezone.utc)
         check_day(utc.date())
         previous = self.snapshot
-        if previous is None or utc < previous.moment or utc >= previous.next_update:
+        if previous is None or utc < self.last_seen or utc >= previous.next_update:
             self.snapshot = SkySnapshot(utc, sky_at(utc))
+        self.last_seen = utc
         return self.snapshot
 
 

@@ -1,11 +1,20 @@
-# Ajanlaskut ja Sää 1.12.2 · Windows 10
+# Ajanlaskut ja Sää 1.12.3 · Windows 10
 
 Windows 10:n **64-bittinen versio 1809 tai uudempi**. Paketti sisältää oman
 Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 
+## Otavan suunta ja 26 minuutin tarkistus
+
+Erillisissä taivaskuvissa Alkaid, Otavan hännän viimeinen tähti, on ympyröity.
+Suunta ja korkeus lasketaan Ouluun. Zeniitti on ylhäällä, itä oikealla ja länsi
+vasemmalla; keskus on pohjoinen taivaannapa. Kaikki näkymät jakavat saman
+käynnistyksessä lasketun asennon ja tarkistavat sen 26 minuutin välein.
+Viimeisin tarkistusaika näkyy kuvassa ja seuraava tarkistus sen vihjeessä.
+Kellotaulun Otava toimii edelleen symbolisena sekuntiviisarina.
+
 ## Käynnistys
 
-1. Pura koko `Ajanlaskut-ja-Saa-1.12.2-Windows10-x64.zip` pysyvään kansioon,
+1. Pura koko `Ajanlaskut-ja-Saa-1.12.3-Windows10-x64.zip` pysyvään kansioon,
    esimerkiksi oman käyttäjäkansiosi Sovellukset-kansioon.
 2. Käynnistä **Ajanlaskut-ja-Saa.exe** puretusta kansiosta.
 3. Halutessasi aja **Luo-pikakuvakkeet.cmd**. Se lisää kaksi pikakuvaketta
@@ -14,7 +23,7 @@ Pythonin, Qt:n, WebEnginen ja aikavyöhyketiedot. Pythonia ei tarvitse asentaa.
 **Vain-widgetit.cmd** avaa valitut työpöytäwidgetit. Ilmoitusalueen kuvakkeesta
 saat pääikkunan takaisin. **Lopeta sovellus** sulkee myös widgetit.
 
-## Veri Ajan ruutukalenteri ja nimikirja · 1.12.2
+## Veri Ajan ruutukalenteri ja nimikirja · 1.12.3
 
 Valitse **Kalenterit → Veri Aika**. Kalenteri näyttää viisi seitsemän päivän
 viikkoa allekkain. Vuoden 777 päivää eli 111 viikkoa selataan 23 jaksossa;

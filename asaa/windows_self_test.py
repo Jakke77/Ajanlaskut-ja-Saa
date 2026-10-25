@@ -18,7 +18,7 @@ def run_tests(app, preview_dir=None):
         'tests.test_forecast', 'tests.test_providers', 'tests.test_display_geometry',
         'tests.test_windows_delivery', 'tests.test_blood_time', 'tests.test_blood_names',
         'tests.test_blood_meanings', 'tests.test_blood_meanings_ui',
-        'tests.test_blood_namebook', 'tests.test_blood_calendar_ui', 'tests.test_otava',
+        'tests.test_blood_namebook', 'tests.test_blood_calendar_ui', 'tests.test_otava', 'tests.test_otava_sampling',
         'tests.test_blood_ui', 'tests.test_veri_names_ui', 'tests.test_otava_clock', 'tests.test_veri_integration'])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if not result.wasSuccessful(): return 1
