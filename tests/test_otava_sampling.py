@@ -31,6 +31,9 @@ class SkySamplingTests(unittest.TestCase):
         self.assertEqual(awake.moment, self.start + timedelta(hours=9))
         corrected = sampler.sample(self.start)
         self.assertEqual(corrected.stars, first.stars)
+        sampler.sample(self.start + timedelta(minutes=20))
+        within_window = sampler.sample(self.start + timedelta(minutes=10))
+        self.assertEqual(within_window.moment, self.start + timedelta(minutes=10))
 
     def test_helsinki_winter_time_fold_uses_elapsed_utc_minutes(self):
         sampler = otava.SkySampler()
