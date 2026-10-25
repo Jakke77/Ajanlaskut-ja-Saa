@@ -56,10 +56,12 @@ class WindowsDeliveryTests(unittest.TestCase):
         expected = {name for pair in blood_names.catalog() for name in (pair.male, pair.female)}
         self.assertEqual({entry.name for entry in entries}, expected)
         self.assertEqual(len(entries), 1554)
-        html = sources['assets/namebooks/veri-ajan-nimikirja.html'].read_text(encoding='utf-8')
-        markdown = sources['assets/namebooks/veri-ajan-nimikirja.md'].read_text(encoding='utf-8')
-        self.assertEqual(html, blood_namebook.render_html())
-        self.assertEqual(markdown, blood_namebook.render_markdown())
+        html_bytes = sources['assets/namebooks/veri-ajan-nimikirja.html'].read_bytes()
+        markdown_bytes = sources['assets/namebooks/veri-ajan-nimikirja.md'].read_bytes()
+        self.assertEqual(html_bytes, blood_namebook.render_html().encode('utf-8'))
+        self.assertEqual(markdown_bytes, blood_namebook.render_markdown().encode('utf-8'))
+        html = html_bytes.decode('utf-8')
+        markdown = markdown_bytes.decode('utf-8')
         for name in expected:
             self.assertIn(name, html)
             self.assertIn(name, markdown)
