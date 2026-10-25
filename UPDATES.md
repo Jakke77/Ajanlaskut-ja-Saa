@@ -1,6 +1,15 @@
 # Oma päivityskomento · 1.2.1 ja uudemmat
 
-## Veri Ajan ruutukalenteri ja nimikirja · 1.12.2
+## Otavan suunta ja 26 minuutin tarkistus · 1.12.3
+
+Otavan erilliset taivaskuvat käyttävät samaa, heti käynnistyksessä laskettua
+Oulun taivasasentoa. Se tarkistetaan 26 minuutin välein sekä tarvittaessa
+lepotilan tai kellon korjauksen jälkeen. Alkaid, hännän viimeinen tähti, on
+ympyröity; suunta ja korkeus sekä tarkistusaika näkyvät kuvassa tai sen vihjeessä.
+Ylös on zeniitti, oikealle itä, vasemmalle länsi. Kellotaulun symbolinen
+Otava-sekuntiviisari säilyy entisellään. Uusia asetusvalintoja ei tarvita.
+
+### Ruutukalenteri ja nimikirja
 
 **Kalenterit → Veri Aika** avaa nyt seitsemän sarakkeen ja viiden viikon
 ruutukalenterin kalenterisivulle. Selausjaksot eivät muuta 777 päivän vuotta
@@ -16,7 +25,7 @@ Alkuperäiset nimet, niiden päivät, asetukset ja merkinnät säilyvät.
 ### 777 päivän vuosi ja nimiparit
 
 Ubuntu: lataa alla oleva deb-paketti. Windows: lataa ja pura
-[Windows 1.12.2](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.2)
+[Windows 1.12.3](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.3)
 uuteen kansioon ja käytä uuden kansion käynnistintä; asetukset säilyvät omassa käyttäjäkansiossa.
 
 Uudet valinnat: **sivuvalikko → Veri Aika**, **Ajanlaskuwidgetit → Näyttötapa →
@@ -36,7 +45,7 @@ Viides kuvaketeema ylittää vanhan käyttäjäpäivittimen 2000 tiedoston rajan
 Deb-asennus toimii suoraan. Käyttäjäasennuksessa päivitä myös päivityskansion
 helper alla olevalla järjestelmäasennuksen käyttöönottoketjulla tai uuden
 lähde-ZIPin mukana tulevalla `packaging/build.py --publish-channel` -komennolla.
-Version 1.12.2 helper hyväksyy enintään 4096 tiedostoa säilyttäen tavumäärä- ja polkutarkistukset.
+Version 1.12.3 helper hyväksyy enintään 4096 tiedostoa säilyttäen tavumäärä- ja polkutarkistukset.
 
 Jos sovellusvalikon kuvake avaa vanhan version, lopeta vanha prosessi ja avaa:
 
@@ -45,7 +54,7 @@ Jos sovellusvalikon kuvake avaa vanhan version, lopeta vanha prosessi ja avaa:
 /usr/bin/ajanlaskut-ja-saa --version
 ```
 
-Versioksi tulee 1.12.2. Järjestelmäasennus ja `codex-ajanlasku` ovat edelleen
+Versioksi tulee 1.12.3. Järjestelmäasennus ja `codex-ajanlasku` ovat edelleen
 erillisiä asennuksia; katso alla oleva vanhan käyttäjäasennuksen päivitysohje.
 
 
@@ -95,19 +104,19 @@ varmuuskopiolla tätä varten.
 
 ## Valmiin deb-paketin asentaminen
 
-Lataa [ajanlaskut-ja-saa_1.12.2_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.12.2/ajanlaskut-ja-saa_1.12.2_all.deb)
+Lataa [ajanlaskut-ja-saa_1.12.3_all.deb](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.12.3/ajanlaskut-ja-saa_1.12.3_all.deb)
 ja halutessasi tarkista sen SHA256SUMS samasta
-[packages/v1.12.2-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.2).
+[packages/v1.12.3-kansiosta](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.3).
 Yksityinen repo edellyttää GitHubiin kirjautumista. Avaa pääte latauskansioon:
 
 ```bash
-sudo apt install ./ajanlaskut-ja-saa_1.12.2_all.deb
+sudo apt install ./ajanlaskut-ja-saa_1.12.3_all.deb
 ```
 
 Tämä päivittää **järjestelmäasennuksen**, joka käynnistyy komennolla
 `/usr/bin/ajanlaskut-ja-saa`. Jos käytät aiempaa `codex-ajanlasku`-käyttäjäasennusta,
 päivitä myös se alla olevalla [deb-asennuksen käyttöönottoketjulla](#komennon-käyttöönotto-deb-asennuksesta).
-Ketju rakentaa nyt 1.12.2-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
+Ketju rakentaa nyt 1.12.3-version päivitetystä `/usr/share/ajanlaskut-ja-saa`-kansiosta.
 Sen jälkeen käytä `codex-ajanlasku run` -komentoa. Asennukset käyttävät samaa
 asetustiedostoa, joten merkintöjä ei tarvitse siirtää.
 
@@ -122,7 +131,7 @@ aja myös alla oleva käyttöönottoketju, jos käynnistät sen kautta.
 Sulje vanha ohjelma **Lopeta sovellus** -komennolla ja käynnistä sen jälkeen
 uusi. Myös zipistä ajettu `python3 main.py` voi ohjata käynnistyksen jo avoinna
 olevaan vanhaan ohjelmaan, koska molemmat käyttävät samaa asetustiedostoa.
-Uuden ohjelman otsikossa lukee **Ajanlaskut ja Sää 1.12.2**.
+Uuden ohjelman otsikossa lukee **Ajanlaskut ja Sää 1.12.3**.
 Kuvaketoiminnot ovat **Asetukset → vieritä alas → Sovelluskuvakkeet**.
 
 **Kuu ja nimikalenterit:** versiosta 1.10.0 lähtien uudet sivut ovat **Valo ja aurinko** sekä **Nimikalenterit**. Valitse syntymäpäivä nimihakuun tai avaa suomalainen kuukalenteri toiselta välilehdeltä. Kuukalenteri on selvästi merkitty laskennallinen tulkinta; Vaahtokuu kuuluu 13 kuukauden vuoteen.
@@ -194,7 +203,7 @@ Kalenterimerkinnät säilyvät; älä poista asetuskansiota.
 
 GitHubiin yhdistetty muutos tulee koneelle, kun uusi lähdepaketti julkaistaan
 omaan päivityskansioon. Lataa nimenomaan
-[1.12.2-lähdepaketti](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.12.2/Ajanlaskut-ja-Saa-1.12.2-lahdekoodi.zip)
+[1.12.3-lähdepaketti](https://github.com/Jakke77/Ajanlaskut-ja-Saa/raw/refs/heads/packages/v1.12.3/Ajanlaskut-ja-Saa-1.12.3-lahdekoodi.zip)
 GitHubiin kirjautuneena. Repon oletushaaran ZIP sisältää julkaistuja asennuspaketteja;
 se ei ole sama tiedosto kuin lähdepaketti. Avaa pääte latauskansioon ja suorita:
 
@@ -203,7 +212,7 @@ se ei ole sama tiedosto kuin lähdepaketti. Avaa pääte latauskansioon ja suori
   umask 022
   ajanlasku_kanava="$HOME/.local/share/ajanlaskut-ja-saa/paivitykset"
   ajanlasku_lahde="$(mktemp -d)" &&
-  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-1.12.2-lahdekoodi.zip "$ajanlasku_lahde" &&
+  /usr/bin/python3 -m zipfile -e Ajanlaskut-ja-Saa-1.12.3-lahdekoodi.zip "$ajanlasku_lahde" &&
   /usr/bin/python3 "$ajanlasku_lahde/Ajanlaskut-ja-Saa/packaging/build.py" \
     --publish-channel "$ajanlasku_kanava" &&
   "$HOME/.local/bin/codex-ajanlasku" update &&

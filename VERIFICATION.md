@@ -1,5 +1,20 @@
 # Tarkistukset
 
+## Otavan suunta ja 26 minuutin tarkistus · 1.12.3
+
+Koko Ubuntu-sarja: 425 testiä läpäisi. Uusi yhteinen sampler testataan heti
+käynnistyksessä, täsmälleen 26 minuutin rajalla, lepotilan jälkeen ja kellon
+korjauksessa. Kesä-/talviajan toistuva tunti käyttää UTC-kestoa. Näkymät jakavat
+saman näytteen ja laskenta-ajankohdan; myös virheelliset aikaleimat tarkistetaan
+välimuistin ollessa täynnä. Päivän selaus ei muuta taivaskuvan nykyhetkeä.
+
+Otavan tähtipaikkojen aiemmat riippumattomat Astropy/ERFA-vertailut säilyvät.
+Alkaidin suunta ja korkeus tulevat samasta seitsemän tähden laskennasta, eivät
+kellon viisarin kulmasta. Zeniitti/itä/länsi ja taivaannapa ovat kiinteitä
+vertailusuuntia. Oikea Qt renderöi tähtikuvat ja widgetin sekä tarkisti yhteisen
+näytteen. Kellon symbolisen sekuntiviisarin viisi testiä läpäisivät ennallaan.
+
+
 ## Veri Ajan ruutukalenteri ja nimikirja · 1.12.2
 
 - Koko Ubuntu-lähteen yksikkö- ja Qt-sarja: **419 testiä läpäisi**.

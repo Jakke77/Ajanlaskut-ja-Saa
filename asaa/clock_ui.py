@@ -70,7 +70,7 @@ class ClocksPage(QWidget):
             check = QCheckBox(title);self.fields[key] = check;grid.addWidget(check,index//2,index%2)
             check.toggled.connect(lambda _,field=key:self.changed(field=field))
         content.addLayout(grid)
-        content.addWidget(label('Sisältövalinnat tallentuvat erikseen yhteiselle widgetille ja erillisille kelloille. Kuunvaihe perustuu todelliseen Kuuhun. Otavakellon kuvio on symbolinen sekuntiviisari; Veri Ajan tähtikuva näyttää Otavan todellisen asennon Oulussa.', 'muted', True))
+        content.addWidget(label('Sisältövalinnat tallentuvat erikseen yhteiselle widgetille ja erillisille kelloille. Kuunvaihe perustuu todelliseen Kuuhun. Otavakellon kuvio on symbolinen sekuntiviisari; Veri Ajan tähtikuva näyttää Otavan asennon Oulussa 26 minuutin tarkistusvälein; Alkaid on merkitty.', 'muted', True))
         content.addWidget(button('Yhteinen fontti ja tekstikoko →', lambda:controller.open_page('settings')))
         content.addWidget(button('Kuu-, aurinko- ja kuu–aurinkokalenterit →', self.open_extras))
         left.addWidget(frame);left.addStretch(1)
