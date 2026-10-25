@@ -40,6 +40,8 @@ tunnin, lepotilan, kellon korjauksen ja näkymien yhteisen näytteen. Aiemmat
 Astropy/ERFA-tähtipaikkavertailut ja sekuntiviisarin testit säilyvät.
 Debin ja lähde-ZIPin 2 333 tiedostoa vastaavat lähdettä.
 
+Windowsin natiivi [ajo 40206120700](https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40206120700) läpäisi 148 testiä, UI-hyväksynnän ja Yr-/FMI-yhteyskokeet. [Windows-loki](QA-Windows.log) · [Toimitustiedot](QA-Windows.json).
+
 [Testiloki](QA-unit.log) · [Tarkistusvälin testit](QA-sampling.log) · [Pakettitarkistus](QA-package.json).
 
 ![Widgetin erillinen tähtikartta ja alkuperäinen sekuntiviisari](otava-widget.png)

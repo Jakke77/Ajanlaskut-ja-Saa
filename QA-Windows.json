@@ -1,0 +1,31 @@
+{
+  "version": "1.12.3",
+  "ubuntu_source": "8ef6d7c8ac3e02c6ad95b0793b4466af89418b51",
+  "windows_source": "f37ea7e3972961b54e2b5f6e39e8fb58d5aac78d",
+  "native_run": 40206120700,
+  "shared_sampler_and_painter_identical": true,
+  "symbolic_seconds_hand_unchanged": true,
+  "ubuntu_tests": 425,
+  "local_windows_tests": 148,
+  "sample_minutes": 26,
+  "no_user_state_or_desktop_modified": true,
+  "native_conclusion": "success",
+  "native_windows_tests": 148,
+  "native_ui_acceptance": true,
+  "tls": {
+    "yr": "OK",
+    "fmi": "OK"
+  },
+  "windows_assets": [
+    {
+      "name": "Ajanlaskut-ja-Saa-1.12.3-Windows10-x64.zip",
+      "size": 199178579,
+      "digest": "sha256:d694a3e845291270b966346f74f5b3cf4c9dfb202d2131b3edd98f3ad4e99f67"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 110,
+      "digest": "sha256:7736110c132ef38d23b40f2682811344866047bb0acc5ae036786915afd45a54"
+    }
+  ]
+}
