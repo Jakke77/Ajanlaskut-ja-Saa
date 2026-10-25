@@ -1,7 +1,7 @@
 # Ajanlaskut ja Sää
 
-**Uusin Ubuntu-paketti: [1.12.2 · Veri Ajan ruutukalenteri ja nimikirja](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.2).**
-Windows: [1.12.2:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.2).
+**Uusin Ubuntu-paketti: [1.12.3 · Otavan suunta ja 26 minuutin tarkistus](https://github.com/Jakke77/Ajanlaskut-ja-Saa/tree/packages/v1.12.3).**
+Windows: [1.12.3:n julkaisusivu](https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/windows-v1.12.3).
 **Windows-versio sisältää oman Pythonin ja Qt:n.** Katso [Windowsin käynnistys ja ominaisuudet](WINDOWS.md).
 Katso [asennus ja nykyisen käyttäjäasennuksen päivitys](UPDATES.md#valmiin-deb-paketin-asentaminen).
 Kuvaketoiminnot löytyvät **Asetukset → vieritä alas → Sovelluskuvakkeet** tai
@@ -13,6 +13,24 @@ Oma Ubuntu-työpöytäsovellus: Varjoaika, Tähtiaika, Veri Aika, tavallinen kal
 yhteisessä käyttöliittymässä. Tämä ei käynnistä neljää vanhaa sovellusta taustalle.
 Kaikki näkymät ja widgetit toimivat samassa sovelluksessa ja käyttävät yhteisiä
 asetuksia.
+
+## Otavan suunta Oulusta · 1.12.3
+
+Erilliset Otavan taivaskuvat etusivulla, Veri Ajan sivulla ja kellon
+pienessä tähtikuvassa käyttävät yhtä yhteistä asentoa. Tarkistus tehdään
+heti käynnistyksessä ja sen jälkeen **26 minuutin välein**. Lepotilan tai
+kellon korjauksen jälkeen asento lasketaan tarvittaessa uudelleen.
+
+**Alkaid**, Otavan hännän viimeinen tähti, on ympyröity. Kuvan vieressä
+näkyvät sen ilmansuunta, suunta asteina (0° pohjoinen, 90° itä, 180° etelä,
+270° länsi) ja korkeus horisontista. Ylös on zeniitin suunta, oikealle itä ja
+vasemmalle länsi. Kuvan keskus on pohjoinen taivaannapa. Tarkistettu-aika
+kertoo, miltä hetkeltä asento on; seuraava tarkistus näkyy osoittamalla kuvaa.
+Koordinaatit ovat kiinteästi Oulussa riippumatta sääpaikasta tai kellon aikavyöhykkeestä.
+Kuva on geometrinen tähtikartta, ei ennuste tähtien näkymisestä pilvien läpi.
+
+Kellotaulun Otava säilyy käyttäjän toiveen mukaan **symbolisena sekuntiviisarina**.
+Se näyttää ajan kulkua; erillinen taivaskuva näyttää todellisen taivasasennon.
 
 ## Veri Ajan ruutukalenteri ja nimien merkitykset · versio 1.12.2
 

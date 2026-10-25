@@ -10,7 +10,7 @@ from PyQt6.QtCore import Qt, QRectF, QPointF
 from PyQt6.QtGui import QColor, QFont, QFontMetricsF, QLinearGradient, QPainter, QPen, QRadialGradient
 from PyQt6.QtWidgets import QWidget, QSizePolicy
 
-from .otava import LINKS, sky_at
+from .otava import LINKS, sky_at, sampled_sky, tail_description
 from .theme import THEMES
 
 
@@ -21,19 +21,19 @@ def _font(painter, pixels, bold=False):
     painter.setFont(font)
 
 
-def paint_otava(painter, rect, moment, theme, labels=False):
+def paint_otava(painter, rect, moment, theme, labels=False, stars=None):
     """Paint the actual north-facing sky; return seven screen star positions.
 
     The projection's origin is the north celestial pole, not the constellation's
     moving centre.  Up points towards the zenith and right towards east.  A
     fixed scale preserves both the true sidereal orientation and its movement.
     """
-    stars = sky_at(moment)
+    stars = sky_at(moment) if stars is None else stars
     painter.save()
     painter.setRenderHint(QPainter.RenderHint.Antialiasing)
     painter.setClipRect(rect)
     center = rect.center()
-    radius = max(1.0, min(rect.width(), rect.height()) * .43)
+    radius = max(1.0, min(rect.width(), rect.height()) * .36)
     accent = QColor(theme.accent)
     faint = QColor(theme.accent)
     faint.setAlpha(38)
@@ -48,6 +48,10 @@ def paint_otava(painter, rect, moment, theme, labels=False):
     painter.setPen(QColor(theme.muted))
     painter.drawText(QRectF(rect.left(), rect.top(), rect.width(), 18),
                      Qt.AlignmentFlag.AlignHCenter, 'Zeniitti ↑')
+    painter.drawText(QRectF(rect.left(), center.y()-8, 24, 16),
+                     Qt.AlignmentFlag.AlignLeft, 'L ←')
+    painter.drawText(QRectF(rect.right()-24, center.y()-8, 24, 16),
+                     Qt.AlignmentFlag.AlignRight, '→ I')
     if labels:
         painter.drawText(QRectF(center.x() + 8, center.y() + 4, radius, 18),
                          Qt.AlignmentFlag.AlignLeft, 'Taivaannapa')
@@ -73,6 +77,10 @@ def paint_otava(painter, rect, moment, theme, labels=False):
         painter.drawEllipse(point, size * 5, size * 5)
         painter.setBrush(QColor(theme.text))
         painter.drawEllipse(point, size, size)
+        if star.name == 'Alkaid':
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.setPen(QPen(accent, 1.3))
+            painter.drawEllipse(point, size+3, size+3)
         if labels:
             _font(painter, 11)
             metrics = QFontMetricsF(painter.font())
@@ -106,6 +114,7 @@ class OtavaView(QWidget):
         self.compact = compact
         self.moment = None
         self.sky = ()
+        self.snapshot = None
         self.error = ''
         self.drawn_points = ()
         self.setMinimumSize(180 if compact else 320, 150 if compact else 300)
@@ -120,11 +129,14 @@ class OtavaView(QWidget):
     def set_moment(self, moment):
         self.moment = moment
         try:
-            self.sky = sky_at(moment)
+            self.snapshot = sampled_sky(self.controller, moment)
+            self.sky = self.snapshot.stars
             self.error = ''
             lines = ['Otava Oulun pohjoistaivaalla',
-                     moment.astimezone(timezone.utc).strftime('%d.%m.%Y %H:%M:%S UTC'),
-                     'Ylös: zeniitti · oikealle: itä · keskus: pohjoinen taivaannapa']
+                     'Tarkistettu: '+self.snapshot.moment.strftime('%d.%m.%Y %H:%M:%S UTC'),
+                     'Seuraava tarkistus: '+self.snapshot.next_update.strftime('%H:%M:%S UTC'),
+                     'Ylös: zeniitti · oikealle: itä · vasemmalle: länsi · keskus: pohjoinen taivaannapa',
+                     'Ympyröity tähti: hännän pää Alkaid', tail_description(self.sky)]
             lines.extend(f'{star.name}: korkeus {star.altitude:.1f}°, suunta {star.azimuth:.1f}°'
                          for star in self.sky)
             description = '\n'.join(lines)
@@ -147,10 +159,10 @@ class OtavaView(QWidget):
         painter.setBrush(gradient)
         painter.setPen(QPen(QColor(theme.border), 1))
         painter.drawRoundedRect(outer, 15, 15)
-        chart = outer.adjusted(12, 24, -12, -35)
+        chart = outer.adjusted(12, 24, -12, -53)
         if self.sky:
-            self.drawn_points = paint_otava(painter, chart, self.moment, theme,
-                                           labels=not self.compact)
+            self.drawn_points = paint_otava(painter, chart, self.snapshot.moment, theme,
+                                           labels=not self.compact, stars=self.sky)
         else:
             self.drawn_points = ()
             painter.setPen(QColor(theme.muted))
@@ -165,7 +177,10 @@ class OtavaView(QWidget):
         painter.setPen(QColor(theme.muted))
         if self.moment is not None and not self.error:
             from .blood_time import ZONE
-            stamp = self.moment.astimezone(ZONE).strftime('%d.%m.%Y %H:%M:%S %Z')
-            painter.drawText(QRectF(12, self.height() - 28, self.width() - 24, 20),
-                             Qt.AlignmentFlag.AlignHCenter, stamp)
+            stamp = self.snapshot.moment.astimezone(ZONE).strftime('%H:%M %Z')
+            _font(painter, 9 if self.compact else 11)
+            painter.drawText(QRectF(8, self.height()-48, self.width()-16, 20),
+                             Qt.AlignmentFlag.AlignHCenter, '○ '+tail_description(self.sky))
+            painter.drawText(QRectF(8, self.height()-27, self.width()-16, 20),
+                             Qt.AlignmentFlag.AlignHCenter, f'Tarkistettu {stamp} · 26 min välein')
         painter.end()
