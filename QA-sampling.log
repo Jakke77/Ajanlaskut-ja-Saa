@@ -1,0 +1,11 @@
+test_first_sample_is_immediate_and_refresh_is_exactly_26_minutes (tests.test_otava_sampling.SkySamplingTests.test_first_sample_is_immediate_and_refresh_is_exactly_26_minutes) ... ok
+test_helsinki_winter_time_fold_uses_elapsed_utc_minutes (tests.test_otava_sampling.SkySamplingTests.test_helsinki_winter_time_fold_uses_elapsed_utc_minutes) ... ok
+test_invalid_time_is_rejected_even_after_a_valid_sample (tests.test_otava_sampling.SkySamplingTests.test_invalid_time_is_rejected_even_after_a_valid_sample) ... ok
+test_sleep_and_clock_correction_refresh_without_replaying_missed_samples (tests.test_otava_sampling.SkySamplingTests.test_sleep_and_clock_correction_refresh_without_replaying_missed_samples) ... ok
+test_views_share_one_controller_sample_and_named_tail_direction (tests.test_otava_sampling.SkySamplingTests.test_views_share_one_controller_sample_and_named_tail_direction) ... ok
+test_dashboard_calendar_and_widget_share_geometry_and_last_checked_time (tests.test_otava_sampling.SkySamplingUiTests.test_dashboard_calendar_and_widget_share_geometry_and_last_checked_time) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.091s
+
+OK
