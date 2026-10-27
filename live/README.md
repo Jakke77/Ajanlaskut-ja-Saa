@@ -1,4 +1,4 @@
-# Veriyö Live 0.1.0
+# Veriyö Live 0.1.1
 
 Oma taustakuvasovellus Windows 10/11:lle ja Ubuntu GNOME:lle. Maisema pysyy paikallaan,
 seitsemän oikeaa Otavan tähteä liikkuu antamasi paikan tähtitaivaan mukana.
@@ -10,7 +10,10 @@ Ohjelma toimii kokonaan ilman verkkoyhteyttä ja ilman Ajanlaskut ja Sää -asen
 2. Valitse **Otava ja järvi** tai **Hiillos**. Oletuspaikka on **65.071562, 25.507046**.
 3. Kokeile halutessasi **Nopeutettu esikatselu**. Se ei muuta työpöytää tai vientikuvan aikaa.
 4. Paina **Ota elävä tausta käyttöön**. Kuva päivittyy oletuksena minuutin välein.
-5. **Pysäytä päivitys** jättää viimeisen kuvan. **Palauta aiempi tausta** palauttaa varmuuskopion.
+5. Valitse **Päivämäärä**: **Piilossa**, **Veri Aika**, **Tavallinen päivämäärä** tai **Molemmat**. Valinta tallentuu heti ja päivittää myös käynnissä olevan taustakuvan.
+6. **Pysäytä päivitys** jättää viimeisen kuvan. **Palauta aiempi tausta** palauttaa varmuuskopion.
+
+Päivämäärän **Piilossa**-valinta poistaa kaikki päivämäärät ja kellonajan taustakuvasta; koordinaatit jäävät alareunaan. **Tavallinen päivämäärä** näyttää gregoriaanisen päivämäärän ja kellonajan Suomen ajassa. Esikatselun aikaleima sovelluksen sisällä säilyy näkyvissä. Vanhan version päivämäärävalinta säilytetään päivityksessä.
 
 Otava käyttää oikeaa tähtiaikaa: yksi kierros kestää noin **23 h 56 min**. Veri Ajan
 vuosi on erillinen 777 paikallisen päivän ajanlasku, joka alkaa 26.6.2026 klo
@@ -28,7 +31,7 @@ ohjelmalla piirrettyä tähteä edustavat laskettua taivasta; pohjakuvan sumut j
 Asenna ladattu paketti:
 
 ```bash
-sudo apt install ./veriyo-live_0.1.0_all.deb
+sudo apt install ./veriyo-live_0.1.1_all.deb
 ```
 
 Sovellus löytyy nimellä **Veriyö Live**. Komento: `veriyo-live`.
@@ -105,6 +108,10 @@ QT_QPA_PLATFORM=offscreen .venv/bin/python main.py --export veriyo.png --at 2026
 
 Windowsissa vastaavat komennot käyttävät `.venv\Scripts\python.exe`-ohjelmaa.
 Jos ajat lähdekoodia ilman Windowsin mukana tulevaa tzdataa, asenna myös `pip install tzdata`.
+
+## Päivitys versiosta 0.1.0
+
+Windowsissa lopeta vanha Veriyö Live ilmoitusalueen **Lopeta**-valinnalla ja pura uusi ZIP omaan pysyvään kansioonsa. Avaa uusi **Veriyo-Live.exe**. Jos kirjautumiskäynnistys on valittu, paina uudessa versiossa **Tallenna asetukset**, jotta polku osoittaa uuteen kansioon. Ubuntu-paketti päivittää aiemman asennuksen; sulje vanha ohjelma ja avaa päivitetty sovellus.
 
 ## Tarkistukset
 

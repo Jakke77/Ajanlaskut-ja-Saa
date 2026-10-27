@@ -1,10 +1,9 @@
 """Stateless offscreen rendering: landscape remains fixed, sky follows UTC."""
-from datetime import timezone
 import math
 from pathlib import Path
 from PyQt6.QtCore import QPointF, QRectF, Qt
 from PyQt6.QtGui import QColor, QFont, QImage, QPainter, QPen, QRadialGradient
-from .calendar import ZONE, blood_label
+from .calendar import date_block
 from .sky import LINKS, sky_at
 
 ASSETS = Path(__file__).resolve().parent / 'assets'
@@ -100,16 +99,12 @@ def render(moment, settings, width=1920, height=1080, background=None):
              'Alkaid', 11*font_scale, '#f5d5d9')
     # Dark right-hand space keeps text away from the moving constellation and desktop icons.
     left, top, box_w = width*.67, height*.69, width*.29
-    if settings.calendar:
-        label, ordinal = blood_label(moment)
-        text(painter, QRectF(left, top, box_w, height*.045), 'VERI AIKA', 16*font_scale)
-        # Split the long calendar label to fit laptop and ultrawide screens alike.
-        pieces = label.split(' · ')
-        for index, line in enumerate((' · '.join(pieces[:2]), ' · '.join(pieces[2:]), ordinal)):
+    title, lines = date_block(moment, settings.date_mode)
+    if lines:
+        text(painter, QRectF(left, top, box_w, height*.045), title, 16*font_scale)
+        for index, line in enumerate(lines):
             text(painter, QRectF(left, top+(50+index*33)*font_scale, box_w, 30*font_scale), line, 12*font_scale, '#efd9df')
-    local = moment.astimezone(ZONE)
-    footer = (f'{local:%d.%m.%Y %H:%M} {local.tzname()}  ·  '
-              f'{settings.latitude:.6f}, {settings.longitude:.6f}')
+    footer = f'{settings.latitude:.6f}, {settings.longitude:.6f}'
     text(painter, QRectF(width*.04, height*.95, width*.92, height*.035), footer, 10*font_scale, '#bd959e')
     painter.end()
     return image

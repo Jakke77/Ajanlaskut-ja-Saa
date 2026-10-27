@@ -121,13 +121,20 @@ class Window(QMainWindow):
             location.addWidget(spin)
         form.addRow('Sijainti · leveys / pituus', location)
         flags = QHBoxLayout()
-        self.guides, self.calendar = QCheckBox('Suunnat ja Alkaid'), QCheckBox('Veri Ajan päivämäärä')
+        self.guides = QCheckBox('Suunnat ja Alkaid')
         self.guides.setChecked(settings.guides)
-        self.calendar.setChecked(settings.calendar)
-        for widget in (self.guides, self.calendar):
-            widget.toggled.connect(self.refresh_preview)
-            flags.addWidget(widget)
+        self.guides.toggled.connect(self.refresh_preview)
+        flags.addWidget(self.guides)
         form.addRow('Kuvassa näkyy', flags)
+        self.date_mode = QComboBox()
+        for label, mode in (('Piilossa', 'none'), ('Veri Aika', 'blood'),
+                            ('Tavallinen päivämäärä', 'gregorian'), ('Molemmat', 'both')):
+            self.date_mode.addItem(label, mode)
+        self.date_mode.setCurrentIndex(self.date_mode.findData(settings.date_mode))
+        self.date_mode.setAccessibleName('Taustakuvan päivämäärä')
+        self.date_mode.setToolTip('Valinta tallentuu ja päivittyy myös käynnissä olevaan taustaan. Piilossa poistaa kaikki päivämäärät taustakuvasta.')
+        self.date_mode.currentIndexChanged.connect(self.change_date_mode)
+        form.addRow('Päivämäärä', self.date_mode)
         advanced = QHBoxLayout()
         self.interval = QComboBox()
         for title, seconds in (('1 minuutti', 60), ('5 minuuttia', 300), ('26 minuuttia', 1560)):
@@ -187,8 +194,19 @@ class Window(QMainWindow):
 
     def values(self):
         return Settings(theme=self.theme.currentData(), latitude=self.latitude.value(), longitude=self.longitude.value(),
-                        guides=self.guides.isChecked(), calendar=self.calendar.isChecked(), interval=self.interval.currentData(),
+                        guides=self.guides.isChecked(), date_mode=self.date_mode.currentData(), interval=self.interval.currentData(),
                         lock_screen=self.lock.isChecked(), autostart=self.autostart.isChecked()).validate()
+
+    def change_date_mode(self, *args):
+        try:
+            value = replace(self.settings, date_mode=self.date_mode.currentData())
+            value.save(self.directory/'settings.json')
+            self.settings = value
+            self.engine.set_date_mode(value.date_mode)
+            self.refresh_preview()
+            self.show_status('Päivämäärävalinta tallennettu. Taustakuva päivittyy, jos elävä tausta on käytössä.')
+        except Exception as error:
+            self.show_status(str(error))
 
     def show_status(self, value):
         self.status.setText(value)
@@ -227,7 +245,7 @@ class Window(QMainWindow):
 
     def update_controls(self):
         active = self.engine.running or self.engine.busy
-        for widget in (self.theme, self.latitude, self.longitude, self.guides, self.calendar, self.interval, self.lock,
+        for widget in (self.theme, self.latitude, self.longitude, self.guides, self.interval, self.lock,
                        self.autostart, self.save_button):
             widget.setEnabled(not active)
         self.start_button.setEnabled(not active)
@@ -252,7 +270,7 @@ class Window(QMainWindow):
         self.refresh_preview(moment=now)
 
     def refresh_preview(self, *args, moment=None):
-        if not hasattr(self, 'calendar'):
+        if not hasattr(self, 'autostart'):
             return
         try:
             value = self.values()

@@ -41,6 +41,7 @@ class Engine(QObject):
         self.last_wall_time = 0
         self.slot = 0
         self.settings = None
+        self.pending_date_mode = None
         self.size = (1920, 1080)
         self.timer = QTimer(self)
         self.timer.setInterval(2000)
@@ -63,6 +64,7 @@ class Engine(QObject):
         if self.running or self.busy:
             return
         self.settings = replace(settings).validate()
+        self.pending_date_mode = None
         self.size = (width, height)
         self.session = WallpaperSession(self.directory, self.adapter_factory())
         self.stop_requested = False
@@ -96,6 +98,20 @@ class Engine(QObject):
         wall_elapsed = time.time() - self.last_wall_time
         if elapsed >= self.settings.interval or wall_elapsed < 0 or abs(wall_elapsed - elapsed) > 5:
             self._launch('update', self._update)
+
+    def set_date_mode(self, mode):
+        if self.settings is None:
+            return
+        replace(self.settings, date_mode=mode).validate()
+        self.pending_date_mode = mode
+        if self.running and not self.busy:
+            self._refresh_date_mode()
+
+    def _refresh_date_mode(self):
+        # Never mutate settings which a pending render/apply task is reading.
+        self.settings = replace(self.settings, date_mode=self.pending_date_mode)
+        self.pending_date_mode = None
+        self._launch('update', self._update)
 
     def stop(self):
         self.running = False
@@ -138,3 +154,5 @@ class Engine(QObject):
         self.changed.emit()
         if self.pending_restore:
             self._restore_now()
+        elif self.running and self.pending_date_mode is not None:
+            self._refresh_date_mode()

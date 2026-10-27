@@ -33,7 +33,7 @@ class Settings:
     latitude: float = 65.071562
     longitude: float = 25.507046
     guides: bool = True
-    calendar: bool = True
+    date_mode: str = 'blood'
     interval: int = 60
     lock_screen: bool = False
     autostart: bool = False
@@ -41,6 +41,8 @@ class Settings:
     def validate(self):
         if self.theme not in ('otava', 'hiillos'):
             raise ValueError('Tuntematon taustakuva.')
+        if self.date_mode not in ('none', 'blood', 'gregorian', 'both'):
+            raise ValueError('Tuntematon päivämäärän näyttötapa.')
         for name, limit in (('latitude', 90), ('longitude', 180)):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or abs(value) > limit:
@@ -50,7 +52,7 @@ class Settings:
             raise ValueError('Tämän version taivasnäkymä tukee leveysasteita 60–70° N.')
         if type(self.interval) is not int or self.interval not in (60, 300, 1560):
             raise ValueError('Päivitysvälin pitää olla 1, 5 tai 26 minuuttia.')
-        for name in ('guides', 'calendar', 'lock_screen', 'autostart'):
+        for name in ('guides', 'lock_screen', 'autostart'):
             if type(getattr(self, name)) is not bool:
                 raise ValueError('Virheellinen valinta: ' + name)
         return self
@@ -66,4 +68,9 @@ class Settings:
         value = json.loads(Path(path).read_text(encoding='utf-8'))
         if not isinstance(value, dict):
             raise ValueError('Asetustiedosto ei ole oikeaa muotoa.')
+        if 'calendar' in value:
+            legacy = value.pop('calendar')
+            if type(legacy) is not bool:
+                raise ValueError('Virheellinen vanhan version päivämäärävalinta.')
+            value.setdefault('date_mode', 'blood' if legacy else 'none')
         return cls(**value).validate()
