@@ -28,12 +28,17 @@ class GnomeBackend:
     def __init__(self):
         if not shutil.which('gsettings') or not os.environ.get('DBUS_SESSION_BUS_ADDRESS'):
             raise RuntimeError('Elävä työpöytä tarvitsee kirjautuneen GNOME-istunnon. Esikatselu ja kuvan tallennus toimivat silti.')
+        desktop = os.environ.get('XDG_CURRENT_DESKTOP', '').lower()
+        if desktop and 'gnome' not in desktop and 'ubuntu' not in desktop:
+            raise RuntimeError('Tämä versio vaihtaa taustakuvan GNOME-työpöydällä. Voit tallentaa kuvan ja käyttää sitä muilla työpöydillä.')
 
     def get(self, schema, key):
         return run(['gsettings', 'get', schema, key])
 
     def set(self, schema, key, value):
         run(['gsettings', 'set', schema, key, value])
+        if ast.literal_eval(self.get(schema, key)) != ast.literal_eval(value):
+            raise RuntimeError('GNOME ei tallentanut taustakuva-asetusta: ' + key)
 
     def capture(self, lock_screen, directory):
         records = []
@@ -71,6 +76,12 @@ class GnomeBackend:
         return True
 
     def restore(self, journal):
+        frames = [Path(p).resolve().as_uri() for p in journal['frames']]
+        desktop_owned = all(
+            ast.literal_eval(self.get(record['schema'], record['key'])) in
+            [*frames, ast.literal_eval(record['value'])]
+            for record in journal['original']
+            if record['schema'] == self.desktop and record['key'] != 'picture-options')
         for record in journal['original']:
             if (record.get('schema'), record.get('key')) not in {
                 (self.desktop, 'picture-uri'), (self.desktop, 'picture-uri-dark'),
@@ -79,7 +90,7 @@ class GnomeBackend:
             current = self.get(record['schema'], record['key'])
             # A user-selected different picture made while we ran takes precedence.
             if record['key'] == 'picture-options':
-                owned = current == "'zoom'"
+                owned = desktop_owned and current == "'zoom'"
             else:
                 try:
                     owned = ast.literal_eval(current) in [Path(p).resolve().as_uri() for p in journal['frames']]
@@ -134,12 +145,12 @@ class WindowsBackend:
 
     def can_resume(self, journal):
         paths = [*journal['frames'], journal['desktop']]
-        return os.path.normcase(os.path.abspath(self.desktop_path())) in [
-            os.path.normcase(os.path.abspath(p)) for p in paths]
+        return os.path.normcase(str(Path(self.desktop_path()).resolve())) in [
+            os.path.normcase(str(Path(p).resolve())) for p in paths]
 
     def restore(self, journal):
-        current = os.path.normcase(os.path.abspath(self.desktop_path()))
-        owned = [os.path.normcase(os.path.abspath(p)) for p in journal['frames']]
+        current = os.path.normcase(str(Path(self.desktop_path()).resolve()))
+        owned = [os.path.normcase(str(Path(p).resolve())) for p in journal['frames']]
         if current in owned:
             self.set_desktop(journal['desktop'])
         if journal.get('lock_backup'):

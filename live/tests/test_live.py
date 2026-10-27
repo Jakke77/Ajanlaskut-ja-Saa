@@ -170,7 +170,7 @@ class RecoveryTests(unittest.TestCase):
         frame=self.directory/'frame.jpg'
         with self.assertRaises(RuntimeError):
             self.session.apply(frame,False)
-        self.assertEqual(json.loads(self.session.path.read_text())['frames'],[str(frame)])
+        self.assertEqual(json.loads(self.session.path.read_text())['frames'],[str(frame.resolve())])
         self.session.restore()
         self.assertEqual(self.adapter.current,'original')
         self.assertFalse(self.session.path.exists())
@@ -336,9 +336,6 @@ class SettingsAndUITests(unittest.TestCase):
                 self.assertFalse(path.exists())
 
 
-if __name__=='__main__':
-    unittest.main()
-
 class GnomeAdapterTests(unittest.TestCase):
     def setUp(self):
         self.values = {
@@ -400,3 +397,7 @@ class GnomeAdapterTests(unittest.TestCase):
             session.restore()
             self.assertEqual(self.values[self.adapter.desktop,'picture-uri-dark'],"'file:///user-new.jpg'")
             self.assertEqual(self.values[self.adapter.desktop,'picture-uri'],"'file:///before.jpg'")
+
+
+if __name__=='__main__':
+    unittest.main()

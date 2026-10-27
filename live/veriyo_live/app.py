@@ -212,6 +212,7 @@ class Window(QMainWindow):
 
     def start(self):
         if not self.save():
+            self.open_window()
             return
         try:
             size = QApplication.primaryScreen().size()
@@ -221,6 +222,7 @@ class Window(QMainWindow):
             self.engine.start(self.settings, max(320, round(width*factor)), max(240, round(height*factor)))
         except Exception as error:
             self.show_status(str(error))
+            self.open_window()
         self.update_controls()
 
     def update_controls(self):
@@ -238,6 +240,8 @@ class Window(QMainWindow):
         self.refresh_preview()
 
     def preview_tick(self):
+        if not self.isVisible():
+            return  # A hidden tray process only renders its scheduled wallpaper updates.
         now = datetime.now(timezone.utc)
         if self.demo_start is not None:
             import time
