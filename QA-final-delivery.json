@@ -1,0 +1,12 @@
+{
+  "source_head": "480837702b00bef1d118c506c2d87b217fab578c",
+  "native_windows_run": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/actions/runs/40473243907",
+  "windows_asset": {
+    "name": "Veriyo-Live-0.1.0-Windows-x64.zip",
+    "bytes": 94529681,
+    "sha256": "cf389bd5d3c7a5196f59ef68e7ca8e3ebc25cb6fbcd6a9b06eb6f61e02eb6010"
+  },
+  "release": "https://github.com/Jakke77/Ajanlaskut-ja-Saa/releases/tag/veriyo-live-v0.1.0",
+  "tag_sha": "480837702b00bef1d118c506c2d87b217fab578c",
+  "draft": false
+}

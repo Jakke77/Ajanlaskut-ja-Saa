@@ -28,3 +28,5 @@ lähde-ZIP:iin. Molempien sisältä ajetut 29 testiä ja PNG-vienti läpäisivä
 GNOMEn oikeat gsettings/D-Bus/dconf-kirjoitukset, jatkaminen ja palautus tarkistettiin
 yksityisessä testi-istunnossa. Käyttäjän varsinaista GNOME-/Windows-lukitusnäyttöä
 ei ole pilviympäristössä. Katso [tarkistusraportti](QA-package.json).
+
+Windowsin pakattu ajonaikainen ympäristö läpäisi samat testit (yksi vain Linuxille tarkoitettu testi ohitettiin), PNG-viennin ja natiivin taustakuvapolun lukemisen. [Windows-tarkistusloki](QA-native-windows.log) · [lopullinen toimitusraportti](QA-final-delivery.json).
