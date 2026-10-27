@@ -1,0 +1,17 @@
+{
+  "source_head": "480837702b00bef1d118c506c2d87b217fab578c",
+  "identical_files": 54,
+  "tests": 29,
+  "ubuntu_desktop_visually_tested": false,
+  "windows_lock_visually_tested": false,
+  "artifacts": {
+    "veriyo-live_0.1.0_all.deb": {
+      "bytes": 3355864,
+      "sha256": "63b44a12844f5380380cea6ad40e4196a8dd3516b27238a81cb370f82181e6f6"
+    },
+    "Veriyo-Live-0.1.0-lahdekoodi.zip": {
+      "bytes": 3856828,
+      "sha256": "34cc79e9089c08328bed44a0c0ba541b2dd26338ede981dfe0ea97423063ade5"
+    }
+  }
+}

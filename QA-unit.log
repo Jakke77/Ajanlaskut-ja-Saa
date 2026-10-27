@@ -1,0 +1,35 @@
+test_dst_is_same_instant (test_live.AstronomyTests.test_dst_is_same_instant) ... ok
+test_exact_requested_location (test_live.AstronomyTests.test_exact_requested_location) ... ok
+test_longitude_and_time (test_live.AstronomyTests.test_longitude_and_time) ... ok
+test_naive_and_invalid_location_rejected (test_live.AstronomyTests.test_naive_and_invalid_location_rejected) ... ok
+test_projection_cardinal_geometry (test_live.AstronomyTests.test_projection_cardinal_geometry) ... ok
+test_reference_erfa (test_live.AstronomyTests.test_reference_erfa) ... ok
+test_seven_stars_stay_in_frame_whole_day (test_live.AstronomyTests.test_seven_stars_stay_in_frame_whole_day) ... ok
+test_sidereal_day (test_live.AstronomyTests.test_sidereal_day) ... ok
+test_cutover_and_777_year (test_live.CalendarTests.test_cutover_and_777_year) ... ok
+test_dst_local_day_boundary (test_live.CalendarTests.test_dst_local_day_boundary) ... ok
+test_naive_rejected (test_live.CalendarTests.test_naive_rejected) ... ok
+test_clock_correction_refreshes_without_wait (test_live.EngineTests.test_clock_correction_refreshes_without_wait) ... ok
+test_restore_waits_for_pending_apply (test_live.EngineTests.test_restore_waits_for_pending_apply) ... ok
+test_start_update_restore (test_live.EngineTests.test_start_update_restore) ... ok
+test_stop_and_resume (test_live.EngineTests.test_stop_and_resume) ... ok
+test_actual_gsettings_plan_and_restore_both_backgrounds (test_live.GnomeAdapterTests.test_actual_gsettings_plan_and_restore_both_backgrounds) ... ok
+test_external_dark_wallpaper_change_survives (test_live.GnomeAdapterTests.test_external_dark_wallpaper_change_survives) ... ok
+test_locked_settings_make_no_changes (test_live.GnomeAdapterTests.test_locked_settings_make_no_changes) ... ok
+test_backup_before_partial_write_and_restore (test_live.RecoveryTests.test_backup_before_partial_write_and_restore) ... ok
+test_changed_wallpaper_not_overwritten (test_live.RecoveryTests.test_changed_wallpaper_not_overwritten) ... ok
+test_lock_selection_change_requires_restore (test_live.RecoveryTests.test_lock_selection_change_requires_restore) ... ok
+test_many_frames_bounded_by_two_slots (test_live.RecoveryTests.test_many_frames_bounded_by_two_slots) ... ok
+test_restore_failure_keeps_backup (test_live.RecoveryTests.test_restore_failure_keeps_backup) ... ok
+test_resume_preserves_first_backup (test_live.RecoveryTests.test_resume_preserves_first_backup) ... ok
+test_atomic_settings_and_invalid_values (test_live.SettingsAndUITests.test_atomic_settings_and_invalid_values) ... ok
+test_autostart_is_own_entry_and_no_shell (test_live.SettingsAndUITests.test_autostart_is_own_entry_and_no_shell) ... ok
+test_both_assets_decode_and_sky_moves (test_live.SettingsAndUITests.test_both_assets_decode_and_sky_moves) ... ok
+test_export_size_validation (test_live.SettingsAndUITests.test_export_size_validation) ... ok
+test_window_preview_does_not_touch_system_and_demo_is_isolated (test_live.SettingsAndUITests.test_window_preview_does_not_touch_system_and_demo_is_isolated) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.659s
+
+OK

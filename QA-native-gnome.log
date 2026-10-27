@@ -1,0 +1,3 @@
+dbus-daemon[103748]: [session uid=1000 pid=103748 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.0' (uid=1000 pid=103800 comm="gsettings set org.gnome.desktop.background picture" label="kernel")
+dbus-daemon[103748]: [session uid=1000 pid=103748 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+PASS: real gsettings + private D-Bus/dconf; desktop light/dark, zoom, lock URI, resume and exact restore. No real GNOME screen is present.
