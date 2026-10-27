@@ -41,3 +41,5 @@ lähteeseen; molempien sisältä ajetut 38 testiä ja PNG-vienti läpäisivät t
 
 Otavan liike ja lukitusnäytön tuki toimivat samoilla ehdoilla kuin aiemmin.
 Lukituskuva on pysäytyskuva; käyttöjärjestelmä ei takaa jo näkyvän lukitusnäytön virkistymistä.
+
+Windowsin pakattu ajonaikainen ympäristö läpäisi samat 38 testiä (yksi vain Linuxille tarkoitettu testi ohitettiin), PNG-viennin ja natiivin taustakuvapolun lukemisen. [Windows-tarkistusloki](QA-native-windows.log) · [toimitusraportti](QA-final-delivery.json).

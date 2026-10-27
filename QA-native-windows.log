@@ -1,0 +1,37 @@
+test_dst_is_same_instant (test_live.AstronomyTests.test_dst_is_same_instant) ... ok
+2026-10-27T13:52:12.4444859Z test_exact_requested_location (test_live.AstronomyTests.test_exact_requested_location) ... ok
+2026-10-27T13:52:12.4445865Z test_longitude_and_time (test_live.AstronomyTests.test_longitude_and_time) ... ok
+2026-10-27T13:52:12.4446956Z test_naive_and_invalid_location_rejected (test_live.AstronomyTests.test_naive_and_invalid_location_rejected) ... ok
+2026-10-27T13:52:12.4448148Z test_projection_cardinal_geometry (test_live.AstronomyTests.test_projection_cardinal_geometry) ... ok
+2026-10-27T13:52:12.4456701Z test_reference_erfa (test_live.AstronomyTests.test_reference_erfa) ... ok
+2026-10-27T13:52:12.4888177Z test_seven_stars_stay_in_frame_whole_day (test_live.AstronomyTests.test_seven_stars_stay_in_frame_whole_day) ... ok
+2026-10-27T13:52:12.4889074Z test_sidereal_day (test_live.AstronomyTests.test_sidereal_day) ... ok
+2026-10-27T13:52:12.4889946Z test_cutover_and_777_year (test_live.CalendarTests.test_cutover_and_777_year) ... ok
+2026-10-27T13:52:12.4890691Z test_dst_local_day_boundary (test_live.CalendarTests.test_dst_local_day_boundary) ... ok
+2026-10-27T13:52:12.4891422Z test_naive_rejected (test_live.CalendarTests.test_naive_rejected) ... ok
+2026-10-27T13:52:12.6602811Z test_clock_correction_refreshes_without_wait (test_live.EngineTests.test_clock_correction_refreshes_without_wait) ... ok
+2026-10-27T13:52:12.7538138Z test_restore_waits_for_pending_apply (test_live.EngineTests.test_restore_waits_for_pending_apply) ... ok
+2026-10-27T13:52:12.9415257Z test_start_update_restore (test_live.EngineTests.test_start_update_restore) ... ok
+2026-10-27T13:52:13.0978616Z test_stop_and_resume (test_live.EngineTests.test_stop_and_resume) ... ok
+2026-10-27T13:52:13.1166855Z test_actual_gsettings_plan_and_restore_both_backgrounds (test_live.GnomeAdapterTests.test_actual_gsettings_plan_and_restore_both_backgrounds) ... ok
+2026-10-27T13:52:13.1323860Z test_external_dark_wallpaper_change_survives (test_live.GnomeAdapterTests.test_external_dark_wallpaper_change_survives) ... ok
+2026-10-27T13:52:13.1333564Z test_locked_settings_make_no_changes (test_live.GnomeAdapterTests.test_locked_settings_make_no_changes) ... ok
+2026-10-27T13:52:13.1532041Z test_backup_before_partial_write_and_restore (test_live.RecoveryTests.test_backup_before_partial_write_and_restore) ... ok
+2026-10-27T13:52:13.1666611Z test_changed_wallpaper_not_overwritten (test_live.RecoveryTests.test_changed_wallpaper_not_overwritten) ... ok
+2026-10-27T13:52:13.1746970Z test_lock_selection_change_requires_restore (test_live.RecoveryTests.test_lock_selection_change_requires_restore) ... ok
+2026-10-27T13:52:13.4816147Z test_many_frames_bounded_by_two_slots (test_live.RecoveryTests.test_many_frames_bounded_by_two_slots) ... ok
+2026-10-27T13:52:13.4874498Z test_restore_failure_keeps_backup (test_live.RecoveryTests.test_restore_failure_keeps_backup) ... ok
+2026-10-27T13:52:13.5046235Z test_resume_preserves_first_backup (test_live.RecoveryTests.test_resume_preserves_first_backup) ... ok
+2026-10-27T13:52:13.5111971Z test_atomic_settings_and_invalid_values (test_live.SettingsAndUITests.test_atomic_settings_and_invalid_values) ... ok
+2026-10-27T13:52:13.5112873Z test_autostart_is_own_entry_and_no_shell (test_live.SettingsAndUITests.test_autostart_is_own_entry_and_no_shell) ... skipped 'Linux Desktop Entry only'
+2026-10-27T13:52:13.6480190Z test_both_assets_decode_and_sky_moves (test_live.SettingsAndUITests.test_both_assets_decode_and_sky_moves) ... ok
+2026-10-27T13:52:13.6481282Z test_export_size_validation (test_live.SettingsAndUITests.test_export_size_validation) ... ok
+2026-10-27T13:52:13.7173054Z test_window_preview_does_not_touch_system_and_demo_is_isolated (test_live.SettingsAndUITests.test_window_preview_does_not_touch_system_and_demo_is_isolated) ... ok
+2026-10-27T13:52:13.7174108Z
+2026-10-27T13:52:13.7174347Z ----------------------------------------------------------------------
+2026-10-27T13:52:13.7174915Z Ran 38 tests in 2.077s
+2026-10-27T13:52:13.7176084Z
+2026-10-27T13:52:13.7176178Z OK (skipped=1)
+2026-10-27T13:52:14.6998451Z D:\a\Ajanlaskut-ja-Saa\Ajanlaskut-ja-Saa\outputs\Veriyo-Live-0.1.1-Windows-x64\check.png
+2026-10-27T13:52:14.7990871Z PASS: native SystemParametersInfoW read
+2026-10-27T13:52:14.8492554Z PASS: lock helper PowerShell syntax (actual locked desktop not tested)
